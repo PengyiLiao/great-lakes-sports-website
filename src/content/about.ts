@@ -5,10 +5,10 @@
  * The Chinese is a working translation and should be reviewed by the client,
  * who is a native speaker and owns the brand's voice.
  *
- * ⚠️ The chairman's name is carried as the Latin romanisation in both
- * languages. Guessing at the characters behind "Wu Zeming" risks printing
- * the wrong name for a real person on his own company's website. Ask the
- * client for the correct characters and add them to the `zh` entry.
+ * The chairman's name appears as the Latin romanisation in English and in
+ * Chinese characters on the Chinese site; both were confirmed by the client
+ * rather than transliterated, since printing the wrong characters for a real
+ * person on his own company's website is not a recoverable mistake.
  */
 
 import type { Lang } from "../i18n/config";
@@ -87,7 +87,7 @@ export const about: Record<Lang, AboutContent> = {
       "Great Lakes Sports 相信，体育拥有激励人心、连接文化、为社会创造长远价值的力量。",
 
     chairman: {
-      name: "Wu Zeming",
+      name: "吴泽明",
       organization: "Great Lakes Sports Inc.",
       paragraphs: [
         "欢迎来到 Great Lakes Sports Inc.。",
