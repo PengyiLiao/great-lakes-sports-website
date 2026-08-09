@@ -1,0 +1,164 @@
+---
+/**
+ * Home page body, rendered once per language.
+ *
+ * The page files under src/pages are thin wrappers that pass a locale in, so
+ * the English and Chinese sites cannot drift apart structurally — a section
+ * added here appears in both.
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import GagLogo from "../GagLogo.astro";
+import { contactEmail, site } from "../../config/site";
+import { brand } from "../../content/brand";
+import { events } from "../../content/events";
+import { home } from "../../content/home";
+import { localizePath, type Lang } from "../../i18n/config";
+import { useTranslations } from "../../i18n/ui";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const copy = home[lang];
+const { gag } = brand[lang];
+---
+
+<BaseLayout lang={lang} route="/" title={t("page.home")}>
+  {/* The hero is intentionally not full-viewport height. Leaving the next
+      section visible at the fold tells visitors there is more below —
+      a full-screen splash can read as the entire page. */}
+  <section
+    class="mx-auto max-w-4xl px-6 pt-20 pb-16 text-center sm:pt-28 sm:pb-20"
+  >
+    <p class="text-xs tracking-[0.32em] text-gold-600 uppercase sm:text-sm">
+      {site.location}
+    </p>
+
+    <h1
+      class="mt-8 font-display text-4xl text-forest-900 sm:text-5xl md:text-6xl"
+    >
+      {copy.tagline}
+    </h1>
+
+    <div class="mx-auto my-10 h-px w-24 bg-gold-400"></div>
+
+    <p class="mx-auto max-w-2xl text-ink-muted">{copy.intro}</p>
+
+    <div class="mt-12">
+      <a
+        href={localizePath("/about", lang)}
+        class="inline-block border border-forest-900 px-9 py-3.5 text-[0.8125rem] font-medium tracking-[0.18em] text-forest-900 uppercase transition-colors duration-300 hover:bg-forest-900 hover:text-ivory-50"
+      >
+        {t("cta.about")}
+      </a>
+    </div>
+  </section>
+
+  {/* The flagship series. Set on the brand green so the GAG mark appears in
+      ivory here and in forest green on the Brand page — the same component
+      either way, since it inherits the surrounding colour. */}
+  <section class="bg-forest-900 py-20 text-center sm:py-24">
+    <div class="mx-auto max-w-3xl px-6">
+      <p class="text-xs tracking-[0.3em] text-gold-300 uppercase sm:text-sm">
+        {t("home.flagship")}
+      </p>
+
+      <GagLogo class="mt-10 text-6xl text-ivory-100 sm:text-7xl" />
+
+      <p class="mt-6 text-sm tracking-[0.28em] text-gold-300 uppercase">
+        {gag.fullName}
+      </p>
+
+      <div class="mx-auto my-10 h-px w-24 bg-gold-400"></div>
+
+      <p class="font-display text-3xl text-ivory-100 sm:text-4xl">
+        {gag.slogan}
+      </p>
+
+      <p class="mt-6 font-display text-2xl text-gold-300 italic">
+        {gag.tagline}
+      </p>
+
+      <div class="mt-12">
+        <a
+          href={localizePath("/brand", lang)}
+          class="inline-block border border-gold-400 px-9 py-3.5 text-[0.8125rem] font-medium tracking-[0.18em] text-gold-300 uppercase transition-colors duration-300 hover:bg-gold-400 hover:text-forest-900"
+        >
+          {t("cta.brand")}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {/* Upcoming tournaments. A schedule is the first thing most visitors to a
+      tournament site are looking for, so it sits above everything except the
+      brand itself. */}
+  <section class="mx-auto max-w-3xl px-6 py-20 sm:py-24">
+    <h2 class="text-center text-xs tracking-[0.3em] text-gold-600 uppercase">
+      {t("home.upcoming")}
+    </h2>
+
+    <div class="mx-auto mt-8 h-px w-20 bg-gold-400"></div>
+
+    {
+      events.length > 0 ? (
+        <ul class="mt-14 space-y-8">
+          {events.map((event) => (
+            <li class="border border-gold-400/40 bg-ivory-50 px-8 py-12 text-center sm:px-12">
+              <time
+                datetime={event.date}
+                class="font-display text-3xl text-forest-900 sm:text-4xl"
+              >
+                {event.localized[lang].displayDate}
+              </time>
+              <p class="mt-5 font-display text-2xl text-forest-800">
+                {event.localized[lang].name}
+              </p>
+              <p class="mt-4 text-sm tracking-[0.18em] text-ink-muted uppercase">
+                {event.localized[lang].location}
+              </p>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="mt-12 text-center text-lg text-ink-muted">
+          {t("home.upcoming.empty")}
+        </p>
+      )
+    }
+  </section>
+
+  {/* Partnership. The enquiry button only appears once a real address exists;
+      until then the section states plainly that details are to follow rather
+      than pointing at a mailbox nobody reads. */}
+  <section class="bg-ivory-200 py-20 text-center sm:py-24">
+    <div class="mx-auto max-w-2xl px-6">
+      <h2 class="text-xs tracking-[0.3em] text-gold-600 uppercase">
+        {t("home.partnership")}
+      </h2>
+
+      <div class="mx-auto mt-8 h-px w-20 bg-gold-400"></div>
+
+      <p class="mt-10 text-lg text-ink-muted">{copy.partnership}</p>
+
+      {
+        contactEmail ? (
+          <div class="mt-12">
+            <a
+              href={`mailto:${contactEmail}`}
+              class="inline-block border border-forest-900 px-9 py-3.5 text-[0.8125rem] font-medium tracking-[0.18em] text-forest-900 uppercase transition-colors duration-300 hover:bg-forest-900 hover:text-ivory-50"
+            >
+              {t("cta.enquire")}
+            </a>
+          </div>
+        ) : (
+          <p class="mt-10 text-sm tracking-[0.16em] text-ink-muted uppercase">
+            {t("cta.enquirePending")}
+          </p>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>

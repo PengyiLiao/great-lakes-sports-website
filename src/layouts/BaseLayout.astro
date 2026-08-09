@@ -12,6 +12,14 @@
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import { site } from "../config/site";
+import {
+  defaultLang,
+  langCodes,
+  languages,
+  localizePath,
+  type Lang,
+} from "../i18n/config";
+import { useTranslations } from "../i18n/ui";
 
 import "@fontsource/cormorant-garamond/400.css";
 import "@fontsource/cormorant-garamond/500.css";
@@ -21,28 +29,50 @@ import "@fontsource-variable/inter";
 import "../styles/global.css";
 
 interface Props {
-  /** Page title, shown before the site name in the browser tab. */
+  lang: Lang;
+  /** Canonical, unprefixed route — "/", "/about", "/brand". */
+  route: string;
+  /** Page title, shown before the organization name in the browser tab. */
   title: string;
   /** Page-specific meta description; falls back to the site default. */
   description?: string;
 }
 
-const { title, description = site.description } = Astro.props;
+const { lang, route, title, description } = Astro.props;
+const t = useTranslations(lang);
 
 const pageTitle = `${title} | ${site.legalName}`;
-const canonical = new URL(Astro.url.pathname, site.origin);
+const metaDescription = description ?? t("meta.description");
+const canonical = new URL(localizePath(route, lang), site.origin);
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={languages[lang].htmlLang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
 
     <title>{pageTitle}</title>
-    <meta name="description" content={description} />
+    <meta name="description" content={metaDescription} />
     <link rel="canonical" href={canonical} />
+
+    {/* Tell search engines that these pages are translations of one another,
+        rather than duplicate content competing with itself. */}
+    {
+      langCodes.map((code) => (
+        <link
+          rel="alternate"
+          hreflang={languages[code].htmlLang}
+          href={new URL(localizePath(route, code), site.origin)}
+        />
+      ))
+    }
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href={new URL(localizePath(route, defaultLang), site.origin)}
+    />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -53,8 +83,9 @@ const canonical = new URL(Astro.url.pathname, site.origin);
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.legalName} />
     <meta property="og:title" content={pageTitle} />
-    <meta property="og:description" content={description} />
+    <meta property="og:description" content={metaDescription} />
     <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={languages[lang].htmlLang} />
     <meta name="twitter:card" content="summary_large_image" />
   </head>
 
@@ -63,15 +94,15 @@ const canonical = new URL(Astro.url.pathname, site.origin);
       href="#main"
       class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:rounded-sm focus:bg-forest-900 focus:px-4 focus:py-2 focus:text-ivory-50"
     >
-      Skip to content
+      {t("a11y.skip")}
     </a>
 
-    <Header />
+    <Header lang={lang} route={route} />
 
     <main id="main" class="flex-1">
       <slot />
     </main>
 
-    <Footer />
+    <Footer lang={lang} />
   </body>
 </html>

@@ -43,13 +43,33 @@ in-house, so no personal or payment data is ever stored on infrastructure we ope
 
 ```
 src/
-  pages/      route-per-file — each .astro file becomes a URL
-  layouts/    shared page shells (header, footer, meta tags)
-  components/ reusable UI pieces
-  content/    site copy, kept out of the components on purpose
-  styles/     global styles and brand design tokens
-public/       static assets served as-is (images, favicon, downloads)
+  pages/            route-per-file; English at the root, 中文 under /zh.
+                    Each file is a two-line wrapper that passes a locale
+                    into the matching page component.
+  components/pages/ the actual page bodies, rendered once per language
+  components/       reusable UI pieces
+  layouts/          the document shell: head, fonts, header, footer
+  content/          page copy, per language, kept out of the templates
+  i18n/             locale definitions, URL helpers, interface strings
+  config/           structural configuration (navigation, organization)
+  assets/           images processed at build time
+  styles/           brand design tokens and base styles
+public/             served as-is (favicon, touch icon)
 ```
+
+### Bilingual structure
+
+English is served without a URL prefix (`/about`) and Chinese under `/zh`
+(`/zh/about`), so the organization's primary address stays clean. Both locales
+render from the same page components, which means a section added to the site
+cannot appear in one language and silently go missing in the other. Interface
+strings are typed against the English table, so a missing translation is a
+build error rather than a blank space on the page.
+
+No CJK webfont is downloaded. Browsers fall back per character rather than per
+string, so a mixed line renders its Latin words in Cormorant or Inter and its
+Chinese in the reader's system serif — which avoids spending several megabytes
+to solve a problem the system fonts already solve well.
 
 ## Local development
 
@@ -65,13 +85,15 @@ npm run preview # serve the production build locally
 ## Roadmap
 
 - [x] Project scaffolding, brand design tokens, tooling
-- [ ] Shared layout: header, navigation, footer
-- [ ] Home page
-- [ ] About page
-- [ ] Brand page
-- [ ] Bilingual support (English / 中文)
-- [ ] GAGC, organizational structure, and remaining sections
+- [x] Shared layout: header, navigation, footer
+- [x] Vector logo, favicons
+- [x] Home page: hero, flagship series, schedule, partnership
+- [x] About page
+- [x] Brand page
+- [x] Bilingual support (English / 中文)
 - [ ] Deploy to Cloudflare Pages
+- [ ] Contact details and enquiry routing
+- [ ] GAGC, organizational structure, and remaining sections
 - [ ] Visual CMS so staff can edit copy without touching code
 
 ## Notes on this repository

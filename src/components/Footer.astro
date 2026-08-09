@@ -10,7 +10,17 @@
  * content change this stays current in practice, and it avoids shipping
  * JavaScript for something a static build already knows.
  */
+import { localizePath, type Lang } from "../i18n/config";
+import { useTranslations } from "../i18n/ui";
 import { nav, site } from "../config/site";
+import { brand } from "../content/brand";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
 
 const year = new Date().getFullYear();
 ---
@@ -33,19 +43,19 @@ const year = new Date().getFullYear();
     <div class="mx-auto my-7 h-px w-20 bg-gold-400"></div>
 
     <p class="font-display text-lg text-gold-300 italic sm:text-xl">
-      {site.motto}.
+      {brand[lang].motto}
     </p>
 
-    <nav aria-label="Footer navigation" class="mt-12">
+    <nav aria-label={t("a11y.footerNav")} class="mt-12">
       <ul class="flex flex-wrap items-center justify-center gap-x-9 gap-y-3">
         {
           nav.map((item) => (
             <li>
               <a
-                href={item.href}
+                href={localizePath(item.route, lang)}
                 class="text-[0.8125rem] tracking-[0.18em] text-ivory-300 uppercase transition-colors hover:text-gold-300"
               >
-                {item.label}
+                {t(item.key)}
               </a>
             </li>
           ))

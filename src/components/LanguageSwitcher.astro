@@ -1,0 +1,54 @@
+---
+/**
+ * Language switcher.
+ *
+ * Each language is labelled in its own script — "English" and "中文" — rather
+ * than with flags or country codes. A reader looking for the Chinese site
+ * recognises 中文 instantly, whereas a maple leaf or "CA" tells them nothing
+ * about language.
+ *
+ * The switch lands on the same page in the other language, not on the home
+ * page, which is the difference between a language toggle and a reset button.
+ */
+import {
+  langCodes,
+  languages,
+  localizePath,
+  type Lang,
+} from "../i18n/config";
+import { useTranslations } from "../i18n/ui";
+
+interface Props {
+  lang: Lang;
+  /** Canonical, unprefixed route of the current page. */
+  route: string;
+}
+
+const { lang, route } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<nav aria-label={t("a11y.language")}>
+  <ul class="flex items-center">
+    {
+      langCodes.map((code, index) => (
+        <li class:list={[index > 0 && "ml-3 border-l border-gold-400/50 pl-3"]}>
+          <a
+            href={localizePath(route, code)}
+            hreflang={languages[code].htmlLang}
+            lang={languages[code].htmlLang}
+            aria-current={code === lang ? "true" : undefined}
+            class:list={[
+              "text-[0.8125rem] tracking-[0.1em] transition-colors",
+              code === lang
+                ? "text-forest-900"
+                : "text-ink-muted hover:text-forest-900",
+            ]}
+          >
+            {languages[code].label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>

@@ -1,0 +1,147 @@
+---
+/**
+ * Brand page body, rendered once per language.
+ */
+import { Image } from "astro:assets";
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHeader from "../PageHeader.astro";
+import GagLogo from "../GagLogo.astro";
+import { brand } from "../../content/brand";
+import { site } from "../../config/site";
+import type { Lang } from "../../i18n/config";
+import { useTranslations } from "../../i18n/ui";
+
+import identitySheet from "../../assets/brand/brand-identity-sheet.jpg";
+import trophy from "../../assets/brand/championship-trophy.jpg";
+import giftSet from "../../assets/brand/golf-gift-set.jpg";
+import merchandise from "../../assets/brand/merchandise-package.jpg";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const copy = brand[lang];
+const { gag } = copy;
+
+/**
+ * Brand applications. Astro converts each of these to WebP and emits the
+ * width/height attributes at build time, so the layout does not shift as they
+ * load — worth having on a page that is mostly imagery.
+ *
+ * Captions are keyed rather than written inline so both locales stay in step.
+ */
+const collateral = [
+  {
+    image: identitySheet,
+    caption: {
+      en: "Primary logo and applications",
+      zh: "主标识与应用",
+    },
+  },
+  {
+    image: trophy,
+    caption: { en: "Championship trophy", zh: "冠军奖杯" },
+  },
+  {
+    image: giftSet,
+    caption: { en: "Player gift set", zh: "球员礼盒" },
+  },
+  {
+    image: merchandise,
+    caption: { en: "Event merchandise package", zh: "赛事周边套装" },
+  },
+];
+---
+
+<BaseLayout lang={lang} route="/brand" title={t("page.brand")}>
+  <PageHeader eyebrow={site.legalName} title={t("page.brand")} />
+
+  {/* Brand story */}
+  <section class="mx-auto max-w-3xl px-6">
+    <h2 class="text-center text-xs tracking-[0.3em] text-gold-600 uppercase">
+      {t("brand.story")}
+    </h2>
+
+    <div class="mt-10 space-y-6 text-lg text-ink-muted">
+      {copy.story.map((paragraph) => <p>{paragraph}</p>)}
+    </div>
+  </section>
+
+  {/* Motto — given a full-width band of its own. It is one line, and it is
+      the line the organization wants remembered. */}
+  <section class="mt-24 bg-forest-900 py-20 text-center sm:py-24">
+    <div class="mx-auto max-w-3xl px-6">
+      <h2 class="text-xs tracking-[0.3em] text-gold-300 uppercase">
+        {t("brand.motto")}
+      </h2>
+      <p class="mt-8 font-display text-3xl text-ivory-100 italic sm:text-4xl">
+        {copy.motto}
+      </p>
+    </div>
+  </section>
+
+  {/* GAG — the flagship series */}
+  <section class="mx-auto max-w-4xl px-6 py-20 text-center sm:py-24">
+    <GagLogo class="text-6xl text-forest-900 sm:text-7xl" />
+
+    <p class="mt-6 text-sm tracking-[0.28em] text-gold-600 uppercase">
+      {gag.fullName}
+    </p>
+
+    <div class="mx-auto my-10 h-px w-24 bg-gold-400"></div>
+
+    <p class="font-display text-3xl text-forest-900 sm:text-4xl">
+      {gag.slogan}
+    </p>
+
+    <div
+      class="mt-14 flex flex-col items-center justify-center gap-8 sm:flex-row sm:gap-16"
+    >
+      <p class="font-display text-2xl text-forest-800 italic">{gag.tagline}</p>
+      <span
+        aria-hidden="true"
+        class="hidden h-1.5 w-1.5 rotate-45 bg-gold-400 sm:block"></span>
+      <p class="font-display text-2xl text-forest-800 italic">{gag.farewell}</p>
+    </div>
+  </section>
+
+  {/* Brand applications */}
+  <section class="bg-ivory-200 py-20 sm:py-24">
+    <div class="mx-auto max-w-5xl px-6">
+      <h2 class="text-center text-xs tracking-[0.3em] text-gold-600 uppercase">
+        {t("brand.applications")}
+      </h2>
+
+      <div class="mx-auto mt-8 h-px w-20 bg-gold-400"></div>
+
+      <p class="mx-auto mt-8 max-w-xl text-center text-ink-muted">
+        {t("brand.applicationsNote")}
+      </p>
+
+      <ul class="mt-14 grid gap-x-8 gap-y-12 sm:grid-cols-2">
+        {
+          collateral.map((item) => (
+            <li>
+              <figure>
+                <Image
+                  src={item.image}
+                  alt={item.caption[lang]}
+                  widths={[480, 800, 1200]}
+                  sizes="(min-width: 640px) 32rem, 100vw"
+                  loading="lazy"
+                  class="w-full rounded-sm border border-gold-400/30 bg-ivory-50"
+                />
+                <figcaption class="mt-4 text-center text-sm tracking-[0.14em] text-ink-muted uppercase">
+                  {item.caption[lang]}
+                </figcaption>
+              </figure>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
