@@ -1,0 +1,54 @@
+---
+/**
+ * Site footer.
+ *
+ * Centred and symmetrical: the layout reads as formal rather than editorial,
+ * which suits an organisation that presents itself through crests, trophies
+ * and engraved stationery.
+ *
+ * The year is evaluated at build time. Because the site redeploys on every
+ * content change this stays current in practice, and it avoids shipping
+ * JavaScript for something a static build already knows.
+ */
+import { nav, site } from "../config/site";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-24 bg-forest-900 text-ivory-200">
+  <div class="mx-auto max-w-4xl px-6 py-16 text-center sm:py-20">
+    <p
+      class="font-display text-2xl leading-none font-semibold tracking-[0.22em] text-ivory-100 uppercase sm:text-3xl"
+    >
+      {site.name}
+    </p>
+
+    <div class="mx-auto my-7 h-px w-20 bg-gold-400"></div>
+
+    <p class="font-display text-lg text-gold-300 italic sm:text-xl">
+      {site.motto}.
+    </p>
+
+    <nav aria-label="Footer navigation" class="mt-12">
+      <ul class="flex flex-wrap items-center justify-center gap-x-9 gap-y-3">
+        {
+          nav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class="text-[0.8125rem] tracking-[0.18em] text-ivory-300 uppercase transition-colors hover:text-gold-300"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="mt-12 space-y-2 text-sm text-ivory-400">
+      <p>{site.location}</p>
+      <p>&copy; {year} {site.legalName}. All rights reserved.</p>
+    </div>
+  </div>
+</footer>

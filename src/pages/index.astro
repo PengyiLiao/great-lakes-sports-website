@@ -1,33 +1,40 @@
 ---
-import "../styles/global.css";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { site } from "../config/site";
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Great Lakes Sports Inc.</title>
-    <meta
-      name="description"
-      content="Great Lakes Sports Inc. — a Canadian sports organization headquartered in Toronto, Ontario."
-    />
-  </head>
-  <body class="min-h-screen bg-ivory-100">
-    <main class="flex min-h-screen flex-col items-center justify-center px-6 text-center">
-      <p class="font-display text-6xl tracking-[0.15em] text-forest-900 sm:text-7xl">
-        GAG
-      </p>
-      <div class="my-8 h-px w-24 bg-gold-400"></div>
-      <h1 class="font-display text-2xl text-forest-900 sm:text-3xl">
-        Great Lakes Sports Inc.
-      </h1>
-      <p class="mt-4 text-sm tracking-[0.2em] text-ink-muted uppercase">
-        Connecting the Great Lakes to the World
-      </p>
-      <p class="mt-12 text-sm text-ink-muted">Website coming soon.</p>
-    </main>
-  </body>
-</html>
+<BaseLayout title="Home">
+  {/* The hero is intentionally not full-viewport height. Leaving the next
+      section visible at the fold tells visitors there is more below —
+      a full-screen splash can read as the entire page. */}
+  <section class="mx-auto max-w-4xl px-6 pt-20 pb-16 text-center sm:pt-28 sm:pb-20">
+    <p class="text-xs tracking-[0.32em] text-gold-600 uppercase sm:text-sm">
+      {site.location}
+    </p>
+
+    <h1
+      class="mt-8 font-display text-4xl text-forest-900 sm:text-5xl md:text-6xl"
+    >
+      {site.tagline}
+    </h1>
+
+    <div class="mx-auto my-10 h-px w-24 bg-gold-400"></div>
+
+    <p class="mx-auto max-w-2xl text-ink-muted">
+      {site.legalName} is a Canadian sports organization headquartered in Toronto,
+      Ontario. Founded with a long-term vision, the company is committed to developing
+      world-class sporting events, building international partnerships, and creating
+      sustainable platforms that connect athletes, organizations, businesses, and
+      communities through sport.
+    </p>
+
+    <div class="mt-12">
+      <a
+        href="/about"
+        class="inline-block border border-forest-900 px-9 py-3.5 text-[0.8125rem] font-medium tracking-[0.18em] text-forest-900 uppercase transition-colors duration-300 hover:bg-forest-900 hover:text-ivory-50"
+      >
+        About Us
+      </a>
+    </div>
+  </section>
+</BaseLayout>

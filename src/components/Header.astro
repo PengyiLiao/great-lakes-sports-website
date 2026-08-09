@@ -1,0 +1,63 @@
+---
+/**
+ * Site header.
+ *
+ * Deliberately has no hamburger menu. The audience skews older, and a
+ * collapsed menu hides the site's structure behind an icon that not every
+ * visitor recognises as a button. With a short navigation this is unnecessary:
+ * on narrow screens the wordmark stacks above the links and everything stays
+ * visible and tappable.
+ */
+import { nav, site } from "../config/site";
+
+// Astro may serve routes with a trailing slash, so compare on a prefix
+// rather than an exact match — except for the home route, which would
+// otherwise match every page.
+const { pathname } = Astro.url;
+const isCurrent = (href: string) =>
+  href === "/" ? pathname === "/" : pathname.startsWith(href);
+---
+
+<header class="sticky top-0 z-50 bg-ivory-50/95 backdrop-blur-sm">
+  <div
+    class="mx-auto flex max-w-6xl flex-col items-center gap-4 px-6 py-5 sm:flex-row sm:justify-between sm:gap-10"
+  >
+    <a
+      href="/"
+      class="font-display text-xl leading-none font-semibold tracking-[0.22em] text-forest-900 uppercase transition-colors hover:text-forest-700 sm:text-2xl"
+    >
+      {site.name}
+    </a>
+
+    <nav aria-label="Main navigation">
+      <ul class="flex flex-wrap items-center justify-center gap-x-9 gap-y-2">
+        {
+          nav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                aria-current={isCurrent(item.href) ? "page" : undefined}
+                class:list={[
+                  "relative inline-block py-1 text-[0.8125rem] font-medium tracking-[0.18em] uppercase transition-colors",
+                  "after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:bg-gold-400 after:transition-transform after:duration-300",
+                  isCurrent(item.href)
+                    ? "text-forest-900 after:scale-x-100"
+                    : "text-ink-muted after:scale-x-0 hover:text-forest-900 hover:after:scale-x-100",
+                ]}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+
+  {/* Hairline rule that fades at both ends — a quiet nod to engraved
+      club stationery, and it keeps the header from feeling like a hard box. */}
+  <div
+    class="h-px bg-gradient-to-r from-transparent via-gold-400/60 to-transparent"
+  >
+  </div>
+</header>
