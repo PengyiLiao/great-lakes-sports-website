@@ -1,6 +1,10 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import GagLogo from "../components/GagLogo.astro";
 import { site } from "../config/site";
+import { brand } from "../content/brand";
+
+const { gag } = brand;
 ---
 
 <BaseLayout title="Home">
@@ -35,6 +39,42 @@ import { site } from "../config/site";
       >
         About Us
       </a>
+    </div>
+  </section>
+
+  {/* The flagship series. Set on the brand green so the GAG mark appears in
+      ivory here and in forest green on the Brand page — the same component
+      either way, since it inherits the surrounding colour. */}
+  <section class="bg-forest-900 py-20 text-center sm:py-24">
+    <div class="mx-auto max-w-3xl px-6">
+      <p class="text-xs tracking-[0.3em] text-gold-300 uppercase sm:text-sm">
+        Our Flagship Series
+      </p>
+
+      <GagLogo class="mt-10 text-6xl text-ivory-100 sm:text-7xl" />
+
+      <p class="mt-6 text-sm tracking-[0.28em] text-gold-300 uppercase">
+        {gag.fullName}
+      </p>
+
+      <div class="mx-auto my-10 h-px w-24 bg-gold-400"></div>
+
+      <p class="font-display text-3xl text-ivory-100 sm:text-4xl">
+        {gag.slogan}
+      </p>
+
+      <p class="mt-6 font-display text-2xl text-gold-300 italic">
+        {gag.tagline}
+      </p>
+
+      <div class="mt-12">
+        <a
+          href="/brand"
+          class="inline-block border border-gold-400 px-9 py-3.5 text-[0.8125rem] font-medium tracking-[0.18em] text-gold-300 uppercase transition-colors duration-300 hover:bg-gold-400 hover:text-forest-900"
+        >
+          Explore the Brand
+        </a>
+      </div>
     </div>
   </section>
 </BaseLayout>

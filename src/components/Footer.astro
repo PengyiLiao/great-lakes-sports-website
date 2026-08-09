@@ -15,7 +15,14 @@ import { nav, site } from "../config/site";
 const year = new Date().getFullYear();
 ---
 
-<footer class="mt-24 bg-forest-900 text-ivory-200">
+{/* A gold hairline rather than a margin above the footer. A margin would show
+    a strip of page background, which reads as a gap when the section above is
+    itself dark — the home page ends on the brand green. The rule separates the
+    two without breaking the colour. */}
+<div class="h-px bg-gradient-to-r from-transparent via-gold-400/60 to-transparent">
+</div>
+
+<footer class="bg-forest-900 text-ivory-200">
   <div class="mx-auto max-w-4xl px-6 py-16 text-center sm:py-20">
     <p
       class="font-display text-2xl leading-none font-semibold tracking-[0.22em] text-ivory-100 uppercase sm:text-3xl"
