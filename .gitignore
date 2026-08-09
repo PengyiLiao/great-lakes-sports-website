@@ -1,0 +1,56 @@
+# ─────────────────────────────────────────────────────────────
+#  忽略规则 / Ignore rules
+#
+#  原则：任何「不该被全世界看到」的东西，绝不能进入 git 历史。
+#  git 历史是永久的 —— 文件一旦被提交，事后 delete 仍可从历史中恢复。
+#  所以宁可多挡，不可漏挡。
+# ─────────────────────────────────────────────────────────────
+
+# ── 构建产物 / Build output ──────────────────────────────────
+dist/
+.astro/
+
+# ── 依赖 / Dependencies ──────────────────────────────────────
+node_modules/
+
+# ── 日志 / Logs ──────────────────────────────────────────────
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ── 机密：密钥、令牌、凭证 / Secrets ─────────────────────────
+# 这些只填在 Cloudflare 后台的环境变量里，永不写进代码。
+.env
+.env.*
+!.env.example
+.dev.vars
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+secrets.json
+
+# ── 内部商业与法律文件 / Internal business documents ─────────
+# 公司注册文件、财务表格、合同等一律留在 OneDrive，不进本仓库。
+# 下面这些规则是「防误拖拽」的安全网。
+/private/
+/docs-internal/
+*.doc
+*.docx
+*.xls
+*.xlsx
+*.ppt
+*.pptx
+*.pdf
+# 例外：public/ 下的 PDF 是有意公开、供访客下载的文件（如赛事章程）
+!public/**/*.pdf
+
+# ── 编辑器与系统文件 / Editor & OS files ─────────────────────
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+*~
