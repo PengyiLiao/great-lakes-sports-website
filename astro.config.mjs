@@ -3,6 +3,8 @@ import { defineConfig } from "astro/config";
 
 import tailwindcss from "@tailwindcss/vite";
 
+import sitemap from "@astrojs/sitemap";
+
 // https://astro.build/config
 export default defineConfig({
   site: "https://great-lakes-sports.pages.dev",
@@ -21,4 +23,16 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+
+  integrations: [
+    sitemap({
+      // Emits <xhtml:link rel="alternate"> entries so the sitemap states
+      // outright that /about and /zh/about are the same page in two
+      // languages, rather than leaving search engines to infer it.
+      i18n: {
+        defaultLocale: "en",
+        locales: { en: "en", zh: "zh-Hans" },
+      },
+    }),
+  ],
 });
