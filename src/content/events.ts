@@ -8,7 +8,7 @@
  * ⚠️ The single entry below is transcribed from the plaque on the client's own
  * championship-trophy visual ("GAG Golf Event / Toronto / October 05, 2026").
  * It has not been confirmed in writing. Confirm the date, venue and format
- * with the client before this site is published to a public domain.
+ * with the client.
  */
 
 import type { Lang } from "../i18n/config";
@@ -17,7 +17,10 @@ export type GolfEvent = {
   /** ISO date for the machine-readable datetime attribute. */
   date: string;
   /** Per-locale presentation of the same event. */
-  localized: Record<Lang, { name: string; displayDate: string; location: string }>;
+  localized: Record<
+    Lang,
+    { name: string; displayDate: string; location: string }
+  >;
 };
 
 export const events: GolfEvent[] = [
@@ -29,10 +32,10 @@ export const events: GolfEvent[] = [
         displayDate: "October 5, 2026",
         location: "Toronto, Ontario",
       },
-      zh: {
-        name: "GAG 高尔夫赛事",
-        displayDate: "2026年10月5日",
-        location: "安大略省，多伦多",
+      fr: {
+        name: "Tournoi de golf GAG",
+        displayDate: "5 octobre 2026",
+        location: "Toronto (Ontario)",
       },
     },
   },

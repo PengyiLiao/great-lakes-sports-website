@@ -2,13 +2,12 @@
  * Copy for the Brand page, covering the parent brand and its flagship amateur
  * golf series.
  *
- * The GAG slogan, tagline and farewell are left in English in both locales.
- * They are the brand's own marks, listed as such in the client's material —
- * translating them would create a second, competing set of slogans.
+ * The series name, slogan, tagline and farewell stay in English in both
+ * locales. They are the brand's own marks, listed as such in the client's
+ * material — translating them would create a second, competing set of names.
  *
- * ⚠️ The Chinese rendering of "Great Lakes Amateur Golf" below is a working
- * translation. Confirm the official Chinese name of the series with the
- * client before publication.
+ * ⚠️ The French prose is a working translation using Canadian conventions.
+ * Have it reviewed by a francophone before the site is promoted in French.
  */
 
 import type { Lang } from "../i18n/config";
@@ -43,18 +42,18 @@ export const brand: Record<Lang, BrandContent> = {
     },
   },
 
-  zh: {
+  fr: {
     story: [
-      "Great Lakes Sports 这个名字，源自北美的五大湖。",
-      "作为世界上最大的淡水湖群之一，五大湖象征着开放、活力与连接。长久以来，它们如同门户，连接着加拿大与美国的社区、经济与文化。",
-      "受这一精神启发，Great Lakes Sports 以全球视野创立——通过体育连接人与人，建立超越竞技本身的深厚关系。",
-      "我们的长期目标，是打造受国际尊重的体育赛事，并搭建让运动员、机构、伙伴与社区共同成长的平台。",
+      "Le nom Great Lakes Sports s'inspire des Grands Lacs de l'Amérique du Nord.",
+      "Parmi les plus vastes réseaux d'eau douce au monde, les Grands Lacs symbolisent l'ouverture, la vitalité et le lien. Ils servent depuis longtemps de portes d'entrée reliant les communautés, les économies et les cultures du Canada et des États-Unis.",
+      "Inspirée par cet esprit, Great Lakes Sports a été créée avec une vision mondiale : rapprocher les gens par le sport et bâtir des relations durables qui dépassent largement la compétition.",
+      "Notre objectif à long terme est de développer des événements sportifs respectés à l'échelle internationale et de créer des plateformes où athlètes, organisations, partenaires et communautés peuvent grandir ensemble.",
     ],
 
-    motto: "从五大湖，走向五大洲。",
+    motto: "Des Grands Lacs aux cinq continents.",
 
     gag: {
-      fullName: "五大湖业余高尔夫",
+      fullName: "Great Lakes Amateur Golf",
       slogan: "GAG³ — BE PRO!",
       tagline: "Let's Play GAG.",
       farewell: "See You at GAG.",

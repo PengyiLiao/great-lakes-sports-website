@@ -1,11 +1,12 @@
 /**
  * Locale definitions and URL helpers.
  *
- * English is the default locale and is served without a prefix, so the
- * organization's primary address stays clean: `/about`, not `/en/about`.
- * Chinese lives under `/zh`. Every internal link is built through
- * `localizePath` so that a page never accidentally sends a Chinese reader
- * back into the English site.
+ * The site is published in Canada's two official languages. English is the
+ * default and is served without a prefix, so the organization's primary
+ * address stays clean: `/about`, not `/en/about`. French lives under `/fr`.
+ *
+ * Every internal link is built through `localizePath`, so a page never
+ * accidentally sends a French reader back into the English site.
  */
 
 export const languages = {
@@ -15,9 +16,11 @@ export const languages = {
     /** BCP 47 tag for the html lang attribute and hreflang. */
     htmlLang: "en",
   },
-  zh: {
-    label: "中文",
-    htmlLang: "zh-Hans",
+  fr: {
+    label: "Français",
+    // fr-CA rather than fr: the audience is Canadian, and the copy uses
+    // Canadian conventions ("commandite", "Toronto (Ontario)").
+    htmlLang: "fr-CA",
   },
 } as const;
 
@@ -46,7 +49,7 @@ export function localizePath(route: string, lang: Lang): string {
 /**
  * Recover the canonical route from a localized pathname.
  *
- * `/zh/about` and `/about` both resolve to `/about`, which is what lets the
+ * `/fr/about` and `/about` both resolve to `/about`, which is what lets the
  * language switcher offer the same page in the other language rather than
  * dumping the reader on the home page.
  */

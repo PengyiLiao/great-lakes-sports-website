@@ -24,11 +24,11 @@ export const home: Record<Lang, HomeContent> = {
       "Great Lakes Sports Inc. works with partners who share a commitment to excellence in amateur sport. Sponsorship and corporate event opportunities are available throughout the tournament season.",
   },
 
-  zh: {
-    tagline: "连接五大湖，通向全世界",
+  fr: {
+    tagline: "Relier les Grands Lacs au monde",
     intro:
-      "Great Lakes Sports Inc. 是一家总部位于加拿大安大略省多伦多的体育机构。公司秉持长远愿景创立，致力于打造世界一流的体育赛事，建立国际合作伙伴关系，并搭建可持续的平台，通过体育将运动员、机构、企业与社区连接在一起。",
+      "Great Lakes Sports Inc. est une organisation sportive canadienne dont le siège social est situé à Toronto, en Ontario. Fondée avec une vision à long terme, l'entreprise s'engage à développer des événements sportifs de calibre mondial, à établir des partenariats internationaux et à créer des plateformes durables qui unissent athlètes, organisations, entreprises et communautés par le sport.",
     partnership:
-      "Great Lakes Sports Inc. 欢迎与认同业余体育卓越理念的伙伴携手。赛季期间提供赞助合作与企业赛事等多种合作机会。",
+      "Great Lakes Sports Inc. collabore avec des partenaires qui partagent son engagement envers l'excellence dans le sport amateur. Des occasions de commandite et d'événements corporatifs sont offertes tout au long de la saison.",
   },
 };

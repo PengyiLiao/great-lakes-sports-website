@@ -6,8 +6,8 @@
  * that adding a language means translating a short, bounded list rather than
  * hunting through templates.
  *
- * ⚠️ The Chinese strings are a working translation and should be reviewed by
- * the client, who is a native speaker and owns the brand's voice.
+ * ⚠️ The French strings are a working translation, using Canadian conventions.
+ * Have them reviewed by a francophone before the site is promoted in French.
  */
 
 import type { Lang } from "./config";
@@ -54,44 +54,45 @@ export const ui = {
     "a11y.language": "Language",
   },
 
-  zh: {
-    "nav.home": "首页",
-    "nav.about": "关于我们",
-    "nav.brand": "品牌",
+  fr: {
+    "nav.home": "Accueil",
+    "nav.about": "À propos",
+    "nav.brand": "Marque",
 
-    "page.home": "首页",
-    "page.about": "关于我们",
-    "page.brand": "品牌",
+    "page.home": "Accueil",
+    "page.about": "À propos",
+    "page.brand": "Notre marque",
 
     "meta.description":
-      "Great Lakes Sports Inc. 是一家总部位于加拿大安大略省多伦多的体育机构，致力于打造世界一流的业余体育赛事与国际合作伙伴关系。",
+      "Great Lakes Sports Inc. est une organisation sportive canadienne établie à Toronto, en Ontario, qui développe des événements sportifs amateurs de calibre mondial et des partenariats internationaux.",
 
-    "home.flagship": "旗舰赛事",
-    "home.upcoming": "近期赛事",
-    "home.upcoming.empty": "新赛季赛程即将公布。",
-    "home.partnership": "合作与赞助",
+    "home.flagship": "Notre série phare",
+    "home.upcoming": "À venir",
+    "home.upcoming.empty":
+      "Le calendrier de la prochaine saison sera annoncé sous peu.",
+    "home.partnership": "Partenariats",
 
-    "about.vision": "我们的愿景",
-    "about.mission": "我们的使命",
-    "about.values": "核心价值观",
-    "about.chairman": "董事长致辞",
-    "about.chairmanTitle": "董事长",
+    "about.vision": "Notre vision",
+    "about.mission": "Notre mission",
+    "about.values": "Nos valeurs fondamentales",
+    "about.chairman": "Message du président",
+    "about.chairmanTitle": "Président",
 
-    "brand.story": "品牌故事",
-    "brand.motto": "品牌箴言",
-    "brand.applications": "品牌应用",
+    "brand.story": "Histoire de la marque",
+    "brand.motto": "Notre devise",
+    "brand.applications": "Applications de la marque",
     "brand.applicationsNote":
-      "赛事奖杯、球员礼品与活动周边的概念效果图，与品牌识别同步设计。",
+      "Visuels conceptuels des trophées, des cadeaux aux joueurs et des articles promotionnels, conçus parallèlement à l'identité visuelle.",
 
-    "cta.about": "了解我们",
-    "cta.brand": "了解品牌",
-    "cta.enquire": "联系我们",
-    "cta.enquirePending": "联系方式即将公布",
+    "cta.about": "À propos de nous",
+    "cta.brand": "Découvrir la marque",
+    "cta.enquire": "Nous joindre",
+    "cta.enquirePending": "Coordonnées à venir",
 
-    "a11y.skip": "跳至主要内容",
-    "a11y.mainNav": "主导航",
-    "a11y.footerNav": "页脚导航",
-    "a11y.language": "语言",
+    "a11y.skip": "Aller au contenu",
+    "a11y.mainNav": "Navigation principale",
+    "a11y.footerNav": "Navigation du pied de page",
+    "a11y.language": "Langue",
   },
 } as const;
 

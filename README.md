@@ -8,7 +8,7 @@ headquartered in Toronto, Ontario, and its flagship amateur golf series
 
 **Live site:** **[great-lakes-sports.pages.dev](https://great-lakes-sports.pages.dev)**
 &nbsp;·&nbsp; [English](https://great-lakes-sports.pages.dev)
-&nbsp;·&nbsp; [中文](https://great-lakes-sports.pages.dev/zh)
+&nbsp;·&nbsp; [Français](https://great-lakes-sports.pages.dev/fr)
 
 ---
 
@@ -45,7 +45,7 @@ in-house, so no personal or payment data is ever stored on infrastructure we ope
 
 ```
 src/
-  pages/            route-per-file; English at the root, 中文 under /zh.
+  pages/            route-per-file; English at the root, French under /fr.
                     Each file is a two-line wrapper that passes a locale
                     into the matching page component.
   components/pages/ the actual page bodies, rendered once per language
@@ -61,17 +61,16 @@ public/             served as-is (favicon, touch icon)
 
 ### Bilingual structure
 
-English is served without a URL prefix (`/about`) and Chinese under `/zh`
-(`/zh/about`), so the organization's primary address stays clean. Both locales
-render from the same page components, which means a section added to the site
-cannot appear in one language and silently go missing in the other. Interface
-strings are typed against the English table, so a missing translation is a
-build error rather than a blank space on the page.
+The site is published in Canada's two official languages. English is served
+without a URL prefix (`/about`) and French under `/fr` (`/fr/about`), so the
+organization's primary address stays clean.
 
-No CJK webfont is downloaded. Browsers fall back per character rather than per
-string, so a mixed line renders its Latin words in Cormorant or Inter and its
-Chinese in the reader's system serif — which avoids spending several megabytes
-to solve a problem the system fonts already solve well.
+Both locales render from the same page components, which means a section added
+to the site cannot appear in one language and silently go missing in the other.
+Interface strings are typed against the English table, so a missing translation
+is a build error rather than a blank space on the page. `hreflang` alternates
+and the sitemap declare the pages as translations of one another, using `fr-CA`
+rather than `fr` since the audience and the copy conventions are Canadian.
 
 ## Local development
 
@@ -103,7 +102,7 @@ resolve without a redirect hop.
 - [x] Home page: hero, flagship series, schedule, partnership
 - [x] About page
 - [x] Brand page
-- [x] Bilingual support (English / 中文)
+- [x] Bilingual support (English / Français)
 - [x] Deploy to Cloudflare Pages
 - [ ] Contact details and enquiry routing
 - [ ] GAGC, organizational structure, and remaining sections

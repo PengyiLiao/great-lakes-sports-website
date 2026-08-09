@@ -2,13 +2,10 @@
  * Copy for the About page.
  *
  * The English text was supplied by the client and is reproduced verbatim.
- * The Chinese is a working translation and should be reviewed by the client,
- * who is a native speaker and owns the brand's voice.
  *
- * The chairman's name appears as the Latin romanisation in English and in
- * Chinese characters on the Chinese site; both were confirmed by the client
- * rather than transliterated, since printing the wrong characters for a real
- * person on his own company's website is not a recoverable mistake.
+ * ⚠️ The French is a working translation using Canadian conventions. Have it
+ * reviewed by a francophone before the site is promoted in French — this is
+ * the organization's own voice, not neutral prose.
  */
 
 import type { Lang } from "../i18n/config";
@@ -69,33 +66,39 @@ export const about: Record<Lang, AboutContent> = {
     },
   },
 
-  zh: {
+  fr: {
     intro: [
-      "Great Lakes Sports Inc. 是一家总部位于加拿大安大略省多伦多的体育机构。",
-      "公司秉持长远愿景创立，致力于打造世界一流的体育赛事，建立国际合作伙伴关系，并搭建可持续的平台，通过体育将运动员、机构、企业与社区连接在一起。",
-      "我们的名字取自北美五大湖，寓意开放、多元与连接。我们的使命不止于举办比赛——我们希望创造国际合作的机会，推动业余体育走向卓越。",
+      "Great Lakes Sports Inc. est une organisation sportive canadienne dont le siège social est situé à Toronto, en Ontario.",
+      "Fondée avec une vision à long terme, l'entreprise s'engage à développer des événements sportifs de calibre mondial, à établir des partenariats internationaux et à créer des plateformes durables qui unissent athlètes, organisations, entreprises et communautés par le sport.",
+      "Inspiré des Grands Lacs de l'Amérique du Nord, notre nom évoque l'ouverture, la diversité et le lien. Notre mission va au-delà de l'organisation de compétitions : nous voulons créer des occasions de collaboration internationale et promouvoir l'excellence dans le sport amateur.",
     ],
 
-    vision: "连接五大湖，通向全世界。",
+    vision: "Relier les Grands Lacs au monde.",
 
     mission:
-      "以专业、诚信与创新，打造具有国际影响力的业余体育赛事，并建立有意义的全球合作关系。",
+      "Créer des événements sportifs amateurs de renommée internationale et favoriser des partenariats mondiaux significatifs, dans un esprit de professionnalisme, d'intégrité et d'innovation.",
 
-    coreValues: ["卓越", "诚信", "协作", "创新", "长期承诺"],
+    coreValues: [
+      "Excellence",
+      "Intégrité",
+      "Collaboration",
+      "Innovation",
+      "Engagement à long terme",
+    ],
 
     closing:
-      "Great Lakes Sports 相信，体育拥有激励人心、连接文化、为社会创造长远价值的力量。",
+      "Great Lakes Sports croit que le sport a le pouvoir d'inspirer les gens, de rapprocher les cultures et de créer une valeur durable pour la société.",
 
     chairman: {
-      name: "吴泽明",
+      name: "Wu Zeming",
       organization: "Great Lakes Sports Inc.",
       paragraphs: [
-        "欢迎来到 Great Lakes Sports Inc.。",
-        "体育不只是竞技——它是一门让人们走到一起的通用语言。",
-        "Great Lakes Sports 创立于一个朴素而远大的愿景：搭建有意义的国际平台，让体育创造追求卓越、结交挚友与长期合作的机会。",
-        "我们相信，出色的体育赛事不仅应当展现竞技水平，更应当连接优秀的个人、受人尊敬的机构、富有远见的企业，以及来自世界各地的社区。",
-        "在持续成长的过程中，我们始终坚守专业、诚信与长期发展。",
-        "感谢您访问我们的网站。期待与您共同建设体育的未来。",
+        "Bienvenue chez Great Lakes Sports Inc.",
+        "Le sport est plus qu'une compétition : c'est un langage universel qui rassemble les gens.",
+        "Great Lakes Sports a été fondée sur une vision simple mais ambitieuse : bâtir des plateformes internationales significatives où le sport crée des occasions d'excellence, d'amitié et de collaboration à long terme.",
+        "Nous croyons qu'un événement sportif remarquable ne doit pas seulement mettre en valeur la performance athlétique, mais aussi rassembler des personnes de talent, des organisations respectées, des entreprises visionnaires et des communautés du monde entier.",
+        "À mesure que nous grandissons, nous demeurons attachés au professionnalisme, à l'intégrité et au développement à long terme.",
+        "Merci de visiter notre site. Nous avons hâte de bâtir avec vous l'avenir du sport.",
       ],
     },
   },

@@ -50,22 +50,13 @@
   --color-ink-muted: #57544d;
 
   /* Type. A high-contrast serif for display, echoing the classical wordmark;
-     a highly legible sans for running text.
-
-     The CJK families sit after the Latin ones in each stack. Browsers fall
-     back per character, not per string, so a mixed line like
-     "Great Lakes Sports 是一家体育机构" renders the Latin words in Cormorant
-     or Inter and the Chinese in Songti or PingFang — which is what we want,
-     and why no CJK webfont is downloaded. A self-hosted Chinese family would
-     cost several megabytes to solve a problem the system fonts already
-     solve well. */
-  --font-display:
-    "Cormorant Garamond", "Times New Roman", Georgia, "Songti SC", "STSong",
-    "SimSun", serif;
+     a highly legible sans for running text. Both families cover Latin
+     Extended, so French accents and ligatures render in the intended face
+     rather than falling back to a system font mid-word. */
+  --font-display: "Cormorant Garamond", "Times New Roman", Georgia, serif;
   --font-sans:
     "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system,
-    "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
-    sans-serif;
+    "Segoe UI", sans-serif;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -92,14 +83,6 @@
 
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-  }
-
-  /* Chinese text needs more room between lines than Latin: the glyphs are
-     denser, they fill the full em box, and there are no ascenders or
-     descenders to create visual separation. Applied on the html element so
-     it cascades to every page of the Chinese site. */
-  html[lang^="zh"] body {
-    line-height: 1.9;
   }
 
   h1,
