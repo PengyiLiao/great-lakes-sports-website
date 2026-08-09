@@ -1,0 +1,79 @@
+---
+/**
+ * The GAG identity mark, drawn as vector rather than placed as an image.
+ *
+ * The supplied brand material is a set of rendered mockup sheets — flattened
+ * JPEGs with baked-in backgrounds and drop shadows. Those are useful as
+ * photography, but they cannot serve as a logo: there is no transparency, so
+ * the mark cannot sit on the green ground; the raster edges soften on a
+ * high-density display; and the colour is fixed at whatever the render used.
+ *
+ * Redrawing the mark solves all three at once. It inherits `currentColor`, so
+ * the same component renders forest green on ivory and ivory on green; it
+ * stays sharp at any size; and it costs well under a kilobyte.
+ *
+ * The mark scales with the caller's font size — the flag is sized in `em` —
+ * so a single `text-6xl` on the parent grows the whole lockup in proportion.
+ */
+interface Props {
+  /** Classes for the wrapper. Set the size and colour from the caller. */
+  class?: string;
+  /** Render the wordmark on its own, without the flag above it. */
+  wordmarkOnly?: boolean;
+  /**
+   * Accessible name for the lockup. Pass `null` where the logo sits beside
+   * text that already names the brand, so screen readers do not hear it twice.
+   */
+  label?: string | null;
+}
+
+const {
+  class: className = "",
+  wordmarkOnly = false,
+  label = "GAG — Great Lakes Amateur Golf",
+} = Astro.props;
+---
+
+<span
+  class:list={[
+    "inline-flex flex-col items-center leading-none",
+    className,
+  ]}
+  role={label ? "img" : undefined}
+  aria-label={label ?? undefined}
+>
+  {
+    !wordmarkOnly && (
+      <svg
+        viewBox="0 0 120 44"
+        class="mb-[0.14em] h-[0.46em] w-auto"
+        fill="none"
+        aria-hidden="true"
+      >
+        {/* The green: a shallow mound the flag is planted in. */}
+        <path
+          d="M6 38c14-11 32-16 54-16s40 5 54 16"
+          stroke="currentColor"
+          stroke-width="3.5"
+          stroke-linecap="round"
+        />
+        {/* Flagstick. */}
+        <path
+          d="M60 22V5"
+          stroke="currentColor"
+          stroke-width="3.5"
+          stroke-linecap="round"
+        />
+        {/* Pennant. */}
+        <path d="M62.5 5.5 84 11.5 62.5 17.5Z" fill="currentColor" />
+      </svg>
+    )
+  }
+
+  <span
+    class="font-display font-semibold tracking-[0.05em]"
+    aria-hidden={label ? "true" : undefined}
+  >
+    GAG
+  </span>
+</span>
