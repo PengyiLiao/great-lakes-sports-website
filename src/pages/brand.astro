@@ -1,0 +1,94 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import { brand } from "../content/brand";
+import { site } from "../config/site";
+
+const { gag } = brand;
+---
+
+<BaseLayout
+  title="Brand"
+  description="The story behind Great Lakes Sports and GAG — Great Lakes Amateur Golf, the organization's flagship amateur golf series."
+>
+  <PageHeader eyebrow={site.legalName} title="Our Brand" />
+
+  {/* Brand story */}
+  <section class="mx-auto max-w-3xl px-6">
+    <h2 class="text-center text-xs tracking-[0.3em] text-gold-600 uppercase">
+      Brand Story
+    </h2>
+
+    <div class="mt-10 space-y-6 text-lg text-ink-muted">
+      {brand.story.map((paragraph) => <p>{paragraph}</p>)}
+    </div>
+  </section>
+
+  {/* Motto — given a full-width band of its own. It is one line, and it is
+      the line the organization wants remembered. */}
+  <section class="mt-24 bg-forest-900 py-20 text-center sm:py-24">
+    <div class="mx-auto max-w-3xl px-6">
+      <h2 class="text-xs tracking-[0.3em] text-gold-300 uppercase">Our Motto</h2>
+      <p class="mt-8 font-display text-3xl text-ivory-100 italic sm:text-4xl">
+        {brand.motto}
+      </p>
+    </div>
+  </section>
+
+  {/* GAG — the flagship series */}
+  <section class="mx-auto max-w-4xl px-6 py-20 text-center sm:py-24">
+    <p
+      class="font-display text-6xl leading-none tracking-[0.12em] text-forest-900 sm:text-7xl"
+    >
+      {gag.abbreviation}
+    </p>
+
+    <p class="mt-6 text-sm tracking-[0.28em] text-gold-600 uppercase">
+      {gag.fullName}
+    </p>
+
+    <div class="mx-auto my-10 h-px w-24 bg-gold-400"></div>
+
+    <p class="font-display text-3xl text-forest-900 sm:text-4xl">
+      {gag.slogan}
+    </p>
+
+    <div
+      class="mt-14 flex flex-col items-center justify-center gap-8 sm:flex-row sm:gap-16"
+    >
+      <p class="font-display text-2xl text-forest-800 italic">{gag.tagline}</p>
+      <span aria-hidden="true" class="hidden h-1.5 w-1.5 rotate-45 bg-gold-400 sm:block"
+      ></span>
+      <p class="font-display text-2xl text-forest-800 italic">{gag.farewell}</p>
+    </div>
+  </section>
+
+  {/* Official chant. Set as a call-and-response so the structure is legible
+      at a glance — the voice on the left, what it calls on the right. */}
+  <section class="bg-ivory-200 py-20 sm:py-24">
+    <div class="mx-auto max-w-2xl px-6">
+      <h2 class="text-center text-xs tracking-[0.3em] text-gold-600 uppercase">
+        Official Chant
+      </h2>
+
+      <div class="mx-auto mt-8 h-px w-20 bg-gold-400"></div>
+
+      <dl class="mt-12 space-y-5">
+        {
+          gag.chant.lines.map((line) => (
+            <div class="flex flex-col gap-1 border-l-2 border-gold-400/60 pl-5 sm:flex-row sm:items-baseline sm:gap-6">
+              <dt class="shrink-0 text-xs tracking-[0.2em] text-ink-muted uppercase sm:w-24">
+                {line.voice}
+              </dt>
+              <dd class="font-display text-2xl text-forest-900">{line.text}</dd>
+            </div>
+          ))
+        }
+      </dl>
+
+      <p class="mt-10 text-center text-sm text-ink-muted italic">
+        {gag.chant.note}
+      </p>
+    </div>
+  </section>
+</BaseLayout>
