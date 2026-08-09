@@ -6,7 +6,9 @@ headquartered in Toronto, Ontario, and its flagship amateur golf series
 
 > 🚧 **Status:** In active development. Built and maintained on a volunteer basis.
 
-**Live preview:** _coming soon_
+**Live site:** **[great-lakes-sports.pages.dev](https://great-lakes-sports.pages.dev)**
+&nbsp;·&nbsp; [English](https://great-lakes-sports.pages.dev)
+&nbsp;·&nbsp; [中文](https://great-lakes-sports.pages.dev/zh)
 
 ---
 
@@ -82,6 +84,17 @@ npm run build   # produce the production build in dist/
 npm run preview # serve the production build locally
 ```
 
+## Deployment
+
+Cloudflare Pages builds from `main` on every push and publishes in about
+half a minute, so the client always has one link that reflects the current
+state of the work.
+
+URLs are emitted without a trailing slash (`/about`, not `/about/`) so that
+the canonical tags, hreflang alternates and sitemap entries — all derived from
+the unslashed route — name the URL that is actually served, and internal links
+resolve without a redirect hop.
+
 ## Roadmap
 
 - [x] Project scaffolding, brand design tokens, tooling
@@ -91,7 +104,7 @@ npm run preview # serve the production build locally
 - [x] About page
 - [x] Brand page
 - [x] Bilingual support (English / 中文)
-- [ ] Deploy to Cloudflare Pages
+- [x] Deploy to Cloudflare Pages
 - [ ] Contact details and enquiry routing
 - [ ] GAGC, organizational structure, and remaining sections
 - [ ] Visual CMS so staff can edit copy without touching code
