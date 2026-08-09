@@ -35,6 +35,17 @@ export const site = {
   origin: "https://great-lakes-sports.pages.dev",
 } as const;
 
+/**
+ * Public enquiry address.
+ *
+ * Deliberately null until the client supplies a real one. An invented address
+ * would be worse than none: visitors would write to a mailbox nobody reads and
+ * conclude the organization ignores them. Components check for it and fall
+ * back to a "details to follow" line, so the page is coherent either way, and
+ * the gap is visible to the client rather than silently papered over.
+ */
+export const contactEmail: string | null = null;
+
 export type NavItem = {
   label: string;
   href: string;
