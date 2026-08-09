@@ -22,22 +22,5 @@ export const brand = {
     slogan: "GAG³ — BE PRO!",
     tagline: "Let's Play GAG.",
     farewell: "See You at GAG.",
-
-    /**
-     * The official chant, designed as a call-and-response for opening
-     * ceremonies, closing ceremonies and prize presentations.
-     */
-    chant: {
-      lines: [
-        { voice: "Leader", text: "G — A — G!" },
-        { voice: "Everyone", text: "GAG! GAG! GAG!  Let's Play GAG!" },
-        { voice: "Women", text: "GAG! GAG! GAG!" },
-        { voice: "Men", text: "Let's Play GAG!" },
-        { voice: "Men", text: "GAG! GAG! GAG!" },
-        { voice: "Women", text: "Let's Play GAG!" },
-        { voice: "Everyone", text: "GAG! GAG! GAG!  Let's Play GAG!" },
-      ],
-      note: "Repeated two or three times, accompanied by drums and lighting.",
-    },
   },
 } as const;
