@@ -149,12 +149,47 @@ git push
 3. **News / Stories 栏目** —— Copy Deck 里列为第一版预留
 4. **球员数据库与成绩系统** —— 客户参考的 IPSC Ontario 有完整的赛事日历、报名、排名、成绩查询，那是长期目标
 5. **接可视化编辑后台** —— 兑现「师兄能自己改文字」这件事。因为文案早就和代码分开了，这一步改动不大。候选：Sveltia CMS / Pages CMS
-6. **绑定 gag.ca 域名** —— 买好后在 Cloudflare Pages 后台加 Custom domain，同时要改 `astro.config.mjs`、`src/config/site.ts` 的 `origin`、`public/robots.txt`
+6. **绑定 gag.golf 域名**（进行中，见下）
 7. **隐私政策 / 使用条款 / 球员隐私三份法律文件** —— 页脚已列出但尚未链接。**平台会公开未成年人资料，这三份不是走过场**，建议客户找律师出
 
 ---
 
-## 七、安全须知
+## 七、已知问题：域名与微信拦截
+
+**现象**：在微信里打开 `great-lakes-sports.pages.dev`，会看到一个警告页，说"该网页所属平台可能存在被他人恶意利用…"。
+
+**原因**：微信拦的不是我们，是整个 **`pages.dev`**。这类免费二级域名平台（还有 `vercel.app`、`netlify.app`、`github.io`）被大量用于钓鱼，微信按父域名一刀切。网站本身没有任何问题——已核查：无外部脚本、无 iframe、证书正常。
+
+**绕不过去**：那个警告页底部的「申请恢复访问」没有意义，要申诉也得由 Cloudflare 去申诉 `pages.dev`。
+
+**唯一解法**：换成自有域名。已购 **`gag.golf`**（GoDaddy 注册）。
+
+**临时办法**：微信里点右上角 ⋯ →「在浏览器中打开」；或干脆不通过微信发链接。
+
+### 域名切换进度
+
+| 步骤 | 状态 |
+|---|---|
+| 购买 `gag.golf` | ✅ GoDaddy |
+| 加入 Cloudflare（个人账号 `4b42f542…`，与 Pages 项目同账号） | ✅ |
+| **在 GoDaddy 把 nameserver 改成 Cloudflare 的两条** | ⬜ **下一步** |
+| 等 Cloudflare 状态变 Active | ⬜ |
+| Pages → Custom domains 添加 `gag.golf` 和 `www.gag.golf` | ⬜ |
+| 改代码三处 + 加 www→apex 的 301 | ⬜ |
+
+**正式地址定为不带 www 的 `https://gag.golf`**，`www` 301 跳过去。
+
+域名通了之后要改的三处（**顺序不能反：域名先通，配置后改**，否则线上会声称自己的正式地址是一个打不开的域名）：
+
+| 文件 | 改什么 |
+|---|---|
+| `astro.config.mjs` | `site` |
+| `src/config/site.ts` | `origin` |
+| `public/robots.txt` | 站点地图地址 |
+
+---
+
+## 八、安全须知
 
 **这个仓库是公开的，任何人都能看到全部代码和历史。**
 
