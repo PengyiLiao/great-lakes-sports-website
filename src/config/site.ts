@@ -32,13 +32,15 @@ export const site = {
 /**
  * Public enquiry address.
  *
- * Deliberately null until the client supplies a real one. An invented address
- * would be worse than none: visitors would write to a mailbox nobody reads and
- * conclude the organization ignores them. Components check for it and fall
- * back to a "details to follow" line, so the page is coherent either way, and
- * the gap stays visible to the client rather than being silently papered over.
+ * A real mailbox on the organization's own domain, so enquiries reach GAG
+ * rather than an individual volunteer's account — and keep reaching it when
+ * the people running the tournament change.
+ *
+ * Set to null if it ever stops being monitored: the pages then say contact
+ * details are to follow, which is better than pointing visitors at a mailbox
+ * nobody reads.
  */
-export const contactEmail: string | null = null;
+export const contactEmail: string | null = "info@gag.golf";
 
 /**
  * Public link to the tournament entry form.
