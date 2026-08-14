@@ -12,6 +12,17 @@ import type { Lang } from "../i18n/config";
 type HomeContent = {
   /** The paragraph under "GAG is more than a golf tournament." */
   positioning: string;
+  /**
+   * The four things GAG exists to give players, drawn from the Vision copy:
+   * "more opportunities to play, compete, connect and grow".
+   *
+   * This replaced the 16–25 age ladder that the Copy Deck places on the home
+   * page. On the Players page those bands read as who the platform is for;
+   * rendered large on the landing page they read as an entry requirement,
+   * and the first tournament is open well beyond them. The ladder still
+   * appears on /players, in the context that explains it.
+   */
+  pillars: string[];
   teasers: {
     /** Route this section points at. */
     route: string;
@@ -25,11 +36,12 @@ export const home: Record<Lang, HomeContent> = {
   en: {
     positioning:
       "GAG is a youth-focused amateur golf platform connecting young golfers, universities, tournaments and opportunities across Canada and around the world.",
+    pillars: ["Play", "Compete", "Connect", "Grow"],
     teasers: [
       {
         route: "/players",
         line: "Meet the next generation.",
-        body: "Junior, university and elite amateur golfers aged 16–25, and the step each of them is trying to take next.",
+        body: "Junior, university and elite amateur golfers, and the step each of them is trying to take next.",
       },
       {
         route: "/university",
@@ -47,11 +59,12 @@ export const home: Record<Lang, HomeContent> = {
   fr: {
     positioning:
       "GAG est une plateforme de golf amateur dédiée à la relève, qui relie jeunes golfeurs, universités, tournois et occasions de développement au Canada et dans le monde.",
+    pillars: ["Jouer", "Rivaliser", "Se connecter", "Progresser"],
     teasers: [
       {
         route: "/players",
         line: "Voici la relève.",
-        body: "Golfeurs juniors, universitaires et amateurs d'élite de 16 à 25 ans, et l'étape que chacun cherche à franchir.",
+        body: "Golfeurs juniors, universitaires et amateurs d'élite, et l'étape que chacun cherche à franchir.",
       },
       {
         route: "/university",

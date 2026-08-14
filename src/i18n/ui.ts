@@ -48,7 +48,7 @@ export const ui = {
     // ── Home ────────────────────────────────────────────────────────────
     "home.tagline": "Young Golf. Serious Competition.",
     "home.moreThan": "GAG is more than a golf tournament.",
-    "home.generations": "The Next Generation of Golfers",
+    "home.purpose": "What GAG Is For",
     "home.nextLevel": "From amateur golf to the next level.",
     "home.upcoming": "Upcoming Events",
     "home.upcoming.empty":
@@ -139,7 +139,7 @@ export const ui = {
 
     "home.tagline": "Young Golf. Serious Competition.",
     "home.moreThan": "GAG est bien plus qu'un tournoi de golf.",
-    "home.generations": "La relève du golf",
+    "home.purpose": "La raison d'être de GAG",
     "home.nextLevel": "Du golf amateur au niveau supérieur.",
     "home.upcoming": "Épreuves à venir",
     "home.upcoming.empty": "Le calendrier des épreuves sera annoncé sous peu.",

@@ -12,7 +12,6 @@ import GagLogo from "../GagLogo.astro";
 import { site } from "../../config/site";
 import { events } from "../../content/events";
 import { home } from "../../content/home";
-import { ageGroups } from "../../content/players";
 import { localizePath, type Lang } from "../../i18n/config";
 import { useTranslations } from "../../i18n/ui";
 
@@ -67,20 +66,26 @@ const copy = home[lang];
     <p class="mt-8 text-lg text-ink-muted sm:text-xl">{copy.positioning}</p>
   </section>
 
-  {/* Who it is for */}
+  {/* What GAG is for.
+      The Copy Deck puts the 16–25 age ladder here. On the Players page those
+      bands read as who the platform is built for; blown up on the landing
+      page they read as an entry requirement — and the first tournament is
+      open well beyond them. So the home page carries the four things GAG
+      exists to give players instead, and the ladder stays on /players where
+      the surrounding copy explains it. */}
   <section class="bg-ivory-200 py-20 sm:py-24">
     <div class="mx-auto max-w-7xl px-6">
-      <p class="eyebrow text-gold-600">{t("home.generations")}</p>
+      <p class="eyebrow text-gold-600">{t("home.purpose")}</p>
 
-      <ul class="mt-12 grid gap-px border border-forest-900/10 bg-forest-900/10 sm:grid-cols-3">
+      <ul class="mt-12 grid gap-px border border-forest-900/10 bg-forest-900/10 sm:grid-cols-2 lg:grid-cols-4">
         {
-          ageGroups.map((group) => (
+          copy.pillars.map((pillar, index) => (
             <li class="bg-ivory-50 p-8 sm:p-10">
-              <p class="font-display text-4xl font-bold tracking-tight text-forest-900 sm:text-5xl">
-                {group.range}
+              <p class="eyebrow text-gold-600">
+                {String(index + 1).padStart(2, "0")}
               </p>
-              <p class="mt-4 font-display text-lg font-semibold tracking-[0.06em] text-ink uppercase">
-                {group.label[lang]}
+              <p class="mt-4 font-display text-3xl font-bold tracking-tight text-forest-900 uppercase sm:text-4xl">
+                {pillar}
               </p>
             </li>
           ))

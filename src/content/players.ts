@@ -68,6 +68,16 @@ export const profileFields: Localized<string[]> = {
 
 type PlayersContent = {
   intro: string[];
+  /**
+   * Sits under the age ladder.
+   *
+   * The bands describe the platform's focus, but a visitor reading three
+   * numbers in a row will take them for entry rules — and the inaugural
+   * tournament is open well outside them. Saying plainly that eligibility
+   * lives on each event page costs one sentence and prevents a player
+   * deciding not to enter.
+   */
+  groupsNote: string;
   privacy: {
     body: string[];
     /** Explicitly listed as never published. */
@@ -82,6 +92,8 @@ export const players: Record<Lang, PlayersContent> = {
       "Young golfers are at the heart of GAG.",
       "Our platform is built for golfers aged 16–25 — junior golfers, university golfers and elite amateurs — and for the step each of them is trying to take next.",
     ],
+    groupsNote:
+      "These groups describe who GAG is built for. They are not entry requirements: eligibility for each competition is set out on that event's page.",
     privacy: {
       body: [
         "GAG respects the privacy of every player.",
@@ -106,6 +118,8 @@ export const players: Record<Lang, PlayersContent> = {
       "Les jeunes golfeurs sont au cœur de GAG.",
       "Notre plateforme s'adresse aux golfeurs de 16 à 25 ans — juniors, universitaires et amateurs d'élite — et à l'étape que chacun cherche à franchir.",
     ],
+    groupsNote:
+      "Ces catégories décrivent le public auquel GAG s'adresse. Il ne s'agit pas de conditions d'admission : l'admissibilité à chaque compétition est précisée sur la page de l'épreuve.",
     privacy: {
       body: [
         "GAG respecte la vie privée de chaque joueur.",
