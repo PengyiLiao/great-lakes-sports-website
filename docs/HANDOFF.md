@@ -2,7 +2,7 @@
 
 > 下次继续做这个网站之前，先读这一份。读完就知道现在到哪一步了、想改什么该动哪个文件、以及哪些决定是已经定过的（不要来回推翻）。
 >
-> 最后更新：2026-08-13（按客户 Copy Deck V1.0 重构后）
+> 最后更新：2026-08-14（域名切到 gag.golf、报名系统上线后）
 
 ---
 
@@ -10,12 +10,13 @@
 
 | | |
 |---|---|
-| **线上网站** | https://great-lakes-sports.pages.dev |
+| **线上网站** | **https://gag.golf** |
 | **代码仓库** | https://github.com/PengyiLiao/great-lakes-sports-website |
 | **本地目录** | `~/Projects/great-lakes-sports-website` |
 | **客户** | Great Lakes Sports Inc.（多伦多）／联系人：吴泽明（董事长）|
 | **性质** | 志愿项目，无偿 |
-| **未来域名** | gag.ca（客户规划中，尚未购买）|
+| **报名表单** | https://gag.golf/register |
+| **Google 账号** | `info@gag.golf`（Workspace）—— 拥有报名表单与数据表 |
 
 ### 网站是什么
 
@@ -149,7 +150,7 @@ git push
 3. **News / Stories 栏目** —— Copy Deck 里列为第一版预留
 4. **球员数据库与成绩系统** —— 客户参考的 IPSC Ontario 有完整的赛事日历、报名、排名、成绩查询，那是长期目标
 5. **接可视化编辑后台** —— 兑现「师兄能自己改文字」这件事。因为文案早就和代码分开了，这一步改动不大。候选：Sveltia CMS / Pages CMS
-6. **绑定 gag.golf 域名**（进行中，见下）
+6. **在 Cloudflare 后台加 `www` 与旧 pages.dev 的 301 跳转规则**（见第七章，`_redirects` 做不到）
 7. **隐私政策 / 使用条款 / 球员隐私三份法律文件** —— 页脚已列出但尚未链接。**平台会公开未成年人资料，这三份不是走过场**，建议客户找律师出
 
 ---
