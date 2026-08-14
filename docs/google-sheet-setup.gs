@@ -155,12 +155,15 @@ function buildPublicSheet_(ss, responses) {
   const hcpCol = requireColumn_(responses, 'Current handicap');
   const statusCol = requireColumn_(responses, 'Status');
 
-  // 地点列：表单若拆成了独立的 Province 题就只公开省份；
-  // 若仍是合并的「City and province」，则整格公开——这时城市也会被公开，
-  // 与网站上「只公开省份」的说法不一致，日志里会提示。
+  // 地点列：表单拆开后用独立的 Province 题，公开的就只有省份。
+  // 若表单仍是合并的「City and province」，则整格公开——这时城市也会跟着
+  // 公开，与网站上「只公开省份」的说法不一致，日志里会提示。
   let placeCol = findColumn_(responses, 'Province');
+  let placeHeader = 'Province';
+
   if (!placeCol) {
     placeCol = requireColumn_(responses, 'City and province');
+    placeHeader = 'Location';
     Logger.log(
       '⚠️ 表单里 City 和 Province 是同一道题，所以 Public 表会连城市一起公开。' +
         '若要只公开省份，把表单那道题拆成 City 和 Province 两问，再重跑本脚本。',
@@ -173,7 +176,9 @@ function buildPublicSheet_(ss, responses) {
 
   sheet
     .getRange('A1:E1')
-    .setValues([['Name', 'Club / University', 'Location', 'Handicap', 'Status']])
+    .setValues([
+      ['Name', 'Club / University', placeHeader, 'Handicap', 'Status'],
+    ])
     .setFontWeight('bold');
 
   sheet

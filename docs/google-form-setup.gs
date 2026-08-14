@@ -131,10 +131,36 @@ function populate(form) {
     .setChoiceValues(['Male', 'Female'])
     .setRequired(true);
 
+  // City 与 Province 拆成两题，不是一题。
+  // 合并成一格意味着公开时城市会跟着省份一起出去，而网站上写的是「只公开省份」。
+  // 这个平台会公开 16 岁起球员的资料，姓名 + 学校 + 城市组合起来定位性太强。
+  // 拆开之后，公开的那一列就是真的只有省份；顺带数据也更干净。
   form
     .addTextItem()
-    .setTitle('City and province')
-    .setHelpText('Only the province is published.')
+    .setTitle('City')
+    .setHelpText('Not published.')
+    .setRequired(true);
+
+  form
+    .addListItem()
+    .setTitle('Province or territory')
+    .setHelpText('Published alongside your name on draw sheets and results.')
+    .setChoiceValues([
+      'Alberta',
+      'British Columbia',
+      'Manitoba',
+      'New Brunswick',
+      'Newfoundland and Labrador',
+      'Northwest Territories',
+      'Nova Scotia',
+      'Nunavut',
+      'Ontario',
+      'Prince Edward Island',
+      'Quebec',
+      'Saskatchewan',
+      'Yukon',
+      'Outside Canada',
+    ])
     .setRequired(true);
 
   // ── 第 2 节 — Golf Credentials ────────────────────────────────────

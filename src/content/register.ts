@@ -49,9 +49,9 @@ export const register: Record<Lang, RegisterContent> = {
 
     privacyTitle: "What we publish",
     privacyPublished:
-      "Draw sheets, results and player profiles show competitive information only: name, club or university, country, age group, handicap and results.",
+      "Draw sheets, results and player profiles show competitive information only: name, club or university, province, handicap and results.",
     privacyWithheld:
-      "Contact details, home addresses, full dates of birth, identification documents and family contact information are collected solely to run the competition and are never published.",
+      "Contact details, home city and address, full dates of birth, identification documents and family contact information are collected solely to run the competition and are never published.",
 
     pending:
       "The entry form for the 2026 inaugural tournament is not open yet. Details will be posted here as soon as it is.",
@@ -77,9 +77,9 @@ export const register: Record<Lang, RegisterContent> = {
 
     privacyTitle: "Ce que nous publions",
     privacyPublished:
-      "Les feuilles de départ, les résultats et les profils de joueurs ne présentent que des renseignements sportifs : nom, club ou université, pays, catégorie d'âge, handicap et résultats.",
+      "Les feuilles de départ, les résultats et les profils de joueurs ne présentent que des renseignements sportifs : nom, club ou université, province, handicap et résultats.",
     privacyWithheld:
-      "Les coordonnées, l'adresse résidentielle, la date de naissance complète, les pièces d'identité et les coordonnées des proches servent uniquement à la tenue de la compétition et ne sont jamais publiées.",
+      "Les coordonnées, la ville et l'adresse résidentielle, la date de naissance complète, les pièces d'identité et les coordonnées des proches servent uniquement à la tenue de la compétition et ne sont jamais publiées.",
 
     pending:
       "Le formulaire d'inscription au tournoi inaugural 2026 n'est pas encore ouvert. Les détails seront publiés ici dès son ouverture.",
