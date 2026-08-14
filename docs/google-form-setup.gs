@@ -2,24 +2,22 @@
  * 2026 GAG Inaugural Tournament — Entry Form
  * 一次性生成整张 Google 表单。
  *
- * ── 怎么用（推荐：createEntryForm）──────────────────────────────────────
- * 1. 浏览器打开 https://script.google.com/home/projects/create
- * 2. 把编辑器里原有内容全部删掉，粘贴本文件全部内容
- * 3. 顶部函数下拉选 **createEntryForm**，点「运行 / Run」
- * 4. 首次运行要授权（见下方说明）
- * 5. 运行完，点底部「执行日志 / Execution log」，里面会打印两条网址：
- *      · 编辑链接 —— 你自己改表单用
- *      · 填写链接 —— 发给参赛者、也是要给我填进网站的那条
+ * ── 怎么用 ────────────────────────────────────────────────────────────
+ * 本项目实际走的是 buildEntryForm，已验证可用：
+ *   1. 浏览器打开 https://script.google.com/home/projects/create
+ *   2. 把编辑器里原有内容全部删掉，粘贴本文件全部内容
+ *   3. 把表单的**编辑链接**填进下面的 FORM_URL
+ *      （形如 https://docs.google.com/forms/d/xxxxx/edit）
+ *   4. 顶部函数下拉选 buildEntryForm，点「运行 / Run」
+ *   5. 首次运行要授权（见下方说明）
  *
- * 这个函数会**新建一张表单**，所以不需要复制表单 ID、不需要对齐账号、
- * 也不用在 Google 菜单里找「Apps 脚本」。之前手工建的那张空表单可以直接删掉。
+ * 如果第 4 步报 "No item with the given ID could be found"，通常是脚本项目
+ * 和表单在不同的 Google 账号下（浏览器登录了多个账号时很常见）。这时改用
+ * **createEntryForm**：它自己新建一张表单，不需要 ID、不需要对齐账号，
+ * 运行日志里会打印编辑链接和填写链接。
  *
- * ── 如果想改造已有的表单 ──────────────────────────────────────────────
- * 用 buildEntryForm 而不是 createEntryForm，二选一：
- *   · 绑定脚本：从表单页 ⋮ 菜单进 Apps Script，FORM_URL 留空
- *   · 独立脚本：把表单的**编辑链接**填进 FORM_URL
- * 报 "No item with the given ID could be found" 通常是脚本和表单不在
- * 同一个 Google 账号下——这时用 createEntryForm 最省事。
+ * 绑定脚本也可以：从表单页 ⋮ 菜单进 Apps Script，FORM_URL 留空，
+ * 跑 buildEntryForm。
  *
  * ── 关于授权警告 ──────────────────────────────────────────────────────
  * 首次运行 Google 会弹「未验证的应用」。点「高级 / Advanced」→
