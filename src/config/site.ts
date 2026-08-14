@@ -87,7 +87,7 @@ export type NavItem = {
  * navigation should never advertise a page that does not exist yet.
  */
 export const nav: NavItem[] = [
-  { key: "nav.events", route: "/events" },
+  { key: "nav.tournaments", route: "/tournaments" },
   { key: "nav.players", route: "/players" },
   { key: "nav.university", route: "/university" },
   { key: "nav.community", route: "/community" },

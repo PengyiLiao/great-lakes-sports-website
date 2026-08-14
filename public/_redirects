@@ -9,6 +9,12 @@
 /zh          /fr            301
 /zh/*        /fr/:splat     301
 
+# "Event" became "Tournament" at the client's request: the word says what the
+# competition actually is, and it is the word the golf world uses.
+/events      /tournaments      301
+/events/*    /tournaments/:splat  301
+/fr/events   /fr/tournaments   301
+
 # The Brand page was folded into About when the site was rebuilt around the
 # youth-platform positioning, which has no separate brand section.
 /brand       /about         301

@@ -26,11 +26,11 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 ---
 
-<BaseLayout lang={lang} route="/events" title={t("page.events")}>
+<BaseLayout lang={lang} route="/tournaments" title={t("page.tournaments")}>
   <PageHeader
-    eyebrow={t("nav.events")}
-    title={t("page.events")}
-    lede={t("events.lede")}
+    eyebrow={t("nav.tournaments")}
+    title={t("page.tournaments")}
+    lede={t("tournaments.lede")}
   />
 
   {/* Scheduled */}
@@ -90,7 +90,7 @@ const t = useTranslations(lang);
   {/* Standing series */}
   <section class="bg-ivory-200 py-20 sm:py-24">
     <div class="mx-auto max-w-7xl px-6">
-      <p class="eyebrow text-gold-600">{t("events.series")}</p>
+      <p class="eyebrow text-gold-600">{t("tournaments.series")}</p>
 
       <ul class="mt-12 grid gap-x-10 gap-y-12 md:grid-cols-3">
         {
@@ -109,7 +109,7 @@ const t = useTranslations(lang);
 
   {/* Announced but unscheduled */}
   <section class="mx-auto max-w-7xl px-6 py-20 sm:py-24">
-    <p class="eyebrow text-gold-600">{t("events.future")}</p>
+    <p class="eyebrow text-gold-600">{t("tournaments.future")}</p>
 
     <ul class="mt-8 flex flex-wrap gap-3">
       {
@@ -125,7 +125,7 @@ const t = useTranslations(lang);
   {/* What an event page will carry */}
   <section class="bg-forest-950 py-20 text-ivory-50 sm:py-24">
     <div class="mx-auto max-w-7xl px-6">
-      <p class="eyebrow text-gold-300">{t("events.detailFields")}</p>
+      <p class="eyebrow text-gold-300">{t("tournaments.detailFields")}</p>
 
       <ul class="mt-10 grid gap-x-10 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
         {

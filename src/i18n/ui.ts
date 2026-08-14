@@ -22,7 +22,7 @@ import type { Lang } from "./config";
 export const ui = {
   en: {
     // ── Navigation ──────────────────────────────────────────────────────
-    "nav.events": "Events",
+    "nav.tournaments": "Tournaments",
     "nav.players": "Players",
     "nav.university": "University",
     "nav.community": "Community",
@@ -34,7 +34,7 @@ export const ui = {
 
     // ── Page titles ─────────────────────────────────────────────────────
     "page.home": "Home",
-    "page.events": "Events",
+    "page.tournaments": "Tournaments",
     "page.players": "Players",
     "page.university": "University",
     "page.community": "Community",
@@ -51,18 +51,18 @@ export const ui = {
     "home.moreThan": "GAG is more than a golf tournament.",
     "home.purpose": "What GAG Is For",
     "home.nextLevel": "From amateur golf to the next level.",
-    "home.upcoming": "Upcoming Events",
+    "home.upcoming": "Upcoming Tournaments",
     "home.upcoming.empty":
       "The tournament schedule will be announced shortly.",
     "home.players": "GAG Players",
     "home.university": "GAG University",
     "home.community": "GAG Community",
 
-    // ── Events ──────────────────────────────────────────────────────────
-    "events.lede": "Compete. Connect. Grow.",
-    "events.series": "Our Events",
-    "events.future": "Future Events",
-    "events.detailFields": "Every event page will carry",
+    // ── Tournaments ─────────────────────────────────────────────────────
+    "tournaments.lede": "Compete. Connect. Grow.",
+    "tournaments.series": "Our Tournaments",
+    "tournaments.future": "Future Tournaments",
+    "tournaments.detailFields": "Every tournament page will carry",
 
     // ── Players ─────────────────────────────────────────────────────────
     "players.lede": "Meet the Next Generation.",
@@ -100,9 +100,9 @@ export const ui = {
     // ── Calls to action ─────────────────────────────────────────────────
     "cta.play": "Let's Play GAG",
     "cta.register": "Enter the Tournament",
-    "cta.joinEvent": "Join an Event",
+    "cta.joinEvent": "Join a Tournament",
     "cta.meetPlayers": "Meet Our Players",
-    "cta.viewEvents": "View All Events",
+    "cta.viewTournaments": "View All Tournaments",
     "cta.aboutGag": "About GAG",
     "cta.partner": "Become a GAG Partner",
     "cta.contact": "Contact Us",
@@ -117,7 +117,7 @@ export const ui = {
   },
 
   fr: {
-    "nav.events": "Épreuves",
+    "nav.tournaments": "Tournois",
     "nav.players": "Joueurs",
     "nav.university": "Universités",
     "nav.community": "Communauté",
@@ -128,7 +128,7 @@ export const ui = {
     "nav.close": "Fermer",
 
     "page.home": "Accueil",
-    "page.events": "Épreuves",
+    "page.tournaments": "Tournois",
     "page.players": "Joueurs",
     "page.university": "Universités",
     "page.community": "Communauté",
@@ -144,16 +144,16 @@ export const ui = {
     "home.moreThan": "GAG est bien plus qu'un tournoi de golf.",
     "home.purpose": "La raison d'être de GAG",
     "home.nextLevel": "Du golf amateur au niveau supérieur.",
-    "home.upcoming": "Épreuves à venir",
-    "home.upcoming.empty": "Le calendrier des épreuves sera annoncé sous peu.",
+    "home.upcoming": "Tournois à venir",
+    "home.upcoming.empty": "Le calendrier des tournois sera annoncé sous peu.",
     "home.players": "Joueurs GAG",
     "home.university": "GAG Universités",
     "home.community": "Communauté GAG",
 
-    "events.lede": "Compete. Connect. Grow.",
-    "events.series": "Nos épreuves",
-    "events.future": "Épreuves à venir",
-    "events.detailFields": "Chaque page d'épreuve présentera",
+    "tournaments.lede": "Compete. Connect. Grow.",
+    "tournaments.series": "Nos tournois",
+    "tournaments.future": "Tournois à venir",
+    "tournaments.detailFields": "Chaque page de tournoi présentera",
 
     "players.lede": "Voici la relève.",
     "players.groups": "Catégories d'âge",
@@ -188,7 +188,7 @@ export const ui = {
     "cta.register": "S'inscrire au tournoi",
     "cta.joinEvent": "Inscrivez-vous",
     "cta.meetPlayers": "Découvrir les joueurs",
-    "cta.viewEvents": "Toutes les épreuves",
+    "cta.viewTournaments": "Tous les tournois",
     "cta.aboutGag": "À propos de GAG",
     "cta.partner": "Devenir partenaire de GAG",
     "cta.contact": "Nous joindre",
