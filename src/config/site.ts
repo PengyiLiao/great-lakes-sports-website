@@ -98,9 +98,13 @@ export type NavItem = {
  * Mirrors the section list in the client's copy deck. News and Shop are named
  * there as later phases and are deliberately absent until they have content —
  * navigation should never advertise a page that does not exist yet.
+ *
+ * Membership is not here: the header's Join button already leads there, and a
+ * nav item pointing at the same page invites the reader to wonder whether the
+ * two are different things. The footer lists it, since the footer is a map of
+ * the site rather than a set of choices.
  */
 export const nav: NavItem[] = [
-  { key: "nav.membership", route: "/membership" },
   { key: "nav.tournaments", route: "/tournaments" },
   { key: "nav.players", route: "/players" },
   { key: "nav.university", route: "/university" },

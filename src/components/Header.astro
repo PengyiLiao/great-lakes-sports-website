@@ -6,7 +6,7 @@
  * that the audience skewed older and a collapsed menu hides the site behind
  * an icon not everyone reads as a button. Both premises have changed: the
  * platform is now aimed at golfers aged 16–25, and the navigation has grown
- * from three items to eight, which cannot sit on one line on a phone.
+ * from three items to seven, which cannot sit on one line on a phone.
  *
  * So narrow screens get a disclosure — built on <details>/<summary> rather
  * than a scripted menu. It opens and closes with no JavaScript at all, is
@@ -44,7 +44,7 @@ const linkBase =
     </a>
 
     {/* Wide screens: everything on one line. */}
-    <div class="hidden items-center gap-7 xl:flex">
+    <div class="hidden items-center gap-7 lg:flex">
       <nav aria-label={t("a11y.mainNav")}>
         <ul class="flex items-center gap-7">
           {
@@ -85,7 +85,7 @@ const linkBase =
     </div>
 
     {/* Narrow screens: a no-JavaScript disclosure. */}
-    <details class="group relative xl:hidden">
+    <details class="group relative lg:hidden">
       <summary
         class:list={[
           linkBase,

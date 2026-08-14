@@ -47,6 +47,16 @@ const legal =
 
     <nav aria-label={t("a11y.footerNav")} class="mt-14">
       <ul class="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
+        {/* Membership is absent from the header nav — the Join button covers
+            it there — but the footer is a map of the site, so it belongs. */}
+        <li>
+          <a
+            href={localizePath("/membership", lang)}
+            class="font-display text-[0.8125rem] font-semibold tracking-[0.14em] text-ivory-300 uppercase transition-colors hover:text-gold-300"
+          >
+            {t("nav.membership")}
+          </a>
+        </li>
         {
           nav.map((item) => (
             <li>
