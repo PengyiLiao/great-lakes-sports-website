@@ -58,13 +58,16 @@ export const contactEmail: string | null = "info@gag.golf";
  *
  * The form's editor access is restricted to the organizers while the
  * responder view is open to anyone with the link, so entrants do not need a
- * Google account to enter. Verified reachable without signing in.
+ * Google account to enter. Verified reachable without signing in — worth
+ * re-checking after any change to the form's sharing, because a form
+ * restricted to the organization still renders a button here and simply
+ * refuses everyone who clicks it, with no error anywhere we would see.
  *
  * See docs/REGISTRATION.md for the field list and privacy rules, and
  * docs/google-form-setup.gs for the script that built it.
  */
 export const registrationUrl: string | null =
-  "https://forms.gle/Yji5tuRmYa3npbJU9";
+  "https://docs.google.com/forms/d/e/1FAIpQLSfPoLKlyLiOCPigOVh3_01XNDeiIBpLFPjPXsly6CBoohJupA/viewform";
 
 export type NavItem = {
   /** Interface-string key resolved per language. */
