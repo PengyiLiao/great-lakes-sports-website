@@ -7,7 +7,7 @@ import sitemap from "@astrojs/sitemap";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://great-lakes-sports.pages.dev",
+  site: "https://gag.golf",
 
   // Serve /about rather than /about/.
   //

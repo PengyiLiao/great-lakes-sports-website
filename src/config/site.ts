@@ -23,10 +23,13 @@ export const site = {
 
   /**
    * Canonical production origin, used to build absolute URLs for canonical
-   * and social tags. Update once gag.ca is registered and pointed at
-   * Cloudflare Pages.
+   * tags, hreflang alternates and the sitemap.
+   *
+   * The apex, not www: gag.golf is short enough that a prefix only adds
+   * length to something that goes on scorecards and signage. www.gag.golf
+   * redirects here so the site has one address rather than two.
    */
-  origin: "https://great-lakes-sports.pages.dev",
+  origin: "https://gag.golf",
 } as const;
 
 /**

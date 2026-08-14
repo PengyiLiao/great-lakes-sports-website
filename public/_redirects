@@ -1,3 +1,11 @@
+# One address for the site, so canonical tags, hreflang alternates, the
+# sitemap and what visitors actually see all agree on gag.golf.
+https://www.gag.golf/*  https://gag.golf/:splat  301
+
+# The site lived at its Cloudflare Pages subdomain before the domain was
+# registered, and that address was shared with the client and the committee.
+https://great-lakes-sports.pages.dev/*  https://gag.golf/:splat  301
+
 # The second locale was briefly published under /zh before the client set the
 # language policy. Those URLs were live and listed in the sitemap, so they are
 # redirected rather than left to 404 for anyone who opened or bookmarked one.

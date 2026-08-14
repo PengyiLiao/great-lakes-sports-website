@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://great-lakes-sports.pages.dev/sitemap-index.xml
+Sitemap: https://gag.golf/sitemap-index.xml
