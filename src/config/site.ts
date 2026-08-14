@@ -50,15 +50,19 @@ export const contactEmail: string | null = null;
  * whose job is storing it, instead of standing up our own endpoint and
  * database for 72 rows, is both faster and materially safer.
  *
- * Null until the form exists. The registration page shows what entrants will
- * need to have ready either way, so it is useful before the form opens rather
- * than being an empty shell — and no button points at a form that is not
- * there yet.
+ * Set to null while no form exists: the registration page then shows what
+ * entrants need to have ready and says entries are not yet open, rather than
+ * pointing a button at a form that is not there.
  *
- * See docs/REGISTRATION.md for the field list the form should carry and the
- * privacy rules that go with it.
+ * The form's editor access is restricted to the organizers while the
+ * responder view is open to anyone with the link, so entrants do not need a
+ * Google account to enter. Verified reachable without signing in.
+ *
+ * See docs/REGISTRATION.md for the field list and privacy rules, and
+ * docs/google-form-setup.gs for the script that built it.
  */
-export const registrationUrl: string | null = null;
+export const registrationUrl: string | null =
+  "https://forms.gle/Yji5tuRmYa3npbJU9";
 
 export type NavItem = {
   /** Interface-string key resolved per language. */

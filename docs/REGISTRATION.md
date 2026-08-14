@@ -164,9 +164,20 @@
 
 ---
 
-## 五、表单建好之后，告诉我一件事
+## 五、表单已上线 ✅
 
-把表单的**公开填写链接**发给我（形如 `https://forms.gle/xxxxxxxx`），我改一行代码：
+**填写链接**：https://forms.gle/Yji5tuRmYa3npbJU9
+
+已接入网站（`src/config/site.ts` 的 `registrationUrl`）。已验证**未登录 Google 也能打开并填写**——参赛者不需要 Google 账号。
+
+分享设置（Share 弹窗 → General access）应保持：
+
+| 项 | 值 | 原因 |
+|---|---|---|
+| Editor view | `Restricted` 🔒 | 只有主办方能改题目、看全部回复 |
+| Responder view | `Anyone with the link` 🌍 | 参赛者无需登录即可填写 |
+
+> 换表单时，改 `registrationUrl` 这一行即可：
 
 ```ts
 // src/config/site.ts
