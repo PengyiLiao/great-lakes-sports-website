@@ -1,0 +1,120 @@
+---
+/**
+ * Membership page body, rendered once per language.
+ *
+ * Membership is free and carries no benefits yet. The page is built around
+ * saying that plainly rather than around a list of perks that does not exist:
+ * the section on what is coming is labelled as intent, not entitlement.
+ *
+ * The last section exists because the client asked for the distinction to be
+ * explicit — membership and tournament entry are separate things, and a
+ * visitor who confuses them either joins expecting a tee time or skips the
+ * tournament thinking they need to join first.
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHeader from "../PageHeader.astro";
+import Button from "../Button.astro";
+import { membershipUrl } from "../../config/site";
+import { membership } from "../../content/membership";
+import { localizePath, type Lang } from "../../i18n/config";
+import { useTranslations } from "../../i18n/ui";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const copy = membership[lang];
+---
+
+<BaseLayout lang={lang} route="/membership" title={t("page.membership")}>
+  <PageHeader
+    eyebrow={t("nav.membership")}
+    title={copy.lede}
+    lede={copy.intro[0]}
+  />
+
+  {/* What it is */}
+  <section class="mx-auto max-w-4xl px-6 py-16 sm:py-20">
+    <p class="text-lg text-ink-muted">{copy.intro[1]}</p>
+
+    <div class="mt-12">
+      {
+        membershipUrl ? (
+          <Button href={membershipUrl}>{t("cta.joinFree")}</Button>
+        ) : (
+          <p class="text-lg text-ink-muted italic">{copy.pending}</p>
+        )
+      }
+    </div>
+  </section>
+
+  {/* What membership means today */}
+  <section class="bg-ivory-200 py-16 sm:py-20">
+    <div class="mx-auto max-w-7xl px-6">
+      <h2 class="text-3xl uppercase text-forest-900 sm:text-4xl">
+        {copy.todayTitle}
+      </h2>
+
+      <ul class="mt-12 grid gap-x-10 gap-y-12 md:grid-cols-3">
+        {
+          copy.today.map((item, index) => (
+            <li class="border-t-2 border-forest-900 pt-6">
+              <p class="eyebrow text-gold-600">
+                {String(index + 1).padStart(2, "0")}
+              </p>
+              <h3 class="mt-3 text-xl uppercase text-forest-900 sm:text-2xl">
+                {item.title}
+              </h3>
+              <p class="mt-4 text-ink-muted">{item.body}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  {/* What is coming — labelled as intent, not entitlement */}
+  <section class="bg-forest-950 py-16 text-ivory-50 sm:py-20">
+    <div class="mx-auto max-w-4xl px-6">
+      <p class="eyebrow text-gold-300">{copy.laterTitle}</p>
+
+      <ul class="mt-10 grid gap-x-10 gap-y-4 sm:grid-cols-2">
+        {
+          copy.later.map((item) => (
+            <li class="flex gap-3 border-t border-ivory-200/25 pt-4 text-ivory-100">
+              <span aria-hidden="true" class="text-gold-400">
+                —
+              </span>
+              {item}
+            </li>
+          ))
+        }
+      </ul>
+
+      <p class="mt-10 border-l-2 border-gold-400 pl-6 text-ivory-200">
+        {copy.laterNote}
+      </p>
+    </div>
+  </section>
+
+  {/* Membership is not tournament entry */}
+  <section class="mx-auto max-w-4xl px-6 py-16 sm:py-20">
+    <h2 class="text-3xl uppercase text-forest-900 sm:text-4xl">
+      {copy.distinctionTitle}
+    </h2>
+    <p class="mt-6 text-lg text-ink-muted">{copy.distinction}</p>
+
+    <div class="mt-10 flex flex-wrap gap-4">
+      {
+        membershipUrl && (
+          <Button href={membershipUrl}>{t("cta.joinFree")}</Button>
+        )
+      }
+      <Button href={localizePath("/register", lang)} variant="outline">
+        {t("cta.register")}
+      </Button>
+    </div>
+  </section>
+</BaseLayout>

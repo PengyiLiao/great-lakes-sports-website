@@ -72,6 +72,19 @@ export const contactEmail: string | null = "info@gag.golf";
 export const registrationUrl: string | null =
   "https://docs.google.com/forms/d/e/1FAIpQLSfPoLKlyLiOCPigOVh3_01XNDeiIBpLFPjPXsly6CBoohJupA/viewform";
 
+/**
+ * Public link to the membership sign-up form.
+ *
+ * Membership is separate from tournament entry — a standing place in the
+ * community rather than a place in one competition — so it has its own form
+ * and its own register. Same reasoning as `registrationUrl` for why it is a
+ * hosted form and not something built here.
+ *
+ * Null until the form exists; the page then explains what membership is and
+ * says sign-up opens shortly, rather than pointing a button at nothing.
+ */
+export const membershipUrl: string | null = null;
+
 export type NavItem = {
   /** Interface-string key resolved per language. */
   key: UIKey;
@@ -87,6 +100,7 @@ export type NavItem = {
  * navigation should never advertise a page that does not exist yet.
  */
 export const nav: NavItem[] = [
+  { key: "nav.membership", route: "/membership" },
   { key: "nav.tournaments", route: "/tournaments" },
   { key: "nav.players", route: "/players" },
   { key: "nav.university", route: "/university" },

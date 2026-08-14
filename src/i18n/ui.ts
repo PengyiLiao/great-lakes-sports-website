@@ -22,6 +22,7 @@ import type { Lang } from "./config";
 export const ui = {
   en: {
     // ── Navigation ──────────────────────────────────────────────────────
+    "nav.membership": "Membership",
     "nav.tournaments": "Tournaments",
     "nav.players": "Players",
     "nav.university": "University",
@@ -34,6 +35,7 @@ export const ui = {
 
     // ── Page titles ─────────────────────────────────────────────────────
     "page.home": "Home",
+    "page.membership": "Membership",
     "page.tournaments": "Tournaments",
     "page.players": "Players",
     "page.university": "University",
@@ -100,6 +102,8 @@ export const ui = {
     // ── Calls to action ─────────────────────────────────────────────────
     "cta.play": "Let's Play GAG",
     "cta.register": "Enter the Tournament",
+    "cta.join": "Join GAG",
+    "cta.joinFree": "Join — it's free",
     "cta.joinEvent": "Join a Tournament",
     "cta.meetPlayers": "Meet Our Players",
     "cta.viewTournaments": "View All Tournaments",
@@ -117,6 +121,7 @@ export const ui = {
   },
 
   fr: {
+    "nav.membership": "Adhésion",
     "nav.tournaments": "Tournois",
     "nav.players": "Joueurs",
     "nav.university": "Universités",
@@ -128,6 +133,7 @@ export const ui = {
     "nav.close": "Fermer",
 
     "page.home": "Accueil",
+    "page.membership": "Adhésion",
     "page.tournaments": "Tournois",
     "page.players": "Joueurs",
     "page.university": "Universités",
@@ -186,6 +192,8 @@ export const ui = {
 
     "cta.play": "Let's Play GAG",
     "cta.register": "S'inscrire au tournoi",
+    "cta.join": "Devenir membre",
+    "cta.joinFree": "Adhérer — c'est gratuit",
     "cta.joinEvent": "Inscrivez-vous",
     "cta.meetPlayers": "Découvrir les joueurs",
     "cta.viewTournaments": "Tous les tournois",
