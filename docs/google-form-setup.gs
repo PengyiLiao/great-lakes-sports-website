@@ -61,15 +61,42 @@ function buildEntryForm() {
     );
   }
 
-  const existing = form.getItems();
-  for (let i = existing.length - 1; i >= 0; i--) {
-    form.deleteItem(existing[i]);
-  }
-
+  clearForm_(form);
   populate(form);
 
   Logger.log('✅ 完成，共 %s 个题目项。', form.getItems().length);
   Logger.log('🔗 填写链接：%s', form.getPublishedUrl());
+}
+
+/**
+ * 清空表单里的全部题目。
+ *
+ * 不能直接删——如果表单已经跑过一次，「未满 18 岁」那道题的选项带着指向
+ * 后面分节页的跳转。从后往前删会先删掉被指向的页面，引用悬空，Forms 就报
+ * "Invalid data updating form"。所以先把所有跳转还原成"继续下一节"，
+ * 再删。空表单跑不会触发这个问题，第二次跑才会。
+ */
+function clearForm_(form) {
+  form.getItems().forEach((item) => {
+    const type = item.getType();
+
+    if (type === FormApp.ItemType.MULTIPLE_CHOICE) {
+      const mc = item.asMultipleChoiceItem();
+      const values = mc.getChoices().map((choice) => choice.getValue());
+      if (values.length) mc.setChoiceValues(values);
+    } else if (type === FormApp.ItemType.LIST) {
+      const list = item.asListItem();
+      const values = list.getChoices().map((choice) => choice.getValue());
+      if (values.length) list.setChoiceValues(values);
+    } else if (type === FormApp.ItemType.PAGE_BREAK) {
+      item.asPageBreakItem().setGoToPage(FormApp.PageNavigationType.CONTINUE);
+    }
+  });
+
+  const items = form.getItems();
+  for (let i = items.length - 1; i >= 0; i--) {
+    form.deleteItem(items[i]);
+  }
 }
 
 /** 把全部分节和题目写进 form。上面两个入口共用。 */
