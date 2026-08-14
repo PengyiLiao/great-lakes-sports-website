@@ -41,6 +41,7 @@ export const ui = {
     "page.about": "About GAG",
     "page.partners": "Partners",
     "page.contact": "Contact",
+    "page.register": "Registration",
 
     "meta.description":
       "GAG — Great Lakes Amateur Golf. A youth-focused amateur golf platform connecting young golfers, universities, tournaments and opportunities across Canada and around the world.",
@@ -98,6 +99,7 @@ export const ui = {
 
     // ── Calls to action ─────────────────────────────────────────────────
     "cta.play": "Let's Play GAG",
+    "cta.register": "Enter the Tournament",
     "cta.joinEvent": "Join an Event",
     "cta.meetPlayers": "Meet Our Players",
     "cta.viewEvents": "View All Events",
@@ -133,6 +135,7 @@ export const ui = {
     "page.about": "À propos de GAG",
     "page.partners": "Partenaires",
     "page.contact": "Nous joindre",
+    "page.register": "Inscription",
 
     "meta.description":
       "GAG — Great Lakes Amateur Golf. Une plateforme de golf amateur dédiée à la relève, qui relie jeunes golfeurs, universités, tournois et occasions de développement au Canada et dans le monde.",
@@ -182,6 +185,7 @@ export const ui = {
     "contact.audiences": "Vous êtes…",
 
     "cta.play": "Let's Play GAG",
+    "cta.register": "S'inscrire au tournoi",
     "cta.joinEvent": "Inscrivez-vous",
     "cta.meetPlayers": "Découvrir les joueurs",
     "cta.viewEvents": "Toutes les épreuves",

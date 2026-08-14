@@ -9,7 +9,6 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PageHeader from "../PageHeader.astro";
 import Button from "../Button.astro";
-import { contactEmail } from "../../config/site";
 import {
   eventPageSections,
   eventSeries,
@@ -73,19 +72,10 @@ const t = useTranslations(lang);
                   ))}
                 </dl>
 
-                {/* Registration opens through the organizers until the entry
-                    system exists; no button is shown for a form that has not
-                    been built. */}
                 <div class="mt-10">
-                  {contactEmail ? (
-                    <Button href={`mailto:${contactEmail}`}>
-                      {t("cta.enquire")}
-                    </Button>
-                  ) : (
-                    <p class="eyebrow text-ink-muted">
-                      {t("cta.enquirePending")}
-                    </p>
-                  )}
+                  <Button href={localizePath("/register", lang)}>
+                    {t("cta.register")}
+                  </Button>
                 </div>
               </li>
             );

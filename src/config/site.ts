@@ -40,6 +40,26 @@ export const site = {
  */
 export const contactEmail: string | null = null;
 
+/**
+ * Public link to the tournament entry form.
+ *
+ * Entries are taken through a hosted form rather than anything built here.
+ * This site is static and has no backend, which is most of why it has almost
+ * nothing to attack — and entries for this event will include the personal
+ * details of players as young as sixteen. Handing that data to a provider
+ * whose job is storing it, instead of standing up our own endpoint and
+ * database for 72 rows, is both faster and materially safer.
+ *
+ * Null until the form exists. The registration page shows what entrants will
+ * need to have ready either way, so it is useful before the form opens rather
+ * than being an empty shell — and no button points at a form that is not
+ * there yet.
+ *
+ * See docs/REGISTRATION.md for the field list the form should carry and the
+ * privacy rules that go with it.
+ */
+export const registrationUrl: string | null = null;
+
 export type NavItem = {
   /** Interface-string key resolved per language. */
   key: UIKey;

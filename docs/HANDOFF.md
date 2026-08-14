@@ -37,6 +37,7 @@
 | `/about` `/fr/about` | Who We Are / Vision / Mission / Story / Values / Governance / Youth Golf Fund |
 | `/partners` `/fr/partners` | 合作类型与合作伙伴类别 |
 | `/contact` `/fr/contact` | 六类访客对应入口 |
+| `/register` `/fr/register` | 赛事详情、参赛条件、须准备的材料、未成年人规定、隐私说明、报名表单入口 |
 
 **技术栈**：Astro 7（静态生成）+ Tailwind CSS v4 + TypeScript strict，托管在 Cloudflare Pages。
 
@@ -68,7 +69,9 @@
 
 **加一场赛事** → 在 `src/content/events.ts` 的 `events` 数组里加一项，英法各填一份。数组为空时页面会自动显示「赛程即将公布」，不会留一个空框。
 
-**填上联系邮箱** → 改 `src/config/site.ts` 里的 `contactEmail`，从 `null` 改成真实邮箱。Contact、Partners、Events 三个页面上的按钮会自动出现（现在显示「联系方式即将公布」）。
+**填上联系邮箱** → 改 `src/config/site.ts` 里的 `contactEmail`，从 `null` 改成真实邮箱。Contact、Partners 页面上的按钮会自动出现（现在显示「联系方式即将公布」）。
+
+**开放报名** → 建好 Google 表单后，把公开链接填进 `src/config/site.ts` 的 `registrationUrl`（从 `null` 改成链接）。页头、首页 Hero、Events 卡片、`/register` 页底部的四处按钮会同时亮起。**表单字段清单、表格列设计、隐私设置、邮件系统配置全在 [`REGISTRATION.md`](REGISTRATION.md)。**
 
 **加一个新页面**（比如 News）：
 1. 在 `src/content/` 建内容文件，导出 `Record<Lang, …>`
@@ -142,7 +145,7 @@ git push
 按优先级：
 
 1. **把待确认清单上的事项逐条改掉**（清单不在本仓库，见私有资料目录；代码里相关位置都有 `⚠️` 注释，`grep -rn "⚠️" src/` 可一次列出）
-2. **报名系统** —— 客户资料里写明网站目标日期 8 月 26 日，需要 Registration page + Email system + Database。第一版可先用第三方表单（Jotform / Google Form）承接，不要自建
+2. **报名系统** —— 网站侧已完成（`/register` 页 + `registrationUrl` 配置）。剩下的是在 Google 后台建表单、配表格权限、开一个专用 Gmail，**照 [`REGISTRATION.md`](REGISTRATION.md) 执行即可**。客户资料里写明网站目标日期 8 月 26 日
 3. **News / Stories 栏目** —— Copy Deck 里列为第一版预留
 4. **球员数据库与成绩系统** —— 客户参考的 IPSC Ontario 有完整的赛事日历、报名、排名、成绩查询，那是长期目标
 5. **接可视化编辑后台** —— 兑现「师兄能自己改文字」这件事。因为文案早就和代码分开了，这一步改动不大。候选：Sveltia CMS / Pages CMS
