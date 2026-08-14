@@ -83,8 +83,10 @@ const legal =
       </ul>
 
       <p class="mt-6">{site.location}</p>
+      {/* The legal name already ends in a period — "Great Lakes Sports Inc." —
+          so adding one here produced "Inc.. All rights reserved". */}
       <p class="mt-1">
-        &copy; {year} {site.legalName}. All rights reserved.
+        &copy; {year} {site.legalName} All rights reserved.
       </p>
     </div>
   </div>

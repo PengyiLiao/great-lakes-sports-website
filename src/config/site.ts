@@ -83,7 +83,8 @@ export const registrationUrl: string | null =
  * Null until the form exists; the page then explains what membership is and
  * says sign-up opens shortly, rather than pointing a button at nothing.
  */
-export const membershipUrl: string | null = null;
+export const membershipUrl: string | null =
+  "https://docs.google.com/forms/d/e/1FAIpQLSeaL-C5GQtal6EDuKmy21YSFdN2iJF58QwU-cG8obhIP1sb_A/viewform";
 
 export type NavItem = {
   /** Interface-string key resolved per language. */
