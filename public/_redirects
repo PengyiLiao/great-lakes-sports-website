@@ -1,10 +1,7 @@
-# One address for the site, so canonical tags, hreflang alternates, the
-# sitemap and what visitors actually see all agree on gag.golf.
-https://www.gag.golf/*  https://gag.golf/:splat  301
-
-# The site lived at its Cloudflare Pages subdomain before the domain was
-# registered, and that address was shared with the client and the committee.
-https://great-lakes-sports.pages.dev/*  https://gag.golf/:splat  301
+# Pages matches these rules on the path only, not the hostname — a rule
+# written as https://www.gag.golf/* is silently ignored. Sending www and the
+# old pages.dev address to gag.golf therefore has to be a Redirect Rule in the
+# Cloudflare dashboard, not a line here. See docs/HANDOFF.md.
 
 # The second locale was briefly published under /zh before the client set the
 # language policy. Those URLs were live and listed in the sitemap, so they are

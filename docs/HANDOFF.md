@@ -154,40 +154,31 @@ git push
 
 ---
 
-## 七、已知问题：域名与微信拦截
+## 七、域名与已知问题
 
-**现象**：在微信里打开 `great-lakes-sports.pages.dev`，会看到一个警告页，说"该网页所属平台可能存在被他人恶意利用…"。
+### 正式地址
 
-**原因**：微信拦的不是我们，是整个 **`pages.dev`**。这类免费二级域名平台（还有 `vercel.app`、`netlify.app`、`github.io`）被大量用于钓鱼，微信按父域名一刀切。网站本身没有任何问题——已核查：无外部脚本、无 iframe、证书正常。
+**https://gag.golf** —— 不带 www。`www.gag.golf` 和旧的 `great-lakes-sports.pages.dev` 都应 301 跳到它。
 
-**绕不过去**：那个警告页底部的「申请恢复访问」没有意义，要申诉也得由 Cloudflare 去申诉 `pages.dev`。
+> ⚠️ **这两条跳转不能写在 `public/_redirects` 里。** Cloudflare Pages 的 `_redirects` **只匹配路径，不匹配域名**——写成 `https://www.gag.golf/*` 会被静默忽略（不报错、也不生效）。路径跳转（`/brand → /about`）则正常。
+>
+> 域名级跳转要在 **Cloudflare 后台 → gag.golf → Rules → Redirect Rules** 里配。
 
-**唯一解法**：换成自有域名。已购 **`gag.golf`**（GoDaddy 注册）。
+改域名时要同步改三处，缺一处就会出现"页面说自己的正式地址是 A，实际却在 B"：
 
-**临时办法**：微信里点右上角 ⋯ →「在浏览器中打开」；或干脆不通过微信发链接。
-
-### 域名切换进度
-
-| 步骤 | 状态 |
-|---|---|
-| 购买 `gag.golf` | ✅ GoDaddy |
-| 加入 Cloudflare（个人账号 `4b42f542…`，与 Pages 项目同账号） | ✅ |
-| **在 GoDaddy 把 nameserver 改成 Cloudflare 的两条** | ⬜ **下一步** |
-| 等 Cloudflare 状态变 Active | ⬜ |
-| Pages → Custom domains 添加 `gag.golf` 和 `www.gag.golf` | ⬜ |
-| 改代码三处 + 加 www→apex 的 301 | ⬜ |
-
-**正式地址定为不带 www 的 `https://gag.golf`**，`www` 301 跳过去。
-
-域名通了之后要改的三处（**顺序不能反：域名先通，配置后改**，否则线上会声称自己的正式地址是一个打不开的域名）：
-
-| 文件 | 改什么 |
+| 文件 | 字段 |
 |---|---|
 | `astro.config.mjs` | `site` |
-| `src/config/site.ts` | `origin` |
+| `src/config/site.ts` | `site.origin` |
 | `public/robots.txt` | 站点地图地址 |
 
----
+**顺序**：域名先解析成功，再改这三处。反过来的话，线上网站会有一段时间声称自己的正式地址是个打不开的域名。
+
+### 微信拦截 pages.dev（已由换域名解决）
+
+微信内置浏览器会对 `pages.dev` 整个域名报"该网页所属平台可能存在被他人恶意利用"。拦的不是我们——免费二级域名平台被大量用于钓鱼，微信按父域名一刀切。网站本身已核查无异常：无外部脚本、无 iframe、证书正常。
+
+换到 `gag.golf` 后自动解决。那个警告页底部的「申请恢复访问」没有意义，要申诉也得由 Cloudflare 去申诉自己的域名。
 
 ## 八、安全须知
 
