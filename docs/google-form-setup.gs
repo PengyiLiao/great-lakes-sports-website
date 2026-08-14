@@ -2,31 +2,32 @@
  * 2026 GAG Inaugural Tournament — Entry Form
  * 一次性生成整张 Google 表单。
  *
- * ── 怎么用 ────────────────────────────────────────────────────────────
- * 有两条路，任选其一。**推荐方式 B**，因为不依赖 Google 菜单的位置——
- * 那个菜单项的名字和位置被改过好几次。
+ * ── 怎么用（推荐：createEntryForm）──────────────────────────────────────
+ * 1. 浏览器打开 https://script.google.com/home/projects/create
+ * 2. 把编辑器里原有内容全部删掉，粘贴本文件全部内容
+ * 3. 顶部函数下拉选 **createEntryForm**，点「运行 / Run」
+ * 4. 首次运行要授权（见下方说明）
+ * 5. 运行完，点底部「执行日志 / Execution log」，里面会打印两条网址：
+ *      · 编辑链接 —— 你自己改表单用
+ *      · 填写链接 —— 发给参赛者、也是要给我填进网站的那条
  *
- * 【方式 B｜独立脚本，最稳】
- *   1. 浏览器打开 https://script.google.com/home/projects/create
- *   2. 把编辑器里原有内容全部删掉，粘贴本文件全部内容
- *   3. 把下面 FORM_URL 的引号里填上你表单的**编辑链接**
- *      （表单地址栏那一串，形如 https://docs.google.com/forms/d/xxxxx/edit）
- *   4. 顶部函数下拉选 buildEntryForm，点「运行 / Run」
- *   5. 首次运行要授权（见下方说明）
+ * 这个函数会**新建一张表单**，所以不需要复制表单 ID、不需要对齐账号、
+ * 也不用在 Google 菜单里找「Apps 脚本」。之前手工建的那张空表单可以直接删掉。
  *
- * 【方式 A｜绑定脚本】
- *   1. 在表单编辑页，右上角 ⋮ 菜单里找「Apps 脚本 / Apps Script」
- *      （旧版叫「脚本编辑器 / Script editor」）
- *   2. 粘贴本文件内容，FORM_URL 保持留空
- *   3. 运行 buildEntryForm
+ * ── 如果想改造已有的表单 ──────────────────────────────────────────────
+ * 用 buildEntryForm 而不是 createEntryForm，二选一：
+ *   · 绑定脚本：从表单页 ⋮ 菜单进 Apps Script，FORM_URL 留空
+ *   · 独立脚本：把表单的**编辑链接**填进 FORM_URL
+ * 报 "No item with the given ID could be found" 通常是脚本和表单不在
+ * 同一个 Google 账号下——这时用 createEntryForm 最省事。
  *
  * ── 关于授权警告 ──────────────────────────────────────────────────────
  * 首次运行 Google 会弹「未验证的应用」。点「高级 / Advanced」→
- * 「转至…（不安全）/ Go to … (unsafe)」。这个警告是给陌生开发者发布的
- * 脚本准备的；这段代码是你自己粘贴、只操作你自己的表单，没有第三方参与。
+ * 「转至…（不安全）/ Go to … (unsafe)」→「允许 / Allow」。
+ * 这个警告是给陌生开发者发布给公众的脚本准备的；这段代码是你自己粘贴进
+ * 自己账号、只操作自己的表单，没有第三方参与。
  *
- * ⚠️ 脚本开头会清空表单里已有的题目，所以只在空表单上跑一次。
- *    跑第二次会把手工改过的内容也一起清掉。
+ * ⚠️ buildEntryForm 会清空目标表单里已有的题目。只在空表单上跑。
  *
  * ── 刻意不包含的 ──────────────────────────────────────────────────────
  * · 报名费与付款方式 —— 报名和收款分两步：先核验差点与名额，
@@ -36,30 +37,45 @@
  */
 
 /**
- * 表单的编辑链接。
- *
- * 用独立脚本（方式 B）时必须填；用绑定脚本（方式 A）时留空即可。
- * 形如：https://docs.google.com/forms/d/1AbC.../edit
+ * 表单的编辑链接。只有 buildEntryForm 用得到。
+ * 用绑定脚本时留空；用独立脚本时填 https://docs.google.com/forms/d/xxxxx/edit
  */
 const FORM_URL = '';
 
+/** 推荐入口：新建一张配置好的表单。 */
+function createEntryForm() {
+  const form = FormApp.create('2026 GAG Inaugural Tournament — Entry Form');
+  populate(form);
+
+  Logger.log('✅ 表单已创建，共 %s 个题目项。', form.getItems().length);
+  Logger.log('📝 编辑链接（自己改表单用）：%s', form.getEditUrl());
+  Logger.log('🔗 填写链接（发给参赛者 / 填进网站）：%s', form.getPublishedUrl());
+}
+
+/** 改造已有表单。会先清空里面的题目。 */
 function buildEntryForm() {
-  const form = FORM_URL
-    ? FormApp.openByUrl(FORM_URL)
-    : FormApp.getActiveForm();
+  const form = FORM_URL ? FormApp.openByUrl(FORM_URL) : FormApp.getActiveForm();
 
   if (!form) {
     throw new Error(
-      '找不到表单。用独立脚本时，请把表单的编辑链接填进本文件顶部的 FORM_URL。',
+      '找不到表单。改用 createEntryForm 新建一张，最省事；' +
+        '或把表单的编辑链接填进本文件顶部的 FORM_URL。',
     );
   }
 
-  // 清空已有题目（含新建表单时默认的那道 Untitled Question）
   const existing = form.getItems();
   for (let i = existing.length - 1; i >= 0; i--) {
     form.deleteItem(existing[i]);
   }
 
+  populate(form);
+
+  Logger.log('✅ 完成，共 %s 个题目项。', form.getItems().length);
+  Logger.log('🔗 填写链接：%s', form.getPublishedUrl());
+}
+
+/** 把全部分节和题目写进 form。上面两个入口共用。 */
+function populate(form) {
   form
     .setTitle('2026 GAG Inaugural Tournament — Entry Form')
     .setDescription(
@@ -173,7 +189,10 @@ function buildEntryForm() {
   form
     .addMultipleChoiceItem()
     .setTitle('Preferred tee time window')
-    .setHelpText('First tee 8:05 a.m., last tee 11:59 a.m. We will do our best, but times are assigned by the committee.')
+    .setHelpText(
+      'First tee 8:05 a.m., last tee 11:59 a.m. We will do our best, but times ' +
+        'are assigned by the committee.',
+    )
     .setChoiceValues([
       '8:05 – 9:30 a.m.',
       '9:30 – 11:00 a.m.',
@@ -293,6 +312,4 @@ function buildEntryForm() {
     underEighteen.createChoice('Yes', minorsPage),
     underEighteen.createChoice('No', confirmationsPage),
   ]);
-
-  Logger.log('完成：共 %s 个题目项。', form.getItems().length);
 }
