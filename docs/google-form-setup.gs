@@ -3,12 +3,27 @@
  * 一次性生成整张 Google 表单。
  *
  * ── 怎么用 ────────────────────────────────────────────────────────────
- * 1. 打开你的表单，右上角 ⋮ →「脚本编辑器 / Script editor」
- * 2. 把编辑器里原有内容全部删掉，粘贴本文件全部内容
- * 3. 顶部函数下拉选 buildEntryForm，点「运行 / Run」
- * 4. 首次运行会要求授权（Google 会警告"未验证的应用"，
- *    点「高级」→「转至…（不安全）」即可——这是你自己写给自己表单的脚本）
- * 5. 回到表单标签页刷新，26 个问题全部就位
+ * 有两条路，任选其一。**推荐方式 B**，因为不依赖 Google 菜单的位置——
+ * 那个菜单项的名字和位置被改过好几次。
+ *
+ * 【方式 B｜独立脚本，最稳】
+ *   1. 浏览器打开 https://script.google.com/home/projects/create
+ *   2. 把编辑器里原有内容全部删掉，粘贴本文件全部内容
+ *   3. 把下面 FORM_URL 的引号里填上你表单的**编辑链接**
+ *      （表单地址栏那一串，形如 https://docs.google.com/forms/d/xxxxx/edit）
+ *   4. 顶部函数下拉选 buildEntryForm，点「运行 / Run」
+ *   5. 首次运行要授权（见下方说明）
+ *
+ * 【方式 A｜绑定脚本】
+ *   1. 在表单编辑页，右上角 ⋮ 菜单里找「Apps 脚本 / Apps Script」
+ *      （旧版叫「脚本编辑器 / Script editor」）
+ *   2. 粘贴本文件内容，FORM_URL 保持留空
+ *   3. 运行 buildEntryForm
+ *
+ * ── 关于授权警告 ──────────────────────────────────────────────────────
+ * 首次运行 Google 会弹「未验证的应用」。点「高级 / Advanced」→
+ * 「转至…（不安全）/ Go to … (unsafe)」。这个警告是给陌生开发者发布的
+ * 脚本准备的；这段代码是你自己粘贴、只操作你自己的表单，没有第三方参与。
  *
  * ⚠️ 脚本开头会清空表单里已有的题目，所以只在空表单上跑一次。
  *    跑第二次会把手工改过的内容也一起清掉。
@@ -20,8 +35,24 @@
  *   对外部报名是不必要的门槛，所以改用手填邮箱并做格式校验。
  */
 
+/**
+ * 表单的编辑链接。
+ *
+ * 用独立脚本（方式 B）时必须填；用绑定脚本（方式 A）时留空即可。
+ * 形如：https://docs.google.com/forms/d/1AbC.../edit
+ */
+const FORM_URL = '';
+
 function buildEntryForm() {
-  const form = FormApp.getActiveForm();
+  const form = FORM_URL
+    ? FormApp.openByUrl(FORM_URL)
+    : FormApp.getActiveForm();
+
+  if (!form) {
+    throw new Error(
+      '找不到表单。用独立脚本时，请把表单的编辑链接填进本文件顶部的 FORM_URL。',
+    );
+  }
 
   // 清空已有题目（含新建表单时默认的那道 Untitled Question）
   const existing = form.getItems();
