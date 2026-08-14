@@ -1,34 +1,68 @@
 /**
  * Copy for the home page.
  *
- * ⚠️ The partnership paragraph is draft copy written to give the section
- * something coherent to say. It deliberately avoids naming sponsorship tiers
- * or figures. Have the client replace or approve it before publication.
+ * English is taken from the client's Copy Deck V1.0. The three section
+ * teasers below deliberately restate the leading line of the page they point
+ * at, so the home page reads as a map of the site rather than as separate
+ * marketing copy that then has to be kept in sync.
  */
 
 import type { Lang } from "../i18n/config";
 
 type HomeContent = {
-  /** Vision statement, set as the page's h1. */
-  tagline: string;
-  intro: string;
-  partnership: string;
+  /** The paragraph under "GAG is more than a golf tournament." */
+  positioning: string;
+  teasers: {
+    /** Route this section points at. */
+    route: string;
+    /** Heading key is supplied by the page; this is the standing line. */
+    line: string;
+    body: string;
+  }[];
 };
 
 export const home: Record<Lang, HomeContent> = {
   en: {
-    tagline: "Connecting the Great Lakes to the World",
-    intro:
-      "Great Lakes Sports Inc. is a Canadian sports organization headquartered in Toronto, Ontario. Founded with a long-term vision, the company is committed to developing world-class sporting events, building international partnerships, and creating sustainable platforms that connect athletes, organizations, businesses, and communities through sport.",
-    partnership:
-      "Great Lakes Sports Inc. works with partners who share a commitment to excellence in amateur sport. Sponsorship and corporate event opportunities are available throughout the tournament season.",
+    positioning:
+      "GAG is a youth-focused amateur golf platform connecting young golfers, universities, tournaments and opportunities across Canada and around the world.",
+    teasers: [
+      {
+        route: "/players",
+        line: "Meet the next generation.",
+        body: "Junior, university and elite amateur golfers aged 16–25, and the step each of them is trying to take next.",
+      },
+      {
+        route: "/university",
+        line: "Connecting universities through golf.",
+        body: "University golf is the bridge between junior golf and the next level of competition. We are building the network that carries players across it.",
+      },
+      {
+        route: "/community",
+        line: "One game. One community. A world of opportunities.",
+        body: "Players, coaches, universities, clubs, partners, sponsors and golf organizations — GAG is built by all of them.",
+      },
+    ],
   },
 
   fr: {
-    tagline: "Relier les Grands Lacs au monde",
-    intro:
-      "Great Lakes Sports Inc. est une organisation sportive canadienne dont le siège social est situé à Toronto, en Ontario. Fondée avec une vision à long terme, l'entreprise s'engage à développer des événements sportifs de calibre mondial, à établir des partenariats internationaux et à créer des plateformes durables qui unissent athlètes, organisations, entreprises et communautés par le sport.",
-    partnership:
-      "Great Lakes Sports Inc. collabore avec des partenaires qui partagent son engagement envers l'excellence dans le sport amateur. Des occasions de commandite et d'événements corporatifs sont offertes tout au long de la saison.",
+    positioning:
+      "GAG est une plateforme de golf amateur dédiée à la relève, qui relie jeunes golfeurs, universités, tournois et occasions de développement au Canada et dans le monde.",
+    teasers: [
+      {
+        route: "/players",
+        line: "Voici la relève.",
+        body: "Golfeurs juniors, universitaires et amateurs d'élite de 16 à 25 ans, et l'étape que chacun cherche à franchir.",
+      },
+      {
+        route: "/university",
+        line: "Relier les universités par le golf.",
+        body: "Le golf universitaire est le pont entre le golf junior et la compétition de haut niveau. Nous bâtissons le réseau qui permet aux joueurs de le franchir.",
+      },
+      {
+        route: "/community",
+        line: "One Game. One Community. A World of Opportunities.",
+        body: "Joueurs, entraîneurs, universités, clubs, partenaires, commanditaires et organisations de golf — GAG se construit avec eux tous.",
+      },
+    ],
   },
 };

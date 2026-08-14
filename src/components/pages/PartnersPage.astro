@@ -1,0 +1,82 @@
+---
+/**
+ * Partners page body, rendered once per language.
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHeader from "../PageHeader.astro";
+import Button from "../Button.astro";
+import { contactEmail } from "../../config/site";
+import { partners } from "../../content/partners";
+import { localizePath, type Lang } from "../../i18n/config";
+import { useTranslations } from "../../i18n/ui";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const copy = partners[lang];
+---
+
+<BaseLayout lang={lang} route="/partners" title={t("page.partners")}>
+  <PageHeader
+    eyebrow={t("nav.partners")}
+    title="Partner with GAG"
+    lede={t("partners.lede")}
+  />
+
+  <section class="mx-auto max-w-4xl px-6 py-20 sm:py-24">
+    <div class="space-y-6 text-lg text-ink-muted">
+      {copy.intro.map((paragraph) => <p>{paragraph}</p>)}
+    </div>
+  </section>
+
+  <section class="bg-ivory-200 py-20 sm:py-24">
+    <div class="mx-auto max-w-7xl px-6">
+      <p class="eyebrow text-gold-600">{t("partners.categories")}</p>
+
+      <ul class="mt-10 grid gap-x-10 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          copy.welcomes.map((who) => (
+            <li class="border-t border-forest-900/15 pt-4 font-display text-lg font-semibold tracking-[0.04em] text-forest-900 uppercase">
+              {who}
+            </li>
+          ))
+        }
+      </ul>
+
+      <ul class="mt-14 flex flex-wrap gap-3">
+        {
+          copy.categories.map((category) => (
+            <li class="border border-forest-900/20 px-5 py-3 font-display text-sm font-semibold tracking-[0.08em] text-forest-800 uppercase">
+              {category}
+            </li>
+          ))
+        }
+      </ul>
+
+      <p class="mt-12 max-w-2xl text-ink-muted">{copy.closing}</p>
+    </div>
+  </section>
+
+  <section class="bg-forest-950 py-20 text-center text-ivory-50 sm:py-24">
+    <div class="mx-auto max-w-4xl px-6">
+      <h2 class="text-3xl uppercase sm:text-4xl">{t("cta.partner")}</h2>
+
+      <div class="mt-12">
+        {
+          contactEmail ? (
+            <Button href={`mailto:${contactEmail}`} variant="onDark">
+              {t("cta.enquire")}
+            </Button>
+          ) : (
+            <Button href={localizePath("/contact", lang)} variant="onDark">
+              {t("cta.contact")}
+            </Button>
+          )
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>

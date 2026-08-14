@@ -2,34 +2,35 @@
 /**
  * The masthead at the top of an interior page.
  *
- * Centred, with a gold rule beneath the title, so that every section of the
- * site opens the same way and a visitor always knows where they have landed.
+ * Set on the brand green with large, tight, left-aligned display type. The
+ * previous centred-and-gold-ruled treatment read as a heritage club; this one
+ * reads as a competition — which is the difference the brief asks for.
  */
 interface Props {
-  /** Small line above the title — section or category. */
+  /** Small line above the title. */
   eyebrow?: string;
   title: string;
-  /** Optional standfirst beneath the rule. */
+  /** Optional standfirst — the page's one-line proposition. */
   lede?: string;
 }
 
 const { eyebrow, title, lede } = Astro.props;
 ---
 
-<section class="mx-auto max-w-3xl px-6 pt-16 pb-10 text-center sm:pt-24 sm:pb-14">
-  {
-    eyebrow && (
-      <p class="text-xs tracking-[0.32em] text-gold-600 uppercase sm:text-sm">
-        {eyebrow}
-      </p>
-    )
-  }
+<section class="bg-forest-950 text-ivory-50">
+  <div class="mx-auto max-w-7xl px-6 py-20 sm:py-28">
+    {eyebrow && <p class="eyebrow text-gold-300">{eyebrow}</p>}
 
-  <h1 class="mt-6 font-display text-4xl text-forest-900 sm:text-5xl">
-    {title}
-  </h1>
+    <h1 class="mt-5 text-5xl uppercase sm:text-6xl md:text-7xl">
+      {title}
+    </h1>
 
-  <div class="mx-auto mt-8 h-px w-20 bg-gold-400"></div>
-
-  {lede && <p class="mt-8 text-lg text-ink-muted">{lede}</p>}
+    {
+      lede && (
+        <p class="mt-8 max-w-2xl font-display text-xl font-medium text-ivory-200 sm:text-2xl">
+          {lede}
+        </p>
+      )
+    }
+  </div>
 </section>

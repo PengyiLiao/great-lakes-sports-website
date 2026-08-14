@@ -4,9 +4,10 @@
  */
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PageHeader from "../PageHeader.astro";
+import Button from "../Button.astro";
 import { about } from "../../content/about";
 import { site } from "../../config/site";
-import type { Lang } from "../../i18n/config";
+import { localizePath, type Lang } from "../../i18n/config";
 import { useTranslations } from "../../i18n/ui";
 
 interface Props {
@@ -19,97 +20,172 @@ const copy = about[lang];
 ---
 
 <BaseLayout lang={lang} route="/about" title={t("page.about")}>
-  <PageHeader eyebrow={site.legalName} title={t("page.about")} />
+  <PageHeader
+    eyebrow={`${site.name} — ${site.fullName}`}
+    title={t("about.who")}
+    lede={copy.who[0]}
+  />
 
-  {/* Introduction */}
-  <section class="mx-auto max-w-3xl px-6">
+  {/* Who we are */}
+  <section class="mx-auto max-w-4xl px-6 py-20 sm:py-24">
     <div class="space-y-6 text-lg text-ink-muted">
-      {copy.intro.map((paragraph) => <p>{paragraph}</p>)}
+      {copy.who.slice(1).map((paragraph) => <p>{paragraph}</p>)}
+    </div>
+
+    <ul class="mt-12 flex flex-wrap gap-x-10 gap-y-3">
+      {
+        copy.whoClosing.map((line) => (
+          <li class="font-display text-xl font-bold tracking-tight text-forest-900 sm:text-2xl">
+            {line}
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  {/* Vision */}
+  <section class="bg-forest-950 py-20 text-ivory-50 sm:py-24">
+    <div class="mx-auto max-w-4xl px-6">
+      <p class="eyebrow text-gold-300">{t("about.vision")}</p>
+      <p class="mt-6 font-display text-3xl font-bold tracking-tight sm:text-4xl">
+        {copy.vision.line}
+      </p>
+      <div class="mt-8 space-y-5 text-lg text-ivory-200">
+        {copy.vision.body.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+      <p class="mt-10 font-display text-2xl font-bold tracking-tight text-gold-300 uppercase">
+        {copy.vision.closing}
+      </p>
     </div>
   </section>
 
-  {/* Vision and mission, presented as a symmetrical pair. The vertical rule
-      between them only appears once there is room for two columns. */}
-  <section class="mx-auto mt-20 max-w-5xl px-6">
-    <div class="grid gap-12 md:grid-cols-2 md:gap-0">
-      <div class="text-center md:px-12">
-        <h2 class="text-xs tracking-[0.3em] text-gold-600 uppercase">
-          {t("about.vision")}
-        </h2>
-        <p class="mt-6 font-display text-2xl text-forest-900 sm:text-3xl">
-          {copy.vision}
-        </p>
-      </div>
+  {/* Mission */}
+  <section class="mx-auto max-w-7xl px-6 py-20 sm:py-24">
+    <p class="eyebrow text-gold-600">{t("about.mission")}</p>
+    <h2 class="mt-6 max-w-3xl text-3xl uppercase text-forest-900 sm:text-4xl">
+      {copy.mission.line}
+    </h2>
+    <p class="mt-6 max-w-2xl text-lg text-ink-muted">{copy.mission.intro}</p>
 
-      <div class="text-center md:border-l md:border-gold-400/40 md:px-12">
-        <h2 class="text-xs tracking-[0.3em] text-gold-600 uppercase">
-          {t("about.mission")}
-        </h2>
-        <p class="mt-6 font-display text-2xl text-forest-900 sm:text-3xl">
-          {copy.mission}
-        </p>
-      </div>
-    </div>
+    <ul class="mt-14 grid gap-x-10 gap-y-12 sm:grid-cols-2">
+      {
+        copy.mission.pillars.map((pillar, index) => (
+          <li class="border-t-2 border-forest-900 pt-6">
+            <p class="eyebrow text-gold-600">
+              {String(index + 1).padStart(2, "0")}
+            </p>
+            <h3 class="mt-3 text-xl uppercase text-forest-900 sm:text-2xl">
+              {pillar.title}
+            </h3>
+            <p class="mt-4 text-ink-muted">{pillar.body}</p>
+          </li>
+        ))
+      }
+    </ul>
   </section>
 
-  {/* Core values — a full-width band in the brand green. The change of ground
-      gives the page a clear rhythm and stops it reading as one long column. */}
-  <section class="mt-24 bg-forest-900 py-16 text-center sm:py-20">
-    <div class="mx-auto max-w-5xl px-6">
-      <h2 class="text-xs tracking-[0.3em] text-gold-300 uppercase">
-        {t("about.values")}
+  {/* Story */}
+  <section class="bg-ivory-200 py-20 sm:py-24">
+    <div class="mx-auto max-w-4xl px-6">
+      <p class="eyebrow text-gold-600">{t("about.story")}</p>
+      <h2 class="mt-6 text-3xl uppercase text-forest-900 sm:text-4xl">
+        {copy.story.line}
       </h2>
 
-      <ul
-        class="mt-10 flex flex-col items-center justify-center gap-y-6 sm:flex-row sm:flex-wrap sm:gap-x-10 sm:gap-y-8"
-      >
+      <div class="mt-8 space-y-6 text-lg text-ink-muted">
+        {copy.story.body.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+
+      <ul class="mt-12 space-y-3 border-l-2 border-gold-400 pl-6">
         {
-          copy.coreValues.map((value, index) => (
-            <li class="flex items-center gap-x-10">
-              {index > 0 && (
-                <span
-                  aria-hidden="true"
-                  class="hidden h-1.5 w-1.5 rotate-45 bg-gold-400 sm:block"
-                />
-              )}
-              <span class="font-display text-2xl text-ivory-100 sm:text-[1.75rem]">
-                {value}
-              </span>
+          copy.story.stance.map((line) => (
+            <li class="font-display text-xl font-semibold tracking-tight text-forest-900">
+              {line}
             </li>
           ))
         }
       </ul>
+
+      <p class="mt-12 text-lg text-ink-muted">{copy.story.closing}</p>
     </div>
   </section>
 
-  {/* Closing statement */}
-  <section class="mx-auto max-w-3xl px-6 py-20 text-center sm:py-24">
-    <p class="font-display text-2xl text-forest-900 italic sm:text-3xl">
-      {copy.closing}
+  {/* Values */}
+  <section class="mx-auto max-w-7xl px-6 py-20 sm:py-24">
+    <p class="eyebrow text-gold-600">{t("about.values")}</p>
+
+    <ul class="mt-12 grid gap-x-10 gap-y-12 md:grid-cols-3">
+      {
+        copy.values.pillars.map((pillar) => (
+          <li>
+            <h3 class="text-3xl uppercase text-forest-900 sm:text-4xl">
+              {pillar.title}
+            </h3>
+            <div class="mt-5 h-0.5 w-12 bg-gold-400" />
+            <p class="mt-5 text-ink-muted">{pillar.body}</p>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="mt-16 font-display text-2xl font-bold tracking-tight text-forest-900 sm:text-3xl">
+      {copy.values.closing}
     </p>
   </section>
 
-  {/* Chairman's message */}
-  <section class="bg-ivory-200 py-20 sm:py-24">
-    <div class="mx-auto max-w-3xl px-6">
-      <h2 class="text-center text-xs tracking-[0.3em] text-gold-600 uppercase">
-        {t("about.chairman")}
-      </h2>
+  {/* Governance */}
+  <section class="bg-forest-950 py-20 text-ivory-50 sm:py-24">
+    <div class="mx-auto max-w-7xl px-6">
+      <p class="eyebrow text-gold-300">{t("about.governance")}</p>
+      <h2 class="mt-6 text-3xl uppercase sm:text-4xl">{copy.governance.line}</h2>
+      <p class="mt-6 max-w-2xl text-lg text-ivory-200">{copy.governance.intro}</p>
 
-      <div class="mx-auto mt-8 h-px w-20 bg-gold-400"></div>
+      <dl class="mt-14 grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          copy.governance.principles.map((principle) => (
+            <div class="border-t border-ivory-200/25 pt-5">
+              <dt class="font-display text-lg font-semibold tracking-[0.06em] text-gold-300 uppercase">
+                {principle.title}
+              </dt>
+              <dd class="mt-3 text-ivory-200">{principle.body}</dd>
+            </div>
+          ))
+        }
+      </dl>
 
-      <div class="mt-12 space-y-6 text-lg text-ink-muted">
-        {copy.chairman.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
-      </div>
+      <p class="mt-14 font-display text-2xl font-bold tracking-tight sm:text-3xl">
+        {copy.governance.closing}
+      </p>
+    </div>
+  </section>
 
-      <div class="mt-12 border-t border-gold-400/50 pt-8">
-        <p class="font-display text-2xl text-forest-900">
-          {copy.chairman.name}
-        </p>
-        <p class="mt-2 text-sm tracking-[0.18em] text-ink-muted uppercase">
-          {t("about.chairmanTitle")}, {copy.chairman.organization}
-        </p>
-      </div>
+  {/* Youth Golf Fund */}
+  <section class="mx-auto max-w-4xl px-6 py-20 sm:py-24">
+    <p class="eyebrow text-gold-600">{t("about.fund")}</p>
+    <h2 class="mt-6 text-3xl uppercase text-forest-900 sm:text-4xl">
+      {copy.fund.line}
+    </h2>
+
+    <div class="mt-8 space-y-5 text-lg text-ink-muted">
+      {copy.fund.intro.map((paragraph) => <p>{paragraph}</p>)}
+    </div>
+
+    <ul class="mt-10 flex flex-wrap gap-3">
+      {
+        copy.fund.areas.map((area) => (
+          <li class="border border-forest-900/20 px-4 py-2 font-display text-sm font-semibold tracking-[0.08em] text-forest-800 uppercase">
+            {area}
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="mt-12 font-display text-2xl font-bold tracking-tight text-forest-900">
+      {copy.fund.closing}
+    </p>
+
+    <div class="mt-12">
+      <Button href={localizePath("/contact", lang)}>{t("cta.contact")}</Button>
     </div>
   </section>
 </BaseLayout>

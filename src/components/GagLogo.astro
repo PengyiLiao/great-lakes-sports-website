@@ -1,79 +1,65 @@
 ---
 /**
- * The GAG identity mark, drawn as vector rather than placed as an image.
+ * The GAG wordmark.
  *
- * The supplied brand material is a set of rendered mockup sheets — flattened
- * JPEGs with baked-in backgrounds and drop shadows. Those are useful as
- * photography, but they cannot serve as a logo: there is no transparency, so
- * the mark cannot sit on the green ground; the raster edges soften on a
- * high-density display; and the colour is fixed at whatever the render used.
+ * The client's brand direction is explicit: the primary trademark is the
+ * letters GAG alone, kept very clean, so that the mark itself becomes
+ * recognisable the way IBM or BMW are — rather than every application having
+ * to carry an entire picture. The flag-and-green device that appeared in
+ * earlier drafts is therefore not part of the master mark; it belongs to
+ * event collateral, applied separately.
  *
- * Redrawing the mark solves all three at once. It inherits `currentColor`, so
- * the same component renders forest green on ivory and ivory on green; it
- * stays sharp at any size; and it costs well under a kilobyte.
+ * A small maple leaf is available as a secondary Canadian identifier, for
+ * the places where the country matters — international-facing pages and
+ * partner material — rather than on every instance of the logo.
  *
- * The mark scales with the caller's font size — the flag is sized in `em` —
- * so a single `text-6xl` on the parent grows the whole lockup in proportion.
+ * Drawn as text rather than an image so it inherits `currentColor`: the same
+ * component renders forest green on ivory and ivory on green, stays sharp at
+ * any size, and costs nothing to download.
  */
 interface Props {
-  /** Classes for the wrapper. Set the size and colour from the caller. */
+  /** Classes for the wrapper. Set size and colour from the caller. */
   class?: string;
-  /** Render the wordmark on its own, without the flag above it. */
-  wordmarkOnly?: boolean;
+  /** Show the secondary Canadian identifier beside the mark. */
+  maple?: boolean;
   /**
-   * Accessible name for the lockup. Pass `null` where the logo sits beside
-   * text that already names the brand, so screen readers do not hear it twice.
+   * Accessible name. Pass `null` where the logo sits beside text that already
+   * names the brand, so screen readers do not hear it twice.
    */
   label?: string | null;
 }
 
 const {
   class: className = "",
-  wordmarkOnly = false,
+  maple = false,
   label = "GAG — Great Lakes Amateur Golf",
 } = Astro.props;
 ---
 
 <span
-  class:list={[
-    "inline-flex flex-col items-center leading-none",
-    className,
-  ]}
+  class:list={["inline-flex items-center gap-[0.28em] leading-none", className]}
   role={label ? "img" : undefined}
   aria-label={label ?? undefined}
 >
-  {
-    !wordmarkOnly && (
-      <svg
-        viewBox="0 0 120 44"
-        class="mb-[0.14em] h-[0.46em] w-auto"
-        fill="none"
-        aria-hidden="true"
-      >
-        {/* The green: a shallow mound the flag is planted in. */}
-        <path
-          d="M6 38c14-11 32-16 54-16s40 5 54 16"
-          stroke="currentColor"
-          stroke-width="3.5"
-          stroke-linecap="round"
-        />
-        {/* Flagstick. */}
-        <path
-          d="M60 22V5"
-          stroke="currentColor"
-          stroke-width="3.5"
-          stroke-linecap="round"
-        />
-        {/* Pennant. */}
-        <path d="M62.5 5.5 84 11.5 62.5 17.5Z" fill="currentColor" />
-      </svg>
-    )
-  }
-
   <span
-    class="font-display font-semibold tracking-[0.05em]"
+    class="font-wordmark font-semibold tracking-[0.04em]"
     aria-hidden={label ? "true" : undefined}
   >
     GAG
   </span>
+
+  {
+    maple && (
+      <svg
+        viewBox="0 0 24 24"
+        class="h-[0.42em] w-auto shrink-0"
+        fill="currentColor"
+        aria-hidden="true"
+      >
+        {/* Eleven-point maple leaf, simplified to hold its shape at small
+            sizes where a literal outline would turn to mush. */}
+        <path d="M12 1.8l1.5 3.1a.5.5 0 0 0 .6.26l1.4-.4-.7 3.3a.5.5 0 0 0 .8.5l2.5-2.2.8 1.6a.5.5 0 0 0 .6.24l2.6-.7-.9 3.1a.5.5 0 0 0 .2.55l1 .7-4.5 3.8a.6.6 0 0 0-.2.6l.4 1.5-4.4-.8a.5.5 0 0 0-.6.5l.2 4.05h-1.4l.2-4.05a.5.5 0 0 0-.6-.5l-4.4.8.4-1.5a.6.6 0 0 0-.2-.6L3.2 12.4l1-.7a.5.5 0 0 0 .2-.55l-.9-3.1 2.6.7a.5.5 0 0 0 .6-.24l.8-1.6 2.5 2.2a.5.5 0 0 0 .8-.5l-.7-3.3 1.4.4a.5.5 0 0 0 .6-.26L12 1.8z" />
+      </svg>
+    )
+  }
 </span>

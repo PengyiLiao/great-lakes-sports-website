@@ -1,0 +1,116 @@
+---
+/**
+ * Players page body, rendered once per language.
+ *
+ * The privacy section is given real weight rather than being tucked into a
+ * legal footer. This platform will publish profiles of golfers as young as
+ * sixteen, and the people deciding whether to let them take part are their
+ * parents and coaches — who should be able to see the commitment without
+ * hunting for it.
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHeader from "../PageHeader.astro";
+import Button from "../Button.astro";
+import { ageGroups, players, profileFields } from "../../content/players";
+import { localizePath, type Lang } from "../../i18n/config";
+import { useTranslations } from "../../i18n/ui";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const copy = players[lang];
+---
+
+<BaseLayout lang={lang} route="/players" title={t("page.players")}>
+  <PageHeader
+    eyebrow={t("nav.players")}
+    title={t("players.lede")}
+    lede={copy.intro[0]}
+  />
+
+  {/* Age groups */}
+  <section class="mx-auto max-w-7xl px-6 py-20 sm:py-24">
+    <p class="max-w-3xl text-lg text-ink-muted">{copy.intro[1]}</p>
+
+    <p class="eyebrow mt-16 text-gold-600">{t("players.groups")}</p>
+
+    <ul class="mt-8 grid gap-px border border-forest-900/10 bg-forest-900/10 sm:grid-cols-3">
+      {
+        ageGroups.map((group) => (
+          <li class="bg-ivory-50 p-8 sm:p-10">
+            <p class="font-display text-4xl font-bold tracking-tight text-forest-900 sm:text-5xl">
+              {group.range}
+            </p>
+            <p class="mt-4 font-display text-lg font-semibold tracking-[0.06em] text-ink uppercase">
+              {group.label[lang]}
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="mt-12 font-display text-2xl font-bold tracking-tight text-forest-900 sm:text-3xl">
+      {t("players.aim")}
+    </p>
+  </section>
+
+  {/* What a profile will show */}
+  <section class="bg-ivory-200 py-20 sm:py-24">
+    <div class="mx-auto max-w-7xl px-6">
+      <p class="eyebrow text-gold-600">{t("players.profile")}</p>
+
+      <ul class="mt-10 grid gap-x-10 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          profileFields[lang].map((field) => (
+            <li class="border-t border-forest-900/15 pt-4 font-display text-lg font-semibold tracking-[0.04em] text-forest-900 uppercase">
+              {field}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  {/* Privacy */}
+  <section class="bg-forest-950 py-20 text-ivory-50 sm:py-24">
+    <div class="mx-auto max-w-4xl px-6">
+      <p class="eyebrow text-gold-300">{t("players.privacy")}</p>
+
+      <h2 class="mt-6 text-3xl uppercase sm:text-4xl">
+        {t("players.privacyLede")}
+      </h2>
+
+      <div class="mt-8 space-y-5 text-lg text-ivory-200">
+        {copy.privacy.body.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+
+      <ul
+        class="mt-10 grid gap-x-10 gap-y-3 border-t border-ivory-200/25 pt-8 sm:grid-cols-2"
+      >
+        {
+          copy.privacy.neverPublic.map((item) => (
+            <li class="flex gap-3 text-ivory-200">
+              <span aria-hidden="true" class="text-gold-400">
+                —
+              </span>
+              {item}
+            </li>
+          ))
+        }
+      </ul>
+
+      <p class="mt-10 border-l-2 border-gold-400 pl-6 text-lg text-ivory-100">
+        {copy.privacy.minors}
+      </p>
+
+      <div class="mt-12">
+        <Button href={localizePath("/contact", lang)} variant="onDark">
+          {t("cta.contact")}
+        </Button>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,53 +1,113 @@
 /**
- * Interface strings — navigation, section headings, buttons, and the standing
- * copy that frames the client's content.
+ * Interface strings — navigation, section headings, buttons, and the short
+ * brand lines that frame the client's content.
  *
  * Long-form copy lives in src/content/. This file holds only the chrome, so
- * that adding a language means translating a short, bounded list rather than
- * hunting through templates.
+ * that adding a language means translating a bounded list rather than hunting
+ * through templates.
  *
- * ⚠️ The French strings are a working translation, using Canadian conventions.
- * Have them reviewed by a francophone before the site is promoted in French.
+ * English is taken from the client's Copy Deck V1.0 and reproduced verbatim,
+ * including its capitalisation, which is part of the brand's voice.
+ *
+ * ⚠️ The French is a working translation using Canadian conventions. Have it
+ * reviewed by a francophone before the site is promoted in French.
+ *
+ * Brand marks are never translated: GAG, "LET'S PLAY GAG!", the event names,
+ * and the three-part positioning line stay in English in both locales, since
+ * translating them would create a second, competing set of names.
  */
 
 import type { Lang } from "./config";
 
 export const ui = {
   en: {
-    "nav.home": "Home",
+    // ── Navigation ──────────────────────────────────────────────────────
+    "nav.events": "Events",
+    "nav.players": "Players",
+    "nav.university": "University",
+    "nav.community": "Community",
     "nav.about": "About",
-    "nav.brand": "Brand",
+    "nav.partners": "Partners",
+    "nav.contact": "Contact",
+    "nav.menu": "Menu",
+    "nav.close": "Close",
 
+    // ── Page titles ─────────────────────────────────────────────────────
     "page.home": "Home",
-    "page.about": "About Us",
-    "page.brand": "Our Brand",
+    "page.events": "Events",
+    "page.players": "Players",
+    "page.university": "University",
+    "page.community": "Community",
+    "page.about": "About GAG",
+    "page.partners": "Partners",
+    "page.contact": "Contact",
 
     "meta.description":
-      "Great Lakes Sports Inc. is a Canadian sports organization headquartered in Toronto, Ontario, developing world-class amateur sporting events and international partnerships.",
+      "GAG — Great Lakes Amateur Golf. A youth-focused amateur golf platform connecting young golfers, universities, tournaments and opportunities across Canada and around the world.",
 
-    "home.flagship": "Our Flagship Series",
-    "home.upcoming": "Upcoming",
+    // ── Home ────────────────────────────────────────────────────────────
+    "home.tagline": "Young Golf. Serious Competition.",
+    "home.moreThan": "GAG is more than a golf tournament.",
+    "home.generations": "The Next Generation of Golfers",
+    "home.nextLevel": "From amateur golf to the next level.",
+    "home.upcoming": "Upcoming Events",
     "home.upcoming.empty":
-      "The schedule for the coming season will be announced shortly.",
-    "home.partnership": "Partnership",
+      "The tournament schedule will be announced shortly.",
+    "home.players": "GAG Players",
+    "home.university": "GAG University",
+    "home.community": "GAG Community",
 
+    // ── Events ──────────────────────────────────────────────────────────
+    "events.lede": "Compete. Connect. Grow.",
+    "events.series": "Our Events",
+    "events.future": "Future Events",
+    "events.detailFields": "Every event page will carry",
+
+    // ── Players ─────────────────────────────────────────────────────────
+    "players.lede": "Meet the Next Generation.",
+    "players.groups": "Age Groups",
+    "players.aim": "To play better. To compete harder. To go further.",
+    "players.profile": "Player Profile",
+    "players.privacy": "Player Privacy",
+    "players.privacyLede": "Your game is public. Your private life is private.",
+
+    // ── University ──────────────────────────────────────────────────────
+    "university.lede": "Connecting Universities Through Golf.",
+    "university.together": "Play together. Compete together. Grow together.",
+
+    // ── Community ───────────────────────────────────────────────────────
+    "community.lede": "One Game. One Community. A World of Opportunities.",
+    "community.who": "Who Makes Up GAG",
+
+    // ── About ───────────────────────────────────────────────────────────
+    "about.who": "Who We Are",
     "about.vision": "Our Vision",
     "about.mission": "Our Mission",
-    "about.values": "Our Core Values",
-    "about.chairman": "Chairman's Message",
-    "about.chairmanTitle": "Chairman",
+    "about.story": "Our Story",
+    "about.values": "Our Values",
+    "about.governance": "Our Governance",
+    "about.fund": "GAG Youth Golf Fund",
 
-    "brand.story": "Brand Story",
-    "brand.motto": "Our Motto",
-    "brand.applications": "Brand Applications",
-    "brand.applicationsNote":
-      "Concept visuals for tournament trophies, player gifts and event merchandise, developed alongside the identity.",
+    // ── Partners ────────────────────────────────────────────────────────
+    "partners.lede": "Great young golf requires a strong community of partners.",
+    "partners.categories": "Who We Work With",
 
-    "cta.about": "About Us",
-    "cta.brand": "Explore the Brand",
-    "cta.enquire": "Enquire",
-    "cta.enquirePending": "Enquiry details to follow",
+    // ── Contact ─────────────────────────────────────────────────────────
+    "contact.lede": "Let's connect.",
+    "contact.audiences": "Who Are You?",
 
+    // ── Calls to action ─────────────────────────────────────────────────
+    "cta.play": "Let's Play GAG",
+    "cta.joinEvent": "Join an Event",
+    "cta.meetPlayers": "Meet Our Players",
+    "cta.viewEvents": "View All Events",
+    "cta.aboutGag": "About GAG",
+    "cta.partner": "Become a GAG Partner",
+    "cta.contact": "Contact Us",
+    "cta.enquire": "Get in Touch",
+    "cta.enquirePending": "Contact details to follow",
+
+    // ── Accessibility ───────────────────────────────────────────────────
     "a11y.skip": "Skip to content",
     "a11y.mainNav": "Main navigation",
     "a11y.footerNav": "Footer navigation",
@@ -55,38 +115,80 @@ export const ui = {
   },
 
   fr: {
-    "nav.home": "Accueil",
+    "nav.events": "Épreuves",
+    "nav.players": "Joueurs",
+    "nav.university": "Universités",
+    "nav.community": "Communauté",
     "nav.about": "À propos",
-    "nav.brand": "Marque",
+    "nav.partners": "Partenaires",
+    "nav.contact": "Nous joindre",
+    "nav.menu": "Menu",
+    "nav.close": "Fermer",
 
     "page.home": "Accueil",
-    "page.about": "À propos",
-    "page.brand": "Notre marque",
+    "page.events": "Épreuves",
+    "page.players": "Joueurs",
+    "page.university": "Universités",
+    "page.community": "Communauté",
+    "page.about": "À propos de GAG",
+    "page.partners": "Partenaires",
+    "page.contact": "Nous joindre",
 
     "meta.description":
-      "Great Lakes Sports Inc. est une organisation sportive canadienne établie à Toronto, en Ontario, qui développe des événements sportifs amateurs de calibre mondial et des partenariats internationaux.",
+      "GAG — Great Lakes Amateur Golf. Une plateforme de golf amateur dédiée à la relève, qui relie jeunes golfeurs, universités, tournois et occasions de développement au Canada et dans le monde.",
 
-    "home.flagship": "Notre série phare",
-    "home.upcoming": "À venir",
-    "home.upcoming.empty":
-      "Le calendrier de la prochaine saison sera annoncé sous peu.",
-    "home.partnership": "Partenariats",
+    "home.tagline": "Young Golf. Serious Competition.",
+    "home.moreThan": "GAG est bien plus qu'un tournoi de golf.",
+    "home.generations": "La relève du golf",
+    "home.nextLevel": "Du golf amateur au niveau supérieur.",
+    "home.upcoming": "Épreuves à venir",
+    "home.upcoming.empty": "Le calendrier des épreuves sera annoncé sous peu.",
+    "home.players": "Joueurs GAG",
+    "home.university": "GAG Universités",
+    "home.community": "Communauté GAG",
 
+    "events.lede": "Compete. Connect. Grow.",
+    "events.series": "Nos épreuves",
+    "events.future": "Épreuves à venir",
+    "events.detailFields": "Chaque page d'épreuve présentera",
+
+    "players.lede": "Voici la relève.",
+    "players.groups": "Catégories d'âge",
+    "players.aim": "Mieux jouer. Rivaliser plus fort. Aller plus loin.",
+    "players.profile": "Profil du joueur",
+    "players.privacy": "Vie privée des joueurs",
+    "players.privacyLede": "Votre jeu est public. Votre vie privée ne l'est pas.",
+
+    "university.lede": "Relier les universités par le golf.",
+    "university.together":
+      "Jouer ensemble. Rivaliser ensemble. Grandir ensemble.",
+
+    "community.lede": "One Game. One Community. A World of Opportunities.",
+    "community.who": "Qui compose GAG",
+
+    "about.who": "Qui nous sommes",
     "about.vision": "Notre vision",
     "about.mission": "Notre mission",
-    "about.values": "Nos valeurs fondamentales",
-    "about.chairman": "Message du président",
-    "about.chairmanTitle": "Président",
+    "about.story": "Notre histoire",
+    "about.values": "Nos valeurs",
+    "about.governance": "Notre gouvernance",
+    "about.fund": "Fonds GAG pour la relève",
 
-    "brand.story": "Histoire de la marque",
-    "brand.motto": "Notre devise",
-    "brand.applications": "Applications de la marque",
-    "brand.applicationsNote":
-      "Visuels conceptuels des trophées, des cadeaux aux joueurs et des articles promotionnels, conçus parallèlement à l'identité visuelle.",
+    "partners.lede":
+      "Un grand golf pour la relève exige une solide communauté de partenaires.",
+    "partners.categories": "Avec qui nous collaborons",
 
-    "cta.about": "À propos de nous",
-    "cta.brand": "Découvrir la marque",
-    "cta.enquire": "Nous joindre",
+    "contact.lede": "Parlons-nous.",
+    "contact.audiences": "Vous êtes…",
+
+    "cta.play": "Let's Play GAG",
+    "cta.joinEvent": "Inscrivez-vous",
+    "cta.meetPlayers": "Découvrir les joueurs",
+    "cta.viewEvents": "Toutes les épreuves",
+    "cta.aboutGag": "À propos de GAG",
+    "cta.partner": "Devenir partenaire de GAG",
+    "cta.contact": "Nous joindre",
+    "cta.enquire": "Écrivez-nous",
     "cta.enquirePending": "Coordonnées à venir",
 
     "a11y.skip": "Aller au contenu",

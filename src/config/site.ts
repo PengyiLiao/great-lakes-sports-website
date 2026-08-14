@@ -3,24 +3,27 @@
  *
  * Anything language-dependent lives in src/i18n/ (interface strings) or
  * src/content/ (page copy). What remains here is the handful of facts that
- * are the same in every language: who the organization is, where it is, and
- * what routes the site has.
+ * are the same in every language: who the organization is, and what routes
+ * the site has.
  */
 
 import type { UIKey } from "../i18n/ui";
 
 export const site = {
-  /** Display name used in the header and footer wordmark. */
-  name: "Great Lakes Sports",
+  /** The brand. The site is GAG's; Great Lakes Sports Inc. is the operator. */
+  name: "GAG",
 
-  /** Full legal entity name, used in titles and the copyright notice. */
+  /** What the initials stand for, used in titles and the accessible logo name. */
+  fullName: "Great Lakes Amateur Golf",
+
+  /** Operating company — the copyright holder and legal entity. */
   legalName: "Great Lakes Sports Inc.",
 
   location: "Toronto, Ontario, Canada",
 
   /**
    * Canonical production origin, used to build absolute URLs for canonical
-   * and social tags. Update once the domain is registered and pointed at
+   * and social tags. Update once gag.ca is registered and pointed at
    * Cloudflare Pages.
    */
   origin: "https://great-lakes-sports.pages.dev",
@@ -47,11 +50,16 @@ export type NavItem = {
 /**
  * Primary navigation.
  *
- * Items are added here as their pages ship, so the navigation never advertises
- * a page that does not yet exist.
+ * Mirrors the section list in the client's copy deck. News and Shop are named
+ * there as later phases and are deliberately absent until they have content —
+ * navigation should never advertise a page that does not exist yet.
  */
 export const nav: NavItem[] = [
-  { key: "nav.home", route: "/" },
+  { key: "nav.events", route: "/events" },
+  { key: "nav.players", route: "/players" },
+  { key: "nav.university", route: "/university" },
+  { key: "nav.community", route: "/community" },
   { key: "nav.about", route: "/about" },
-  { key: "nav.brand", route: "/brand" },
+  { key: "nav.partners", route: "/partners" },
+  { key: "nav.contact", route: "/contact" },
 ];

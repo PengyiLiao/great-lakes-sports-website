@@ -1,0 +1,63 @@
+---
+/**
+ * University page body, rendered once per language.
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHeader from "../PageHeader.astro";
+import Button from "../Button.astro";
+import { university } from "../../content/university";
+import { localizePath, type Lang } from "../../i18n/config";
+import { useTranslations } from "../../i18n/ui";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const copy = university[lang];
+---
+
+<BaseLayout lang={lang} route="/university" title={t("page.university")}>
+  <PageHeader
+    eyebrow="GAG University"
+    title={t("university.lede")}
+    lede={copy.body[0]}
+  />
+
+  <section class="mx-auto max-w-4xl px-6 py-20 sm:py-24">
+    <div class="space-y-6 text-lg text-ink-muted">
+      {copy.body.slice(1).map((paragraph) => <p>{paragraph}</p>)}
+    </div>
+  </section>
+
+  <section class="bg-ivory-200 py-20 sm:py-24">
+    <div class="mx-auto max-w-7xl px-6">
+      <ul class="grid gap-x-10 gap-y-12 md:grid-cols-3">
+        {
+          copy.offers.map((offer) => (
+            <li class="border-t-2 border-forest-900 pt-6">
+              <h2 class="text-2xl uppercase text-forest-900 sm:text-3xl">
+                {offer.title}
+              </h2>
+              <p class="mt-5 text-ink-muted">{offer.body}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="bg-forest-950 py-20 text-center text-ivory-50 sm:py-24">
+    <div class="mx-auto max-w-4xl px-6">
+      <p class="font-display text-3xl font-bold tracking-tight sm:text-4xl">
+        {t("university.together")}
+      </p>
+      <div class="mt-12">
+        <Button href={localizePath("/contact", lang)} variant="onDark">
+          {t("cta.contact")}
+        </Button>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,9 +1,10 @@
 # The second locale was briefly published under /zh before the client set the
-# language policy to English and French. Those URLs were live for about an
-# hour and were listed in the sitemap, so they are redirected rather than left
-# to 404 for anyone who opened or bookmarked one.
-#
-# Safe to delete once nothing references the old paths.
+# language policy. Those URLs were live and listed in the sitemap, so they are
+# redirected rather than left to 404 for anyone who opened or bookmarked one.
+/zh          /fr            301
+/zh/*        /fr/:splat     301
 
-/zh      /fr           301
-/zh/*    /fr/:splat    301
+# The Brand page was folded into About when the site was rebuilt around the
+# youth-platform positioning, which has no separate brand section.
+/brand       /about         301
+/fr/brand    /fr/about      301

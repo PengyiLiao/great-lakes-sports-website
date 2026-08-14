@@ -1,0 +1,40 @@
+---
+/**
+ * A link styled as a button.
+ *
+ * Buttons are square-cornered and set in the display face — the same
+ * vocabulary as scoreboards and tournament signage, which is where this
+ * brand's visual language comes from.
+ */
+interface Props {
+  href: string;
+  /**
+   * `solid` for the primary action on a light ground, `outline` for the
+   * secondary one, `onDark` for either when the section ground is green.
+   */
+  variant?: "solid" | "outline" | "onDark";
+  class?: string;
+}
+
+const { href, variant = "solid", class: className = "" } = Astro.props;
+
+const variants = {
+  solid:
+    "bg-forest-900 text-ivory-50 hover:bg-forest-700",
+  outline:
+    "border border-forest-900 text-forest-900 hover:bg-forest-900 hover:text-ivory-50",
+  onDark:
+    "border border-gold-400 text-gold-300 hover:bg-gold-400 hover:text-forest-950",
+};
+---
+
+<a
+  href={href}
+  class:list={[
+    "inline-block px-7 py-3.5 font-display text-[0.8125rem] font-semibold tracking-[0.14em] uppercase transition-colors duration-200",
+    variants[variant],
+    className,
+  ]}
+>
+  <slot />
+</a>
