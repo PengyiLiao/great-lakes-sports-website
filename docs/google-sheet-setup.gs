@@ -106,7 +106,13 @@ function findResponseSheet_(ss) {
   );
 }
 
-/** Finds a column by header prefix; null when absent. */
+/**
+ * Finds a column by header; null when absent.
+ *
+ * Exact match wins over a prefix match, because "Age" is a prefix of
+ * "Age group" and looking for the first would otherwise be able to return
+ * the second.
+ */
 function findColumn_(sheet, headerPrefix) {
   const headers = sheet
     .getRange(1, 1, 1, sheet.getLastColumn())
@@ -114,6 +120,10 @@ function findColumn_(sheet, headerPrefix) {
     .map((h) => String(h).trim().toLowerCase());
 
   const target = headerPrefix.trim().toLowerCase();
+
+  const exact = headers.indexOf(target);
+  if (exact !== -1) return exact + 1;
+
   const index = headers.findIndex((h) => h.indexOf(target) === 0);
   return index === -1 ? null : index + 1;
 }
@@ -141,9 +151,15 @@ function columnLetter_(n) {
  * date that decides whether a parent's authorization is needed. A player who
  * turns 18 the week after the tournament is a minor for this event.
  *
- * Written as one array formula anchored at row 2 rather than a formula per
- * row: Forms appends rows, and a per-row formula would have to be dragged
- * down after every entry.
+ * Both formulas are anchored in row 1 as ={"Header";ARRAYFORMULA(...)} rather
+ * than placed in row 2. An array formula in row 2 works exactly once: Forms
+ * copies the preceding row into each new response row, the copy lands in row
+ * 3, and the array can no longer expand into an occupied cell — leaving #REF!
+ * in both. Nothing is ever written to row 1, so anchoring there keeps the
+ * column below free to spill into.
+ *
+ * Safe to run again: each column is cleared below row 1 and rewritten, which
+ * also repairs a sheet already stuck in the #REF! state.
  */
 function addAgeColumns_(sheet) {
   const dobCol = findColumn_(sheet, 'date of birth');
@@ -153,34 +169,42 @@ function addAgeColumns_(sheet) {
   }
 
   const dob = columnLetter_(dobCol);
-  const target = `DATE(${TOURNAMENT_DATE.year},${TOURNAMENT_DATE.month},${TOURNAMENT_DATE.day})`;
+  const day = `DATE(${TOURNAMENT_DATE.year},${TOURNAMENT_DATE.month},${TOURNAMENT_DATE.day})`;
 
-  if (!findColumn_(sheet, 'age')) {
-    const col = sheet.getLastColumn() + 1;
-    sheet.getRange(1, col).setValue('Age').setFontWeight('bold');
-    sheet
-      .getRange(2, col)
-      .setFormula(
-        `=ARRAYFORMULA(IF($${dob}2:$${dob}="","",` +
-          `YEAR(${target})-YEAR($${dob}2:$${dob})-` +
-          `IF(${target}<DATE(YEAR(${target}),MONTH($${dob}2:$${dob}),DAY($${dob}2:$${dob})),1,0)))`,
-      );
-  }
+  const ageCol = findColumn_(sheet, 'age') || sheet.getLastColumn() + 1;
+  const age = columnLetter_(ageCol);
 
-  const ageCol = findColumn_(sheet, 'age');
-  if (ageCol && !findColumn_(sheet, 'age group')) {
-    const age = columnLetter_(ageCol);
-    const col = sheet.getLastColumn() + 1;
-    sheet.getRange(1, col).setValue('Age group').setFontWeight('bold');
-    sheet
-      .getRange(2, col)
-      .setFormula(
-        `=ARRAYFORMULA(IF($${age}2:$${age}="","",` +
-          `IF($${age}2:$${age}<18,"Under 18",` +
-          `IF($${age}2:$${age}<=22,"18-22",` +
-          `IF($${age}2:$${age}<=25,"22-25","Over 25")))))`,
-      );
-  }
+  setSpillFormula_(
+    sheet,
+    ageCol,
+    `={"Age";ARRAYFORMULA(IF($${dob}2:$${dob}="","",` +
+      `YEAR(${day})-YEAR($${dob}2:$${dob})-` +
+      `IF(${day}<DATE(YEAR(${day}),MONTH($${dob}2:$${dob}),DAY($${dob}2:$${dob})),1,0)))}`,
+  );
+
+  const groupCol = findColumn_(sheet, 'age group') || sheet.getLastColumn() + 1;
+
+  setSpillFormula_(
+    sheet,
+    groupCol,
+    `={"Age group";ARRAYFORMULA(IF($${age}2:$${age}="","",` +
+      `IF($${age}2:$${age}<18,"Under 18",` +
+      `IF($${age}2:$${age}<=22,"18-22",` +
+      `IF($${age}2:$${age}<=25,"22-25","Over 25")))))}`,
+  );
+}
+
+/**
+ * Writes a header-and-array formula into row 1 and clears the rest of the
+ * column, so the array has somewhere to spill.
+ */
+function setSpillFormula_(sheet, col, formula) {
+  const rows = sheet.getMaxRows();
+  if (rows > 1) sheet.getRange(2, col, rows - 1, 1).clearContent();
+  sheet.getRange(1, col).setFormula(formula).setFontWeight('bold');
+  // Flush before returning: the next lookup in this same run reads the header
+  // row and the column count, and both are stale until the write lands.
+  SpreadsheetApp.flush();
 }
 
 /** Adds the committee's working columns, skipping any that already exist. */
