@@ -17,7 +17,7 @@ export const community: Record<Lang, CommunityContent> = {
     intro:
       "GAG is not only for players. It is a community built around the next generation of golf.",
     groups: [
-      { title: "Players", body: "Young golfers pursuing their next level." },
+      { title: "Players", body: "Young golf players pursuing their next level." },
       { title: "Coaches", body: "Professionals helping players develop their game." },
       {
         title: "Universities",

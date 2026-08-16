@@ -70,7 +70,7 @@ export const about: Record<Lang, AboutContent> = {
       line: "It Started With a Simple Idea.",
       body: [
         "Golf is a global sport. But for many young golf players, the path from junior and university golf to higher-level competition is not always clear.",
-        "Young golfers need opportunities to compete. They need stronger competition. They need professional tournaments. They need connections with universities, coaches and other players. And they need a platform that can connect them to the wider world of golf.",
+        "Young golf players need opportunities to compete. They need stronger competition. They need professional tournaments. They need connections with universities, coaches and other players. And they need a platform that can connect them to the wider world of golf.",
         "GAG was created with this idea in mind. We believe young golf players deserve a platform that is different from a traditional golf association and different from a purely commercial tournament.",
       ],
       stance: [
