@@ -200,9 +200,14 @@ function onEntryRecorded() {
 /**
  * Fills Age and Age group for every row that does not have them.
  *
- * Run on its own to repair a sheet, and called after each entry. Rows that
- * already hold a value are left alone, so re-running costs nothing and cannot
+ * Run on its own to repair a sheet, and called after each entry. Rows already
+ * holding a real value are left alone, so re-running costs nothing and cannot
  * overwrite a figure someone corrected by hand.
+ *
+ * A cell left over from the earlier formula attempts reads back as the string
+ * "#REF!", which is neither empty nor a number. Treating that as a value would
+ * skip the row and then write the error back as literal text, so anything
+ * beginning with # counts as empty and gets replaced.
  */
 function backfillAges() {
   if (!FORM_URL) throw new Error('Put the form’s edit link in FORM_URL.');
@@ -226,11 +231,19 @@ function backfillAges() {
   const groups = sheet.getRange(2, groupCol, lastRow - 1, 1).getValues();
 
   let filled = 0;
+  let cleared = 0;
   for (let i = 0; i < dobs.length; i++) {
-    if (ages[i][0] !== '' && groups[i][0] !== '') continue;
+    if (!needsFilling_(ages[i][0]) && !needsFilling_(groups[i][0])) continue;
 
     const age = ageOnTournamentDay_(dobs[i][0]);
-    if (age === null) continue;
+
+    if (age === null) {
+      // No usable date. Blank the cells rather than leaving an error sitting
+      // in them — an empty cell reads as "not known", "#REF!" reads as broken.
+      if (needsFilling_(ages[i][0])) { ages[i][0] = ''; cleared++; }
+      if (needsFilling_(groups[i][0])) groups[i][0] = '';
+      continue;
+    }
 
     ages[i][0] = age;
     groups[i][0] = ageGroupFor_(age);
@@ -242,6 +255,19 @@ function backfillAges() {
   SpreadsheetApp.flush();
 
   Logger.log('✅ Age filled in for %s row(s).', filled);
+  if (cleared) Logger.log('   %s row(s) had no usable date of birth and were left blank.', cleared);
+}
+
+/**
+ * Whether a cell should be (re)calculated.
+ *
+ * Empty counts, and so does anything starting with # — the residue of a
+ * formula that failed. Both mean "no usable value here".
+ */
+function needsFilling_(value) {
+  if (value === null || value === undefined) return true;
+  const text = String(value).trim();
+  return text === '' || text.charAt(0) === '#';
 }
 
 /** Age on tournament day. Null when the date is unusable. */
