@@ -221,8 +221,8 @@ function readSheet_() {
     return i === -1 ? null : i + 1;
   };
 
-  // The list's headers are bilingual but English-first — "Name 姓名",
-  // "Email （邮件地址）", "DOB" — so an English keyword is enough.
+  // The list's headers are bilingual but always lead with the English word,
+  // so matching on the English keyword alone is enough.
   const emailCol = find(['email']);
   const nameCol = find(['name']);
   const dobCol = find(['dob', 'birth']);
