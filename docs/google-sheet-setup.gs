@@ -4,7 +4,8 @@
  * Does four things:
  *   1. Links a spreadsheet to the form if it has none
  *   2. Adds the committee's working columns to the right of the form's own
- *   3. Adds Age and Age group, calculated from the date of birth
+ *   3. Adds Age and Age group, derived from the date of birth and kept
+ *      filled by a trigger
  *   4. Creates two sheets — Public, holding only what the site may show, and
  *      Results, whose columns match what the site will publish afterwards
  *
@@ -59,6 +60,8 @@ function setupResponseSheet() {
 
   addAgeColumns_(responses);
   addCommitteeColumns_(responses);
+  installAgeTrigger_(form);
+  backfillAges();
   buildPublicSheet_(ss, responses);
   buildResultsSheet_(ss);
 
@@ -140,71 +143,132 @@ function columnLetter_(n) {
 }
 
 /**
- * Adds Age and Age group, worked out from the date of birth.
+ * Adds Age and Age group as plain columns, and keeps them filled.
  *
  * The form no longer asks whether the player is under 18. It already collects
  * the date of birth, and a form that asks the same thing twice eventually
  * gets two different answers — at which point nobody knows which to trust.
- * Calculating it here gives one source.
+ * Deriving it gives one source.
  *
  * Age is taken as of tournament day rather than today, because that is the
- * date that decides whether a parent's authorization is needed. A player who
+ * date deciding whether a parent's authorization is needed. A player who
  * turns 18 the week after the tournament is a minor for this event.
  *
- * Both formulas are anchored in row 1 as ={"Header";ARRAYFORMULA(...)} rather
- * than placed in row 2. An array formula in row 2 works exactly once: Forms
- * copies the preceding row into each new response row, the copy lands in row
- * 3, and the array can no longer expand into an occupied cell — leaving #REF!
- * in both. Nothing is ever written to row 1, so anchoring there keeps the
- * column below free to spill into.
- *
- * Safe to run again: each column is cleared below row 1 and rewritten, which
- * also repairs a sheet already stuck in the #REF! state.
+ * Written as values by a trigger rather than as spreadsheet formulas. Two
+ * attempts at formulas failed for different reasons and both are worth
+ * recording: an array formula in row 2 survives exactly one response, because
+ * Forms copies the preceding row into each new one and the copy blocks the
+ * array from expanding; and moving it to row 1 is rejected outright, because
+ * Sheets now formats response sheets as tables and a table header cannot hold
+ * a formula. Values sidestep both, and a stored number cannot silently become
+ * #REF! the way a formula can.
  */
 function addAgeColumns_(sheet) {
-  const dobCol = findColumn_(sheet, 'date of birth');
-  if (!dobCol) {
+  if (!findColumn_(sheet, 'date of birth')) {
     Logger.log('⚠️ No "Date of birth" column found — skipping age calculation.');
     return;
   }
 
-  const dob = columnLetter_(dobCol);
-  const day = `DATE(${TOURNAMENT_DATE.year},${TOURNAMENT_DATE.month},${TOURNAMENT_DATE.day})`;
-
-  const ageCol = findColumn_(sheet, 'age') || sheet.getLastColumn() + 1;
-  const age = columnLetter_(ageCol);
-
-  setSpillFormula_(
-    sheet,
-    ageCol,
-    `={"Age";ARRAYFORMULA(IF($${dob}2:$${dob}="","",` +
-      `YEAR(${day})-YEAR($${dob}2:$${dob})-` +
-      `IF(${day}<DATE(YEAR(${day}),MONTH($${dob}2:$${dob}),DAY($${dob}2:$${dob})),1,0)))}`,
-  );
-
-  const groupCol = findColumn_(sheet, 'age group') || sheet.getLastColumn() + 1;
-
-  setSpillFormula_(
-    sheet,
-    groupCol,
-    `={"Age group";ARRAYFORMULA(IF($${age}2:$${age}="","",` +
-      `IF($${age}2:$${age}<18,"Under 18",` +
-      `IF($${age}2:$${age}<=22,"18-22",` +
-      `IF($${age}2:$${age}<=25,"22-25","Over 25")))))}`,
-  );
+  ['Age', 'Age group'].forEach((header) => {
+    if (findColumn_(sheet, header)) return;
+    const col = sheet.getLastColumn() + 1;
+    sheet.getRange(1, col).setValue(header).setFontWeight('bold');
+    SpreadsheetApp.flush();
+  });
 }
 
 /**
- * Writes a header-and-array formula into row 1 and clears the rest of the
- * column, so the array has somewhere to spill.
+ * Installs the trigger that fills Age and Age group as entries arrive.
+ *
+ * Separate from the mail script's trigger on purpose: this one owns the shape
+ * of the sheet, that one owns what gets sent. Both can run on the same
+ * submission without knowing about each other.
  */
-function setSpillFormula_(sheet, col, formula) {
-  const rows = sheet.getMaxRows();
-  if (rows > 1) sheet.getRange(2, col, rows - 1, 1).clearContent();
-  sheet.getRange(1, col).setFormula(formula).setFontWeight('bold');
-  // Flush before returning: the next lookup in this same run reads the header
-  // row and the column count, and both are stale until the write lands.
+function installAgeTrigger_(form) {
+  ScriptApp.getProjectTriggers()
+    .filter((t) => t.getHandlerFunction() === 'onEntryRecorded')
+    .forEach((t) => ScriptApp.deleteTrigger(t));
+
+  ScriptApp.newTrigger('onEntryRecorded').forForm(form).onFormSubmit().create();
+}
+
+/** Fills Age and Age group for the row just added. */
+function onEntryRecorded() {
+  backfillAges();
+}
+
+/**
+ * Fills Age and Age group for every row that does not have them.
+ *
+ * Run on its own to repair a sheet, and called after each entry. Rows that
+ * already hold a value are left alone, so re-running costs nothing and cannot
+ * overwrite a figure someone corrected by hand.
+ */
+function backfillAges() {
+  if (!FORM_URL) throw new Error('Put the form’s edit link in FORM_URL.');
+
+  const form = FormApp.openByUrl(FORM_URL);
+  const sheet = findResponseSheet_(SpreadsheetApp.openById(form.getDestinationId()));
+
+  const dobCol = findColumn_(sheet, 'date of birth');
+  const ageCol = findColumn_(sheet, 'age');
+  const groupCol = findColumn_(sheet, 'age group');
+  if (!dobCol || !ageCol || !groupCol) {
+    Logger.log('⚠️ Missing a date of birth, Age or Age group column.');
+    return;
+  }
+
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) return;
+
+  const dobs = sheet.getRange(2, dobCol, lastRow - 1, 1).getValues();
+  const ages = sheet.getRange(2, ageCol, lastRow - 1, 1).getValues();
+  const groups = sheet.getRange(2, groupCol, lastRow - 1, 1).getValues();
+
+  let filled = 0;
+  for (let i = 0; i < dobs.length; i++) {
+    if (ages[i][0] !== '' && groups[i][0] !== '') continue;
+
+    const age = ageOnTournamentDay_(dobs[i][0]);
+    if (age === null) continue;
+
+    ages[i][0] = age;
+    groups[i][0] = ageGroupFor_(age);
+    filled++;
+  }
+
+  sheet.getRange(2, ageCol, ages.length, 1).setValues(ages);
+  sheet.getRange(2, groupCol, groups.length, 1).setValues(groups);
   SpreadsheetApp.flush();
+
+  Logger.log('✅ Age filled in for %s row(s).', filled);
+}
+
+/** Age on tournament day. Null when the date is unusable. */
+function ageOnTournamentDay_(dob) {
+  const born = dob instanceof Date ? dob : new Date(dob);
+  if (isNaN(born.getTime())) return null;
+
+  const day = new Date(
+    TOURNAMENT_DATE.year,
+    TOURNAMENT_DATE.month - 1,
+    TOURNAMENT_DATE.day,
+  );
+
+  let age = day.getFullYear() - born.getFullYear();
+  const beforeBirthday =
+    day.getMonth() < born.getMonth() ||
+    (day.getMonth() === born.getMonth() && day.getDate() < born.getDate());
+  if (beforeBirthday) age--;
+
+  return age;
+}
+
+function ageGroupFor_(age) {
+  if (age < 18) return 'Under 18';
+  if (age <= 22) return '18-22';
+  if (age <= 25) return '22-25';
+  return 'Over 25';
 }
 
 /** Adds the committee's working columns, skipping any that already exist. */
