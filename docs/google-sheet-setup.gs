@@ -233,6 +233,18 @@ function backfillAges() {
   let filled = 0;
   let cleared = 0;
   for (let i = 0; i < dobs.length; i++) {
+    // Sheets formats the response range as a table whose empty pre-created
+    // rows count toward getLastRow(). A row with no date and nothing in the
+    // age cells is one of those, not an entry — skip it silently rather than
+    // reporting a hundred "unusable dates" that were never dates at all.
+    const dobBlank = String(dobs[i][0]).trim() === '';
+    if (
+      dobBlank &&
+      String(ages[i][0]).trim() === '' &&
+      String(groups[i][0]).trim() === ''
+    )
+      continue;
+
     if (!needsFilling_(ages[i][0]) && !needsFilling_(groups[i][0])) continue;
 
     const age = ageOnTournamentDay_(dobs[i][0]);
