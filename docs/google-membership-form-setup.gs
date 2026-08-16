@@ -1,48 +1,54 @@
 /**
- * GAG Membership — 会员登记表单
+ * GAG Membership — join form
  *
- * 跟赛事报名表单是两套东西，**不要合并**：
- *   · 会员 = 长期身份，免费，任何人可加入
- *   · 报名 = 单场比赛，有资格门槛（差点 <10），会员与否都能报
- * 客户明确要求把这两件事分开。
+ * A separate thing from tournament entry, and it should stay separate:
+ *   · Membership is a standing identity. Free, open to anyone.
+ *   · Entry is one competition. Screened on handicap, open to members and
+ *     non-members alike.
+ * The client asked for the two to be distinct, which is also how every
+ * established sporting body works.
  *
- * ── 怎么用 ────────────────────────────────────────────────────────────
- * 用 info@gag.golf 登录，然后：
- *   1. https://script.google.com/home/projects/create（新建项目，别覆盖别的）
- *   2. 左上角改名 `GAG — Membership Form`
- *   3. 清空编辑器，粘贴本文件全部内容
- *   4. 函数下拉选 createMembershipForm，点「运行 / Run」，授权
- *   5. 日志会打印编辑链接和填写链接
- *   6. 打开表单 → 右上角 Publish → 分享设置里把
- *      **Responder view 改成 Anyone with the link**
- *      （Workspace 建的表单默认只允许组织内部填写，外面的人会被挡住）
- *   7. Responses → Link to Sheets → 建表格
- *   8. 回到本脚本，把表单编辑链接填进 FORM_URL，跑 installMembershipTriggers
- *      → 之后每份登记自动：分配会员号 → 通知委员会 → 给会员发确认信
+ * ── How to use ────────────────────────────────────────────────────────
+ * Signed in as info@gag.golf:
+ *   1. https://script.google.com/home/projects/create (a new project)
+ *   2. Rename it `GAG — Membership Form`
+ *   3. Clear the editor and paste this file
+ *   4. Choose createMembershipForm, Run, authorize
+ *   5. The log prints the edit link and the responder link
+ *   6. Open the form → Publish → in Share, set
+ *      **Responder view to Anyone with the link**
+ *      (a Workspace form defaults to the organization only, which quietly
+ *      turns away everyone outside it)
+ *   7. Responses → Link to Sheets
+ *   8. Put the form's edit link in FORM_URL below and run
+ *      installMembershipTriggers → every join then gets a member number,
+ *      notifies the committee, and sends a welcome
  *
- * ── 字段为什么这么少 ──────────────────────────────────────────────────
- * 免费、暂无权益的会员，问得越多放弃率越高，而且每多收一个字段就多一份
- * 泄漏时的责任。这里只问身份、联系方式、大致年龄段和所在省份——足够发通知、
- * 足够将来分组，不多要一个字。差点、俱乐部这些等有比赛要打时再问。
+ * ── Why so few questions ──────────────────────────────────────────────
+ * Membership is free and carries no benefits yet. Every extra field costs
+ * completions and adds to what there is to lose if the sheet ever leaks. This
+ * asks who you are, how to reach you, roughly how old you are and where you
+ * live — enough to keep people informed and to group them later, and nothing
+ * more. Handicap and club can wait until there is a tournament to enter.
  */
 
-/** 表单的编辑链接。安装触发器时用得到。 */
+/** The form's edit link. Needed by installMembershipTriggers. */
 const FORM_URL = '';
 
-/** 委员会收新会员通知的邮箱。 */
+/** Where the committee receives join notifications. */
 const COMMITTEE_EMAIL = 'info@gag.golf';
 
-/** 在 Gmail 里验证过的发件别名。Workspace 账号直接填自己的地址即可。 */
+/** The sending address. On a Workspace account, simply its own address. */
 const FROM_ALIAS = 'info@gag.golf';
 
 const SENDER_NAME = 'GAG — Great Lakes Amateur Golf';
 
-/** 会员号前缀与起始值。GAG-00001 起。 */
+/** Member numbers run from GAG-00001. */
 const MEMBER_PREFIX = 'GAG-';
 const MEMBER_START = 1;
 
 // ═══════════════════════════════════════════════════════════════════════
-// 建表单
+// Build the form
 // ═══════════════════════════════════════════════════════════════════════
 
 function createMembershipForm() {
@@ -72,10 +78,7 @@ function createMembershipForm() {
   // ── About you ─────────────────────────────────────────────────────
   form.addSectionHeaderItem().setTitle('About you');
 
-  form
-    .addTextItem()
-    .setTitle('Full name')
-    .setRequired(true);
+  form.addTextItem().setTitle('Full name').setRequired(true);
 
   form
     .addTextItem()
@@ -84,13 +87,17 @@ function createMembershipForm() {
     .setValidation(FormApp.createTextValidation().requireTextIsEmail().build())
     .setRequired(true);
 
-  // 年龄段而不是完整生日：免费名单不需要精确日期，
-  // 少收一个高敏感字段就少一分泄漏时的责任。
+  // A date rather than an age band. The band is worked out in the sheet, so
+  // there is one source for it and it stays right as years pass — a member
+  // who ticked "18–22" in 2026 is still filed under it in 2030 otherwise.
   form
-    .addMultipleChoiceItem()
-    .setTitle('Age group')
-    .setHelpText('Used to group members. Your exact date of birth is not collected.')
-    .setChoiceValues(['Under 18', '18–22', '22–25', 'Over 25'])
+    .addDateItem()
+    .setTitle('Date of birth')
+    .setHelpText(
+      'Not published. Used to group members by age, and to apply the right ' +
+        'consent requirements for members under 18.',
+    )
+    .setIncludesYear(true)
     .setRequired(true);
 
   form
@@ -137,31 +144,31 @@ function createMembershipForm() {
     .addSectionHeaderItem()
     .setTitle('Members under 18')
     .setHelpText(
-      'If the member is under 18, a parent or guardian must give consent. ' +
-        'Leave blank if this does not apply.',
+      'Complete this section only if the member is under 18. Otherwise leave ' +
+        'it blank.',
     );
 
   form
     .addTextItem()
     .setTitle('Parent or guardian — full name')
-    .setHelpText('Not published. Required only for members under 18.');
+    .setHelpText('Not published. Under-18 members only.');
 
   form
     .addTextItem()
     .setTitle('Parent or guardian — email')
-    .setHelpText('Not published. Required only for members under 18.')
+    .setHelpText('Not published. Under-18 members only.')
     .setValidation(FormApp.createTextValidation().requireTextIsEmail().build());
 
   form
     .addCheckboxItem()
     .setTitle('Parent or guardian consent')
-    .setHelpText('Required only for members under 18.')
+    .setHelpText('Under-18 members only.')
     .setChoiceValues([
       'I am the parent or legal guardian of this member and I consent to their ' +
         'GAG membership.',
     ]);
 
-  // ── Confirmations ─────────────────────────────────────────────────
+  // ── Before you join ───────────────────────────────────────────────
   form.addSectionHeaderItem().setTitle('Before you join');
 
   form
@@ -184,25 +191,25 @@ function createMembershipForm() {
     ])
     .setRequired(true);
 
-  Logger.log('✅ 会员表单已创建，共 %s 个题目项。', form.getItems().length);
-  Logger.log('📝 编辑链接：%s', form.getEditUrl());
-  Logger.log('🔗 填写链接（填进网站的 membershipUrl）：%s', form.getPublishedUrl());
-  Logger.log('⚠️ 别忘了 Publish，并把 Responder view 改成 Anyone with the link。');
+  Logger.log('✅ Membership form created with %s items.', form.getItems().length);
+  Logger.log('📝 Edit link: %s', form.getEditUrl());
+  Logger.log('🔗 Responder link (put this in membershipUrl): %s', form.getPublishedUrl());
+  Logger.log('⚠️ Publish it, and set Responder view to Anyone with the link.');
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-// 会员号
+// Member numbers, notifications and the welcome
 // ═══════════════════════════════════════════════════════════════════════
 
 /**
- * 装上「有人登记 → 分配会员号 → 发确认信」的触发器。
+ * Installs the on-join trigger and the age columns.
  *
- * 三件事在**同一个触发器**里按顺序做，而不是分成两个。分开的话，发信的
- * 触发器可能在编号写入之前就跑完，确认信里就会缺会员号——而这封信最主要
- * 的内容恰恰就是那个号码。
+ * Numbering and mail run in one trigger rather than two. Split across two,
+ * the mail could fire before the number was written and send a welcome
+ * missing the one thing it exists to deliver.
  */
 function installMembershipTriggers() {
-  if (!FORM_URL) throw new Error('请先把会员表单的编辑链接填进 FORM_URL。');
+  if (!FORM_URL) throw new Error('Set FORM_URL to the membership form’s edit link.');
 
   const form = FormApp.openByUrl(FORM_URL);
 
@@ -211,10 +218,11 @@ function installMembershipTriggers() {
     .forEach((t) => ScriptApp.deleteTrigger(t));
 
   ScriptApp.newTrigger('onMemberJoined').forForm(form).onFormSubmit().create();
+  addAgeColumns_();
 
-  Logger.log('✅ 已安装：分配会员号 + 委员会通知 + 会员确认信。');
-  Logger.log('📧 委员会通知发往：%s', COMMITTEE_EMAIL);
-  Logger.log('✉️ 发件人显示为：%s', FROM_ALIAS || '脚本所有者的 Gmail');
+  Logger.log('✅ Installed: member numbers, committee notification, welcome email.');
+  Logger.log('📧 Committee notifications go to: %s', COMMITTEE_EMAIL);
+  Logger.log('✉️ Sending as: %s', FROM_ALIAS || "the script owner's mailbox");
 }
 
 function onMemberJoined(e) {
@@ -228,43 +236,83 @@ function onMemberJoined(e) {
 }
 
 /**
- * 给最新一行分配会员号，返回该号码。
+ * Adds Age and Age group, calculated from the date of birth.
  *
- * 号码写进表格的独立一列，而不是用公式按行号算——公式的结果会随着删行、
- * 排序而变，而会员号一旦发出去就必须永远指向同一个人。写死的值才靠得住。
- * 取「现有最大号 + 1」而不是行数，所以删过行也不会撞号。
+ * Age here is age now, unlike the tournament sheet where it is age on
+ * tournament day — a membership register has no single date to measure
+ * against, so it measures against today and moves with it.
+ *
+ * One array formula anchored at row 2, not a formula per row: Forms appends
+ * rows, and a per-row formula would need dragging down after every join.
+ */
+function addAgeColumns_() {
+  const form = FormApp.openByUrl(FORM_URL);
+  const ss = SpreadsheetApp.openById(form.getDestinationId());
+  const sheet = responseSheet_(ss);
+  if (!sheet) return;
+
+  const dobCol = findColumn_(sheet, 'date of birth');
+  if (!dobCol) {
+    Logger.log('⚠️ No "Date of birth" column — skipping age calculation.');
+    return;
+  }
+
+  const dob = columnLetter_(dobCol);
+
+  if (!findColumn_(sheet, 'age')) {
+    const col = sheet.getLastColumn() + 1;
+    sheet.getRange(1, col).setValue('Age').setFontWeight('bold');
+    sheet
+      .getRange(2, col)
+      .setFormula(
+        `=ARRAYFORMULA(IF($${dob}2:$${dob}="","",` +
+          `YEAR(TODAY())-YEAR($${dob}2:$${dob})-` +
+          `IF(TODAY()<DATE(YEAR(TODAY()),MONTH($${dob}2:$${dob}),DAY($${dob}2:$${dob})),1,0)))`,
+      );
+  }
+
+  const ageCol = findColumn_(sheet, 'age');
+  if (ageCol && !findColumn_(sheet, 'age group')) {
+    const age = columnLetter_(ageCol);
+    const col = sheet.getLastColumn() + 1;
+    sheet.getRange(1, col).setValue('Age group').setFontWeight('bold');
+    sheet
+      .getRange(2, col)
+      .setFormula(
+        `=ARRAYFORMULA(IF($${age}2:$${age}="","",` +
+          `IF($${age}2:$${age}<18,"Under 18",` +
+          `IF($${age}2:$${age}<=22,"18-22",` +
+          `IF($${age}2:$${age}<=25,"22-25","Over 25")))))`,
+      );
+  }
+}
+
+/**
+ * Assigns a member number to the newest row and returns it.
+ *
+ * Written as a value in its own column, not derived by formula from the row
+ * number: a formula's result shifts when rows are deleted or sorted, and a
+ * member number, once issued, has to keep pointing at the same person. Taking
+ * the highest existing number plus one rather than counting rows means a
+ * deleted row cannot cause a collision either.
  */
 function assignMemberNumber_() {
   const form = FormApp.openByUrl(FORM_URL);
   const ss = SpreadsheetApp.openById(form.getDestinationId());
-
-  const sheet = ss
-    .getSheets()
-    .find(
-      (s) =>
-        s.getLastColumn() > 0 &&
-        String(s.getRange(1, 1).getValue()).trim().toLowerCase() === 'timestamp',
-    );
+  const sheet = responseSheet_(ss);
   if (!sheet) return '';
 
-  let col;
-  const headers = sheet
-    .getRange(1, 1, 1, sheet.getLastColumn())
-    .getValues()[0]
-    .map((h) => String(h).trim().toLowerCase());
-  const idx = headers.indexOf('member number');
-  if (idx === -1) {
+  let col = findColumn_(sheet, 'member number');
+  if (!col) {
     col = sheet.getLastColumn() + 1;
     sheet.getRange(1, col).setValue('Member number').setFontWeight('bold');
-  } else {
-    col = idx + 1;
   }
 
   const lastRow = sheet.getLastRow();
   if (lastRow < 2) return '';
 
-  const existingValue = sheet.getRange(lastRow, col).getValue();
-  if (existingValue) return String(existingValue);
+  const existing = sheet.getRange(lastRow, col).getValue();
+  if (existing) return String(existing);
 
   const used = sheet
     .getRange(2, col, lastRow - 1, 1)
@@ -283,23 +331,20 @@ function assignMemberNumber_() {
 
 function notifyCommittee_(answers, number) {
   const name = answers['Full name'] || '(no name)';
-  const ageGroup = answers['Age group'] || '—';
+  const minor = isMinorToday_(answers['Date of birth']);
 
   const lines = [
-    `Member:    ${name}`,
-    `Number:    ${number || '(not assigned)'}`,
-    `Age group: ${ageGroup}`,
-    `Province:  ${answers['Province or territory'] || '—'}`,
-    `Club:      ${answers['Club, university or team'] || '—'}`,
+    `Member:   ${name}`,
+    `Number:   ${number || '(not assigned)'}`,
+    `Province: ${answers['Province or territory'] || '—'}`,
+    `Club:     ${answers['Club, university or team'] || '—'}`,
+    `Under 18: ${minor === null ? '—' : minor ? 'Yes' : 'No'}`,
     '',
     'Full details are in the membership spreadsheet.',
   ];
 
-  if (ageGroup === 'Under 18') {
-    lines.unshift(
-      '⚠️ UNDER 18 — check that parent or guardian consent was given.',
-      '',
-    );
+  if (minor === true) {
+    lines.unshift('⚠️ UNDER 18 — check that parent or guardian consent was given.', '');
   }
 
   send_({
@@ -310,14 +355,13 @@ function notifyCommittee_(answers, number) {
 }
 
 /**
- * 欢迎信。
+ * The welcome.
  *
- * ⚠️ 无论对方在「GAG news」那题选了什么，这封信都要发。那道题问的是**将来
- * 的推广邮件**是否愿意接收；而这封是对方刚刚主动完成的动作的回执，里面装着
- * 他们的会员号——不发才是失职。加拿大 CASL 对这类交易性/关系性邮件与推广
- * 邮件的处理本来就不同。
- *
- * 群发推广时则必须只发给选了 Yes 的人，那是另一回事。
+ * ⚠️ Sent whatever the answer to the news question. That question asks about
+ * future promotional mail; this is a receipt for something the person just
+ * did, carrying their member number. Canadian anti-spam law treats the two
+ * differently, and so should we. Bulk announcements go only to those who
+ * opted in.
  */
 function welcomeMember_(email, answers, number) {
   const name = answers['Full name'] || 'there';
@@ -339,7 +383,8 @@ function welcomeMember_(email, answers, number) {
     '',
     'Joining is not a tournament entry. Tournaments have their own entry form',
     'and their own eligibility, and are open to players whether or not they',
-    'are members:',
+    'are members. If you enter one, quoting your member number lets us match',
+    'the entry to your record:',
     'https://gag.golf/register',
     '',
     'Let’s Play GAG!',
@@ -359,8 +404,54 @@ function welcomeMember_(email, answers, number) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-// 工具
+// Helpers
 // ═══════════════════════════════════════════════════════════════════════
+
+function responseSheet_(ss) {
+  return ss
+    .getSheets()
+    .find(
+      (s) =>
+        s.getLastColumn() > 0 &&
+        String(s.getRange(1, 1).getValue()).trim().toLowerCase() === 'timestamp',
+    );
+}
+
+/** Finds a column by header prefix; null when absent. */
+function findColumn_(sheet, headerPrefix) {
+  const headers = sheet
+    .getRange(1, 1, 1, sheet.getLastColumn())
+    .getValues()[0]
+    .map((h) => String(h).trim().toLowerCase());
+  const index = headers.findIndex((h) => h.indexOf(headerPrefix.toLowerCase()) === 0);
+  return index === -1 ? null : index + 1;
+}
+
+/** 1 → A, 27 → AA */
+function columnLetter_(n) {
+  let letter = '';
+  while (n > 0) {
+    const remainder = (n - 1) % 26;
+    letter = String.fromCharCode(65 + remainder) + letter;
+    n = Math.floor((n - remainder - 1) / 26);
+  }
+  return letter;
+}
+
+/** Whether the member is under 18 today. Null when there is no usable date. */
+function isMinorToday_(dob) {
+  const born = dob instanceof Date ? dob : new Date(dob);
+  if (isNaN(born.getTime())) return null;
+
+  const today = new Date();
+  let age = today.getFullYear() - born.getFullYear();
+  const beforeBirthday =
+    today.getMonth() < born.getMonth() ||
+    (today.getMonth() === born.getMonth() && today.getDate() < born.getDate());
+  if (beforeBirthday) age--;
+
+  return age < 18;
+}
 
 function answersByTitle_(response) {
   const map = {};

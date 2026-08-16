@@ -1,36 +1,43 @@
 /**
- * 2026 GAG Inaugural Tournament — 回复表格结构
+ * 2026 GAG Inaugural Tournament — response spreadsheet structure
  *
- * 做三件事：
- *   1. 确保表单已关联一张 Google 表格（没有就新建并关联）
- *   2. 在回复表右侧加委员会用的工作列（Status / 差点已核验 / 费用已收 / 分组时间 / 备注）
- *   3. 建两张新工作表：
- *        · Public  —— 只含可公开的列，公式自动跟随回复更新
- *        · Results —— 赛后成绩，列结构与将来网站上的成绩页一致
+ * Does four things:
+ *   1. Links a spreadsheet to the form if it has none
+ *   2. Adds the committee's working columns to the right of the form's own
+ *   3. Adds Age and Age group, calculated from the date of birth
+ *   4. Creates two sheets — Public, holding only what the site may show, and
+ *      Results, whose columns match what the site will publish afterwards
  *
- * ── 怎么用 ────────────────────────────────────────────────────────────
- * 1. 浏览器打开 https://script.google.com/home/projects/create
- * 2. 清空编辑器，粘贴本文件全部内容
- * 3. 把表单的**编辑链接**填进下面的 FORM_URL
- * 4. 函数下拉选 setupResponseSheet，点「运行 / Run」
- * 5. 运行日志里会打印表格链接
+ * ── How to use ────────────────────────────────────────────────────────
+ * 1. https://script.google.com/home/projects/create
+ * 2. Clear the editor, paste this file
+ * 3. Put the form's EDIT link in FORM_URL below
+ * 4. Choose setupResponseSheet from the function menu and Run
+ * 5. The log prints the spreadsheet link
  *
- * 可以重复运行：已存在的工作表和列不会被重复创建或覆盖。
+ * Safe to run again: existing sheets and columns are not recreated or
+ * overwritten.
  *
- * ── 为什么 Public 用公式而不是复制粘贴 ────────────────────────────────
- * 公式让 Public 表随回复自动更新。人工复制意味着每来一个报名就要维护两处，
- * 而两处迟早会不一致——不一致的那一刻，就是把不该公开的信息公开出去的时刻。
+ * ── Why Public is a formula rather than a copy ────────────────────────
+ * A formula keeps Public in step with the responses on its own. Copying rows
+ * by hand would mean maintaining the same entry in two places, and the moment
+ * those two drift apart is the moment something private appears in the public
+ * one.
  *
- * ── 为什么列用表头名查而不是写死 A/B/C ────────────────────────────────
- * 表单加一道题，Google 会插入一列，写死的列号会整体错位——而且是静默错位：
- * 表格看起来照常有数据，只是"差点"那一列显示的其实是手机号。用表头名查，
- * 加题不会出错；真找不到列会直接报错，不会悄悄输出错的东西。
+ * ── Why columns are found by header rather than by letter ─────────────
+ * Adding a question to the form inserts a column, and a hard-coded letter
+ * would shift silently — the sheet would still look populated, with the
+ * handicap column showing phone numbers. Looking headers up fails loudly
+ * instead, which is the failure worth having.
  */
 
-/** 表单的编辑链接，形如 https://docs.google.com/forms/d/xxxxx/edit */
+/** The form's edit link, e.g. https://docs.google.com/forms/d/xxxxx/edit */
 const FORM_URL = '';
 
-/** 委员会自己维护的列，加在表单列右边。 */
+/** Tournament date. Age is worked out as of this day, not as of today. */
+const TOURNAMENT_DATE = { year: 2026, month: 10, day: 11 };
+
+/** Columns the committee maintains, added to the right of the form's own. */
 const COMMITTEE_COLUMNS = [
   'Status',
   'Handicap verified',
@@ -43,23 +50,27 @@ const STATUS_OPTIONS = ['Pending', 'Confirmed', 'Waitlist', 'Withdrawn'];
 
 function setupResponseSheet() {
   if (!FORM_URL) {
-    throw new Error('请先把表单的编辑链接填进本文件顶部的 FORM_URL。');
+    throw new Error('Put the form’s edit link in FORM_URL at the top of this file.');
   }
 
   const form = FormApp.openByUrl(FORM_URL);
   const ss = ensureSpreadsheet_(form);
   const responses = findResponseSheet_(ss);
 
+  addAgeColumns_(responses);
   addCommitteeColumns_(responses);
   buildPublicSheet_(ss, responses);
   buildResultsSheet_(ss);
 
-  Logger.log('✅ 完成。');
-  Logger.log('📊 表格链接：%s', ss.getUrl());
-  Logger.log('⚠️ 别忘了把表格共享设为「受限 / Restricted」——里面有未成年人的出生日期和家长联系方式。');
+  Logger.log('✅ Done.');
+  Logger.log('📊 Spreadsheet: %s', ss.getUrl());
+  Logger.log(
+    '⚠️ Keep sharing set to Restricted — this holds dates of birth and ' +
+      'parents’ contact details for players as young as sixteen.',
+  );
 }
 
-/** 没有关联表格就新建一张并关联。 */
+/** Creates and links a spreadsheet if the form has none. */
 function ensureSpreadsheet_(form) {
   let destId = null;
   try {
@@ -73,27 +84,29 @@ function ensureSpreadsheet_(form) {
   const ss = SpreadsheetApp.create('2026 GAG Inaugural Tournament — Entries');
   form.setDestination(FormApp.DestinationType.SPREADSHEET, ss.getId());
 
-  // setDestination 之后 Forms 才写入回复表，稍等让它落地
+  // Forms writes the response sheet after setDestination returns; give it a
+  // moment to land before anything reads it.
   SpreadsheetApp.flush();
   Utilities.sleep(2000);
 
   return SpreadsheetApp.openById(ss.getId());
 }
 
-/** 回复表就是 A1 为 Timestamp 的那张。 */
+/** The response sheet is the one whose A1 reads Timestamp. */
 function findResponseSheet_(ss) {
   const sheets = ss.getSheets();
   for (const sheet of sheets) {
     if (sheet.getLastColumn() < 1) continue;
     const a1 = String(sheet.getRange(1, 1).getValue()).trim().toLowerCase();
-    if (a1 === 'timestamp' || a1 === '时间戳记') return sheet;
+    if (a1 === 'timestamp') return sheet;
   }
   throw new Error(
-    '找不到回复表。先在表单的 Responses 标签页点「关联到试算表 / Link to Sheets」，再运行本脚本。',
+    'No response sheet found. Link the form to a spreadsheet first: ' +
+      'Responses → Link to Sheets.',
   );
 }
 
-/** 按表头名找列号，找不到返回 null。前缀匹配，容忍表头被截断。 */
+/** Finds a column by header prefix; null when absent. */
 function findColumn_(sheet, headerPrefix) {
   const headers = sheet
     .getRange(1, 1, 1, sheet.getLastColumn())
@@ -101,7 +114,7 @@ function findColumn_(sheet, headerPrefix) {
     .map((h) => String(h).trim().toLowerCase());
 
   const target = headerPrefix.trim().toLowerCase();
-  const index = headers.findIndex((h) => h.startsWith(target));
+  const index = headers.findIndex((h) => h.indexOf(target) === 0);
   return index === -1 ? null : index + 1;
 }
 
@@ -116,7 +129,61 @@ function columnLetter_(n) {
   return letter;
 }
 
-/** 在回复表右边补上委员会列，已存在的跳过。 */
+/**
+ * Adds Age and Age group, worked out from the date of birth.
+ *
+ * The form no longer asks whether the player is under 18. It already collects
+ * the date of birth, and a form that asks the same thing twice eventually
+ * gets two different answers — at which point nobody knows which to trust.
+ * Calculating it here gives one source.
+ *
+ * Age is taken as of tournament day rather than today, because that is the
+ * date that decides whether a parent's authorization is needed. A player who
+ * turns 18 the week after the tournament is a minor for this event.
+ *
+ * Written as one array formula anchored at row 2 rather than a formula per
+ * row: Forms appends rows, and a per-row formula would have to be dragged
+ * down after every entry.
+ */
+function addAgeColumns_(sheet) {
+  const dobCol = findColumn_(sheet, 'date of birth');
+  if (!dobCol) {
+    Logger.log('⚠️ No "Date of birth" column found — skipping age calculation.');
+    return;
+  }
+
+  const dob = columnLetter_(dobCol);
+  const target = `DATE(${TOURNAMENT_DATE.year},${TOURNAMENT_DATE.month},${TOURNAMENT_DATE.day})`;
+
+  if (!findColumn_(sheet, 'age')) {
+    const col = sheet.getLastColumn() + 1;
+    sheet.getRange(1, col).setValue('Age').setFontWeight('bold');
+    sheet
+      .getRange(2, col)
+      .setFormula(
+        `=ARRAYFORMULA(IF($${dob}2:$${dob}="","",` +
+          `YEAR(${target})-YEAR($${dob}2:$${dob})-` +
+          `IF(${target}<DATE(YEAR(${target}),MONTH($${dob}2:$${dob}),DAY($${dob}2:$${dob})),1,0)))`,
+      );
+  }
+
+  const ageCol = findColumn_(sheet, 'age');
+  if (ageCol && !findColumn_(sheet, 'age group')) {
+    const age = columnLetter_(ageCol);
+    const col = sheet.getLastColumn() + 1;
+    sheet.getRange(1, col).setValue('Age group').setFontWeight('bold');
+    sheet
+      .getRange(2, col)
+      .setFormula(
+        `=ARRAYFORMULA(IF($${age}2:$${age}="","",` +
+          `IF($${age}2:$${age}<18,"Under 18",` +
+          `IF($${age}2:$${age}<=22,"18-22",` +
+          `IF($${age}2:$${age}<=25,"22-25","Over 25")))))`,
+      );
+  }
+}
+
+/** Adds the committee's working columns, skipping any that already exist. */
 function addCommitteeColumns_(sheet) {
   COMMITTEE_COLUMNS.forEach((name) => {
     if (findColumn_(sheet, name)) return;
@@ -137,10 +204,11 @@ function addCommitteeColumns_(sheet) {
 }
 
 /**
- * Public 表：只放可以对外公开的列，用 QUERY 跟随回复自动更新。
+ * Public: only the columns the site may show, kept in step by a QUERY.
  *
- * 公开的是竞技信息——姓名、所属球会或大学、省份、差点、状态。
- * 联系方式、出生日期、紧急联系人、家长信息一律不进这张表。
+ * Published are competitive facts — name, club or university, province,
+ * handicap, status. Contact details, city, date of birth, emergency contact
+ * and anything about a parent never reach this sheet.
  */
 function buildPublicSheet_(ss, responses) {
   const name = 'Public';
@@ -155,9 +223,8 @@ function buildPublicSheet_(ss, responses) {
   const hcpCol = requireColumn_(responses, 'Current handicap');
   const statusCol = requireColumn_(responses, 'Status');
 
-  // 地点列：表单拆开后用独立的 Province 题，公开的就只有省份。
-  // 若表单仍是合并的「City and province」，则整格公开——这时城市也会跟着
-  // 公开，与网站上「只公开省份」的说法不一致，日志里会提示。
+  // Province only. If the form still asks for city and province together, the
+  // whole cell would be published, which contradicts what the site promises.
   let placeCol = findColumn_(responses, 'Province');
   let placeHeader = 'Province';
 
@@ -165,8 +232,8 @@ function buildPublicSheet_(ss, responses) {
     placeCol = requireColumn_(responses, 'City and province');
     placeHeader = 'Location';
     Logger.log(
-      '⚠️ 表单里 City 和 Province 是同一道题，所以 Public 表会连城市一起公开。' +
-        '若要只公开省份，把表单那道题拆成 City 和 Province 两问，再重跑本脚本。',
+      '⚠️ City and province are one question on the form, so Public will ' +
+        'publish the city too. Split them into two questions and run this again.',
     );
   }
 
@@ -193,10 +260,12 @@ function buildPublicSheet_(ss, responses) {
 }
 
 /**
- * Results 表：赛后手工填写，列结构对齐将来网站上的成绩页。
+ * Results: filled in after the tournament, with the columns the site will
+ * publish.
  *
- * 参考客户提供的 IPSC Ontario 截图（Place / Competitor / Class / Region），
- * 换成高尔夫的等价字段。现在就定好结构，赛后不用再返工重录。
+ * Modelled on the IPSC Ontario screens the client supplied — place,
+ * competitor, class, region — translated into their golf equivalents. Fixing
+ * the shape now means scores are entered once rather than re-keyed later.
  */
 function buildResultsSheet_(ss) {
   const name = 'Results';
@@ -207,7 +276,7 @@ function buildResultsSheet_(ss) {
     'Position',
     'Player',
     'Club / University',
-    'Location',
+    'Province',
     'Handicap',
     'Gross',
     'Net',
@@ -228,8 +297,8 @@ function requireColumn_(sheet, headerPrefix) {
   const col = findColumn_(sheet, headerPrefix);
   if (!col) {
     throw new Error(
-      `回复表里找不到以「${headerPrefix}」开头的列。` +
-        '表单题目改过名字的话，请同步改本脚本里的查找词。',
+      `No column starting with "${headerPrefix}" in the response sheet. ` +
+        'If a question was renamed on the form, update the search term here too.',
     );
   }
   return col;

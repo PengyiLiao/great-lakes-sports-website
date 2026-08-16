@@ -1,80 +1,89 @@
 /**
  * 2026 GAG Inaugural Tournament — Entry Form
- * 一次性生成整张 Google 表单。
+ * Builds the whole form in one run.
  *
- * ── 怎么用 ────────────────────────────────────────────────────────────
- * 本项目实际走的是 buildEntryForm，已验证可用：
- *   1. 浏览器打开 https://script.google.com/home/projects/create
- *   2. 把编辑器里原有内容全部删掉，粘贴本文件全部内容
- *   3. 把表单的**编辑链接**填进下面的 FORM_URL
- *      （形如 https://docs.google.com/forms/d/xxxxx/edit）
- *   4. 顶部函数下拉选 buildEntryForm，点「运行 / Run」
- *   5. 首次运行要授权（见下方说明）
+ * ── How to use ────────────────────────────────────────────────────────
+ * Signed in as info@gag.golf:
+ *   1. https://script.google.com/home/projects/create
+ *   2. Clear the editor, paste this file
+ *   3. Put the form's EDIT link in FORM_URL below
+ *      (https://docs.google.com/forms/d/xxxxx/edit)
+ *   4. Choose buildEntryForm from the function menu and Run
+ *   5. Authorize on first run — see the note below
  *
- * 如果第 4 步报 "No item with the given ID could be found"，通常是脚本项目
- * 和表单在不同的 Google 账号下（浏览器登录了多个账号时很常见）。这时改用
- * **createEntryForm**：它自己新建一张表单，不需要 ID、不需要对齐账号，
- * 运行日志里会打印编辑链接和填写链接。
+ * If step 4 fails with "No item with the given ID could be found", the
+ * script project and the form are usually under different Google accounts,
+ * which is easy to do with more than one account signed in. Use
+ * createEntryForm instead: it makes its own form, so there is no ID to copy
+ * and no accounts to line up, and it logs both links when it finishes.
  *
- * 绑定脚本也可以：从表单页 ⋮ 菜单进 Apps Script，FORM_URL 留空，
- * 跑 buildEntryForm。
+ * A bound script works too: open Apps Script from the form's ⋮ menu, leave
+ * FORM_URL empty, and run buildEntryForm.
  *
- * ── 关于授权警告 ──────────────────────────────────────────────────────
- * 首次运行 Google 会弹「未验证的应用」。点「高级 / Advanced」→
- * 「转至…（不安全）/ Go to … (unsafe)」→「允许 / Allow」。
- * 这个警告是给陌生开发者发布给公众的脚本准备的；这段代码是你自己粘贴进
- * 自己账号、只操作自己的表单，没有第三方参与。
+ * ── About the authorization warning ───────────────────────────────────
+ * Google shows "this app isn't verified" the first time. Choose Advanced,
+ * then "Go to … (unsafe)", then Allow. That warning is meant for scripts a
+ * stranger published; this one you pasted into your own account and it only
+ * touches your own form.
  *
- * ⚠️ buildEntryForm 会清空目标表单里已有的题目。只在空表单上跑。
+ * ⚠️ buildEntryForm empties the target form. Only run it on a form with no
+ * responses.
  *
- * ── 刻意不包含的 ──────────────────────────────────────────────────────
- * · 报名费与付款方式 —— 报名和收款分两步：先核验差点与名额，
- *   确认后再在邮件里告知付款方式。避免不合资格或超额时退款。
- * · 自动收集 Google 账号邮箱 —— 那会强制参赛者登录 Google，
- *   对外部报名是不必要的门槛，所以改用手填邮箱并做格式校验。
+ * ── Deliberately not collected ────────────────────────────────────────
+ * · Entry fee and payment — entry and payment are two steps. The field is
+ *   capped at 72 and screened on handicap, so taking money up front would
+ *   mean refunding anyone ineligible or over the limit. Payment details go
+ *   out with the confirmation instead.
+ * · Google account email — collecting it automatically would force entrants
+ *   to sign in to Google, an unnecessary barrier for an outside entrant, so
+ *   the address is a validated text field.
+ * · Whether the player is under 18 — that is calculated from the date of
+ *   birth in the spreadsheet. Asking a question whose answer we already hold
+ *   invites a contradiction between the two.
  */
 
-/**
- * 表单的编辑链接。只有 buildEntryForm 用得到。
- * 用绑定脚本时留空；用独立脚本时填 https://docs.google.com/forms/d/xxxxx/edit
- */
+/** The form's edit link. Needed for buildEntryForm; leave empty when bound. */
 const FORM_URL = '';
 
-/** 推荐入口：新建一张配置好的表单。 */
+/** Tournament date, used to work out each entrant's age on the day. */
+const TOURNAMENT_DATE = '2026-10-11';
+
+/** Entry point that makes a new form. */
 function createEntryForm() {
   const form = FormApp.create('2026 GAG Inaugural Tournament — Entry Form');
   populate(form);
 
-  Logger.log('✅ 表单已创建，共 %s 个题目项。', form.getItems().length);
-  Logger.log('📝 编辑链接（自己改表单用）：%s', form.getEditUrl());
-  Logger.log('🔗 填写链接（发给参赛者 / 填进网站）：%s', form.getPublishedUrl());
+  Logger.log('✅ Form created with %s items.', form.getItems().length);
+  Logger.log('📝 Edit link: %s', form.getEditUrl());
+  Logger.log('🔗 Responder link (put this in registrationUrl): %s', form.getPublishedUrl());
 }
 
-/** 改造已有表单。会先清空里面的题目。 */
+/** Entry point that rebuilds an existing form. Clears it first. */
 function buildEntryForm() {
   const form = FORM_URL ? FormApp.openByUrl(FORM_URL) : FormApp.getActiveForm();
 
   if (!form) {
     throw new Error(
-      '找不到表单。改用 createEntryForm 新建一张，最省事；' +
-        '或把表单的编辑链接填进本文件顶部的 FORM_URL。',
+      'No form found. Use createEntryForm to make one, or put the form’s ' +
+        'edit link in FORM_URL at the top of this file.',
     );
   }
 
   clearForm_(form);
   populate(form);
 
-  Logger.log('✅ 完成，共 %s 个题目项。', form.getItems().length);
-  Logger.log('🔗 填写链接：%s', form.getPublishedUrl());
+  Logger.log('✅ Done — %s items.', form.getItems().length);
+  Logger.log('🔗 Responder link: %s', form.getPublishedUrl());
 }
 
 /**
- * 清空表单里的全部题目。
+ * Empties the form.
  *
- * 不能直接删——如果表单已经跑过一次，「未满 18 岁」那道题的选项带着指向
- * 后面分节页的跳转。从后往前删会先删掉被指向的页面，引用悬空，Forms 就报
- * "Invalid data updating form"。所以先把所有跳转还原成"继续下一节"，
- * 再删。空表单跑不会触发这个问题，第二次跑才会。
+ * Not a straight delete. Choices and page breaks can carry navigation, and
+ * items are removed last to first, so a page would go before the question
+ * that points at it and Forms rejects the whole operation with "Invalid data
+ * updating form". Navigation is reset to "continue" first. An empty form
+ * cannot hit this, so it only appears on the second run.
  */
 function clearForm_(form) {
   form.getItems().forEach((item) => {
@@ -99,19 +108,20 @@ function clearForm_(form) {
   }
 }
 
-/** 把全部分节和题目写进 form。上面两个入口共用。 */
+/** Writes every section and question. Shared by both entry points. */
 function populate(form) {
   form
     .setTitle('2026 GAG Inaugural Tournament — Entry Form')
     .setDescription(
       'Sunday, October 11, 2026 · TPC Toronto at Osprey Valley, North Course\n' +
         'Field of 72 · Handicap index under 10\n\n' +
+        'Open to all eligible players. GAG membership is not required to enter.\n\n' +
         'Entries are reviewed by the organizing committee. Submitting this form ' +
         'does not confirm a place. You will be contacted once your handicap has ' +
         'been verified and your entry confirmed.\n\n' +
         'Your contact details, date of birth and emergency contact are used only ' +
         'to run the competition and are never published. Draw sheets and results ' +
-        'show name, club or university, handicap and scores.',
+        'show name, club or university, province, handicap and scores.',
     )
     .setProgressBar(true)
     .setAllowResponseEdits(true)
@@ -122,7 +132,7 @@ function populate(form) {
         'Let’s Play GAG!',
     );
 
-  // ── 第 1 节 — Player Information ──────────────────────────────────
+  // ── Player Information ────────────────────────────────────────────
   form.addSectionHeaderItem().setTitle('Player Information');
 
   form
@@ -147,7 +157,11 @@ function populate(form) {
   form
     .addDateItem()
     .setTitle('Date of birth')
-    .setHelpText('Not published. Used to confirm age category and insurance.')
+    .setHelpText(
+      'Not published. Used to confirm age category and for insurance. Players ' +
+        'under 18 on tournament day need a parent or guardian to authorize the ' +
+        'entry — see the section further down.',
+    )
     .setIncludesYear(true)
     .setRequired(true);
 
@@ -158,10 +172,10 @@ function populate(form) {
     .setChoiceValues(['Male', 'Female'])
     .setRequired(true);
 
-  // City 与 Province 拆成两题，不是一题。
-  // 合并成一格意味着公开时城市会跟着省份一起出去，而网站上写的是「只公开省份」。
-  // 这个平台会公开 16 岁起球员的资料，姓名 + 学校 + 城市组合起来定位性太强。
-  // 拆开之后，公开的那一列就是真的只有省份；顺带数据也更干净。
+  // City and province are two questions, not one. Combined, the published
+  // column would carry both, while the site promises only the province — and
+  // on a platform publishing players from sixteen, name plus school plus city
+  // identifies a person a good deal more precisely than name plus province.
   form
     .addTextItem()
     .setTitle('City')
@@ -190,7 +204,18 @@ function populate(form) {
     ])
     .setRequired(true);
 
-  // ── 第 2 节 — Golf Credentials ────────────────────────────────────
+  // Optional on purpose. Entry is open to everyone; the number simply lets the
+  // committee match an entry to an existing member record without anybody
+  // having to search by name and guess at spellings.
+  form
+    .addTextItem()
+    .setTitle('GAG member number')
+    .setHelpText(
+      'Optional — for example GAG-00001. Leave blank if you are not a member. ' +
+        'Membership is free but is not required to enter: https://gag.golf/membership',
+    );
+
+  // ── Golf Credentials ──────────────────────────────────────────────
   form
     .addPageBreakItem()
     .setTitle('Golf Credentials')
@@ -222,7 +247,7 @@ function populate(form) {
     .setTitle('Recent competitive experience')
     .setHelpText('Optional. Used only if entries exceed the field of 72.');
 
-  // ── 第 3 节 — Tournament Logistics ────────────────────────────────
+  // ── Tournament Logistics ──────────────────────────────────────────
   form.addPageBreakItem().setTitle('Tournament Logistics');
 
   form
@@ -263,52 +288,51 @@ function populate(form) {
     .setHelpText('Not published.')
     .setRequired(true);
 
-  // 这道题决定是否进入未成年人分节，选项稍后绑定跳转
-  const underEighteen = form
-    .addMultipleChoiceItem()
-    .setTitle('Will the player be under 18 on the day of the tournament?')
-    .setRequired(true);
-
-  // ── 第 4 节 — Players Under 18 ────────────────────────────────────
-  const minorsPage = form
+  // ── Players Under 18 ──────────────────────────────────────────────
+  // Always shown rather than reached by a branch. The branch used to hang off
+  // a "are you under 18?" question, and that question is gone: the answer is
+  // already in the date of birth, and asking twice invites the two to
+  // disagree. Forms cannot branch on a date, so the section is visible to
+  // everyone and its fields are optional, with the heading saying who it is
+  // for. The spreadsheet flags entries that need it.
+  form
     .addPageBreakItem()
     .setTitle('Players Under 18')
     .setHelpText(
-      'A parent or guardian must authorize this entry. Entries for players ' +
-        'under 18 are not confirmed until that authorization is received.',
+      'Complete this section only if the player will be under 18 on ' +
+        'October 11, 2026. Otherwise continue to the next section.\n\n' +
+        'Entries for players under 18 are not confirmed until a parent or ' +
+        'guardian has authorized them.',
     );
 
   form
     .addTextItem()
     .setTitle('Parent or guardian — full name')
-    .setHelpText('Not published.')
-    .setRequired(true);
+    .setHelpText('Not published. Under-18 entries only.');
 
   form
     .addTextItem()
     .setTitle('Parent or guardian — email')
-    .setHelpText('Not published.')
-    .setValidation(FormApp.createTextValidation().requireTextIsEmail().build())
-    .setRequired(true);
+    .setHelpText('Not published. Under-18 entries only.')
+    .setValidation(FormApp.createTextValidation().requireTextIsEmail().build());
 
   form
     .addTextItem()
     .setTitle('Parent or guardian — phone')
-    .setHelpText('Not published.')
-    .setRequired(true);
+    .setHelpText('Not published. Under-18 entries only.');
 
   form
     .addCheckboxItem()
     .setTitle('Parent or guardian authorization')
+    .setHelpText('Under-18 entries only.')
     .setChoiceValues([
       'I am the parent or legal guardian of this player. I authorize this entry ' +
         'and the publication of the player’s competitive information: name, club ' +
-        'or university, handicap and results.',
-    ])
-    .setRequired(true);
+        'or university, province, handicap and results.',
+    ]);
 
-  // ── 第 5 节 — Confirmations ───────────────────────────────────────
-  const confirmationsPage = form.addPageBreakItem().setTitle('Confirmations');
+  // ── Confirmations ─────────────────────────────────────────────────
+  form.addPageBreakItem().setTitle('Confirmations');
 
   form
     .addCheckboxItem()
@@ -322,9 +346,9 @@ function populate(form) {
     .addCheckboxItem()
     .setTitle('What is published')
     .setChoiceValues([
-      'I understand that my name, club or university, handicap and results will ' +
-        'be published, and that my contact details, date of birth and emergency ' +
-        'contact will not.',
+      'I understand that my name, club or university, province, handicap and ' +
+        'results will be published, and that my contact details, city, date of ' +
+        'birth and emergency contact will not.',
     ])
     .setRequired(true);
 
@@ -355,12 +379,4 @@ function populate(form) {
     .addTextItem()
     .setTitle('How did you hear about GAG?')
     .setHelpText('Optional.');
-
-  // ── 条件跳转 ──────────────────────────────────────────────────────
-  // 只有回答 Yes 的人才看到未成年人分节；回答 No 的直接跳到确认页。
-  // 分节页必须先创建，才能作为跳转目标绑定，所以这一步放在最后。
-  underEighteen.setChoices([
-    underEighteen.createChoice('Yes', minorsPage),
-    underEighteen.createChoice('No', confirmationsPage),
-  ]);
 }

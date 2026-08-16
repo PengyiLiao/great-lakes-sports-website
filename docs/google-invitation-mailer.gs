@@ -1,62 +1,70 @@
 /**
- * GAG — 定制化邀请邮件
+ * GAG — personalised invitations
  *
- * 从一张 Google 表格逐行发送个性化邀请：每封信独立发出、开头是收件人的名字。
- * 不是群发，所以不涉及密送——每个人只看得到自己那封。
+ * Sends one addressed message per row of a Google Sheet, opening with the
+ * recipient's name. Not a blast, so no blind copying is involved — each
+ * person only ever sees their own.
  *
- * ── 怎么用 ────────────────────────────────────────────────────────────
- * 1. 把 Excel 邀请名单导入 Google 表格：
- *      Google Drive → 新建 → 文件上传 → 选那个 .xlsx
- *      → 打开后 文件 → 另存为 Google 表格
- *    ⚠️ 表格共享必须是 Restricted，里面有出生日期和电话。
+ * ── How to use ────────────────────────────────────────────────────────
+ * 1. Bring the Excel list into Google Sheets:
+ *      Drive → New → File upload → the .xlsx
+ *      → open it → File → Save as Google Sheets
+ *    ⚠️ Keep sharing Restricted. The list holds dates of birth and phone
+ *    numbers for people who have not opted into anything.
  *
- * 2. 确认表头行有这几列（名字可以不完全一致，脚本按关键词匹配）：
- *      Name / 姓名        —— 用于称呼
- *      Email / 邮件地址   —— 收件地址
- *    脚本会自动在最右边加两列：Invite sent / Invite sent at
+ * 2. The header row needs a name column and an email column. Exact wording
+ *    does not matter — they are found by keyword. Two columns are added at
+ *    the right: Invite sent, Invite sent at.
  *
- * 3. https://script.google.com/home/projects/create（用 info@gag.golf 登录）
- *    改名 `GAG — Invitations`，粘贴本文件，填好下面的 SHEET_URL
+ * 3. https://script.google.com/home/projects/create, signed in as
+ *    info@gag.golf. Rename it `GAG — Invitations`, paste this file, and fill
+ *    in SHEET_URL below.
  *
- * 4. **先跑 previewInvitations** —— 只打印前几封的完整内容，一封都不发。
- *    确认称呼、正文、退订说明都对了，再往下走。
+ * 4. **Run previewInvitations first.** It prints the first few messages in
+ *    full and sends nothing. Check the salutation, the copy and the
+ *    unsubscribe line before going further.
  *
- * 5. 跑 sendInvitations —— 真正发送，每行发一封，发过的行会被标记，
- *    重复运行不会重发。
+ * 5. Run sendInvitations to send. Rows are marked once sent, so running it
+ *    again picks up only what was missed.
  *
- * ── ⚠️ 加拿大反垃圾邮件法（CASL）──────────────────────────────────────
- * 向加拿大收件人发送商业电子邮件，法律要求：
- *   1. 有同意（明示或默示）
- *   2. 邮件中标明发件方身份与联系方式
- *   3. 提供退订方式
- * 第 2、3 条本脚本已经写进每封信。**第 1 条要委员会自己确认**——这些邮箱
- * 从哪里来的？如果是本人公开发布的、且与其身份相关，可能构成默示同意；
- * 如果是私下转来的名单，风险就高。罚则不轻，值得先问清楚再发。
+ * ── ⚠️ Canadian anti-spam law (CASL) ──────────────────────────────────
+ * A commercial message to a Canadian recipient requires three things:
+ *   1. consent, express or implied
+ *   2. the sender's identity and contact details in the message
+ *   3. a way to unsubscribe
+ * Two and three are in every message this sends. **One is the committee's to
+ * establish.** Where did these addresses come from? An address the person
+ * published themselves, in a message relevant to that role, can amount to
+ * implied consent; a list passed along privately is a different matter. The
+ * penalties are not small, so it is worth answering before sending.
  *
- * 另外名单里有青少年球员。**给未成年人发推广邮件更敏感**，脚本会把疑似
- * 未成年的行单独标出来，建议改发给家长或先取得同意。
+ * The list also includes junior players. Promotional mail to minors is more
+ * sensitive again — rows whose date of birth puts them under eighteen are
+ * counted in the preview so they can be handled through a parent or club
+ * rather than mailed blind.
  */
 
-/** 邀请名单表格的链接。 */
+/** Link to the invitation spreadsheet. */
 const SHEET_URL = '';
 
-/** 发件设置。Workspace 账号直接填自己的地址。 */
+/** Sending identity. On a Workspace account, simply its own address. */
 const FROM_ALIAS = 'info@gag.golf';
 const REPLY_TO = 'info@gag.golf';
 const SENDER_NAME = 'GAG — Great Lakes Amateur Golf';
 
-/** 一次运行最多发多少封。Workspace 每天上限 2000，这里留个保险。 */
+/** Cap per run. Workspace allows 2,000 a day; this leaves headroom. */
 const MAX_PER_RUN = 120;
 
-/** 预览时打印几封。 */
+/** How many messages the preview prints. */
 const PREVIEW_COUNT = 3;
 
 const SUBJECT = 'An invitation — 2026 GAG Inaugural Tournament';
 
 /**
- * 邮件正文。{{name}} 会被替换成收件人的名字。
+ * The message. The recipient's name is passed in.
  *
- * 结尾的身份说明和退订说明是 CASL 要求的，**不要删**。
+ * The identification block and the unsubscribe line at the end are what CASL
+ * requires. Do not remove them.
  */
 function buildBody(name) {
   return [
@@ -99,53 +107,61 @@ function buildBody(name) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-// 预览（不发信）
+// Preview — sends nothing
 // ═══════════════════════════════════════════════════════════════════════
 
 function previewInvitations() {
   const { rows, cols } = readSheet_();
   const pending = rows.filter((r) => !r.values[cols.sent - 1] && r.email);
 
-  Logger.log('待发送 %s 封（名单共 %s 行，其中 %s 行有邮箱）。',
+  Logger.log('%s to send (%s rows in the list, %s with an email address).',
     pending.length, rows.length, rows.filter((r) => r.email).length);
 
   const minors = rows.filter((r) => r.likelyMinor);
   if (minors.length) {
-    Logger.log('⚠️ 疑似未成年 %s 行（按出生日期推算）。给未成年人发推广邮件更敏感，' +
-      '建议改发家长或先取得同意——本脚本不会自动跳过，请自行决定。', minors.length);
+    Logger.log(
+      '⚠️ %s rows appear to be under 18, judging by date of birth. ' +
+        'Promotional mail to minors is more sensitive — consider reaching ' +
+        'them through a parent or their club. These rows are not skipped ' +
+        'automatically; that call is yours.',
+      minors.length,
+    );
   }
 
   pending.slice(0, PREVIEW_COUNT).forEach((r, i) => {
-    Logger.log('──────── 预览 %s / 收件人 %s ────────', i + 1, r.email);
-    Logger.log('主题：%s', SUBJECT);
+    Logger.log('──────── preview %s / to %s ────────', i + 1, r.email);
+    Logger.log('Subject: %s', SUBJECT);
     Logger.log('%s', buildBody(r.name));
   });
 
-  Logger.log('以上仅为预览，一封都没有发出。确认无误后运行 sendInvitations。');
+  Logger.log('Preview only — nothing was sent. Run sendInvitations when the copy is right.');
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-// 发送
+// Send
 // ═══════════════════════════════════════════════════════════════════════
 
 /**
- * 逐行发送。每封信单独发给一个人——因为内容是定制的，本来就不该群发，
- * 也就不存在把彼此邮箱暴露给对方的问题。
+ * Sends row by row, one message per person. The content is personalised, so
+ * it was never going to be a blast, and nobody's address is exposed to
+ * anybody else.
  *
- * 发过的行会写上标记和时间。重复运行只补发没标记的行，**不会重复打扰同一个人**。
+ * Sent rows are stamped with a marker and a time. Running again picks up only
+ * the unmarked ones, so nobody is mailed twice — the failure that turns an
+ * invitation into a complaint.
  */
 function sendInvitations() {
   const { sheet, rows, cols } = readSheet_();
   const pending = rows.filter((r) => !r.values[cols.sent - 1] && r.email);
 
   if (!pending.length) {
-    Logger.log('没有待发送的行。');
+    Logger.log('Nothing left to send.');
     return;
   }
 
   const quota = MailApp.getRemainingDailyQuota();
   const batch = pending.slice(0, Math.min(MAX_PER_RUN, quota));
-  Logger.log('待发 %s 封，本次发 %s 封（今日剩余额度 %s）。',
+  Logger.log('%s pending, sending %s now (%s left in today\'s quota).',
     pending.length, batch.length, quota);
 
   let sent = 0;
@@ -160,33 +176,36 @@ function sendInvitations() {
       sheet.getRange(r.rowIndex, cols.sentAt).setValue(new Date());
       sent++;
     } catch (err) {
-      // 单个地址失败不该中断整批——记下来，跑完再看
+      // One bad address should not stop the batch — record it and move on
       sheet.getRange(r.rowIndex, cols.sent).setValue('Failed: ' + err.message);
     }
   });
 
   SpreadsheetApp.flush();
-  Logger.log('✅ 已发送 %s 封。剩余未发 %s 封，可稍后再跑一次。',
+  Logger.log('✅ Sent %s. %s still pending — run again later.',
     sent, pending.length - batch.length);
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-// 读表
+// Reading the sheet
 // ═══════════════════════════════════════════════════════════════════════
 
 /**
- * 读取名单。
+ * Reads the list.
  *
- * 表头按关键词匹配而不是写死列号——这张表是人手维护的 Excel 转过来的，
- * 列顺序随时可能变，写死列号会静默错位（把电话当成邮箱之类）。
+ * Columns are found by header keyword rather than position. This sheet came
+ * from a hand-maintained Excel file; a fixed column index would shift
+ * silently the first time someone inserts a column, and start mailing phone
+ * numbers.
  */
 function readSheet_() {
-  if (!SHEET_URL) throw new Error('请先把邀请名单表格的链接填进 SHEET_URL。');
+  if (!SHEET_URL) throw new Error('Set SHEET_URL to the invitation spreadsheet.');
 
   const sheet = SpreadsheetApp.openByUrl(SHEET_URL).getSheets()[0];
   const data = sheet.getDataRange().getValues();
 
-  // 表头未必在第 1 行——这类名单常有一行标题。找含 "email" 的那一行。
+  // The header is not always row 1 — lists like this often open with a title.
+  // Find the row containing "email".
   let headerRow = -1;
   for (let i = 0; i < Math.min(5, data.length); i++) {
     if (data[i].some((c) => String(c).toLowerCase().indexOf('email') !== -1)) {
@@ -194,7 +213,7 @@ function readSheet_() {
       break;
     }
   }
-  if (headerRow === -1) throw new Error('找不到表头行（需要有一列含 "Email"）。');
+  if (headerRow === -1) throw new Error('No header row found — one column must contain "Email".');
 
   const headers = data[headerRow].map((h) => String(h).toLowerCase());
   const find = (kw) => {
@@ -202,12 +221,17 @@ function readSheet_() {
     return i === -1 ? null : i + 1;
   };
 
-  const emailCol = find(['email', '邮件']);
-  const nameCol = find(['name', '姓名']) || 1;
-  const dobCol = find(['dob', 'birth', '出生']);
-  if (!emailCol) throw new Error('找不到邮箱列。');
+  // The list's headers are bilingual but English-first — "Name 姓名",
+  // "Email （邮件地址）", "DOB" — so an English keyword is enough.
+  const emailCol = find(['email']);
+  const nameCol = find(['name']);
+  const dobCol = find(['dob', 'birth']);
+  if (!emailCol) throw new Error('No email column found.');
+  // No silent fallback to column 1: that column is the ranking, and every
+  // message would open "Dear 5".
+  if (!nameCol) throw new Error('No name column found.');
 
-  // 状态列：没有就在最右边建两列
+  // Status columns, added at the right if they are not there yet
   let sentCol = find(['invite sent']);
   let sentAtCol = find(['invite sent at']);
   if (!sentCol) {
@@ -226,7 +250,7 @@ function readSheet_() {
   for (let i = headerRow + 1; i < data.length; i++) {
     const values = data[i];
     const email = String(values[emailCol - 1] || '').trim();
-    if (!email && !String(values[nameCol - 1] || '').trim()) continue; // 空行
+    if (!email && !String(values[nameCol - 1] || '').trim()) continue; // blank row
 
     let likelyMinor = false;
     if (dobCol) {
@@ -247,10 +271,11 @@ function readSheet_() {
 }
 
 /**
- * 取称呼用的名字。
+ * The name to open with.
  *
- * 名单里常见 "Last, First" 和 "First Last" 两种写法混在一起。逗号是可靠的
- * 分隔信号；没有逗号就取第一个词。称呼错了比不称呼更失礼，所以宁可保守。
+ * Lists like this mix "Last, First" and "First Last" freely. A comma is a
+ * reliable signal; without one, take the first word. Getting a salutation
+ * wrong reads worse than not using one, so this stays conservative.
  */
 function firstName_(full) {
   const s = full.trim();

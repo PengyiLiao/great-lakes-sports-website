@@ -1,74 +1,74 @@
 /**
- * 2026 GAG Inaugural Tournament — 邮件系统
+ * 2026 GAG Inaugural Tournament — mail
  *
- * 三件事：
- *   1. 有人报名 → 委员会邮箱收到通知
- *   2. 有人报名 → 参赛者收到确认信（写明接下来会发生什么）
- *   3. 赛事通知群发 → 只发给勾选了接收通知的人，**一律密送**
+ * Three jobs:
+ *   1. An entry arrives → the committee is notified
+ *   2. An entry arrives → the player gets a confirmation saying what happens next
+ *   3. Announcements → sent only to those who opted in, always blind copied
  *
- * ── 怎么用 ────────────────────────────────────────────────────────────
- * 1. 打开 https://script.google.com/home/projects/create（新建，别覆盖别的项目）
- * 2. 清空编辑器，粘贴本文件全部内容
- * 3. 填好下面的 FORM_URL / COMMITTEE_EMAIL
- * 4. 函数选 installTriggers，点「运行 / Run」，授权
- *    → 从此每有一份报名，通知信和确认信自动发出
- * 5. 要群发赛事通知时，改好 ANNOUNCEMENT 里的标题和正文，
- *    函数选 sendAnnouncement，点「运行 / Run」
+ * ── How to use ────────────────────────────────────────────────────────
+ * 1. https://script.google.com/home/projects/create (a new project, not one
+ *    of the others)
+ * 2. Clear the editor and paste this file
+ * 3. Fill in FORM_URL and COMMITTEE_EMAIL below
+ * 4. Choose installTriggers from the function menu and Run, then authorize
+ *    → from then on every entry sends both messages by itself
+ * 5. To send an announcement, edit ANNOUNCEMENT below, choose
+ *    sendAnnouncement and Run
  *
- * ── 关于发件人显示成谁 ────────────────────────────────────────────────
- * Apps Script 发信，发件人默认是运行脚本的那个 Google 账号。想让收件人看到
- * GAG 的地址，先在 Gmail 里把它验证成别名：
+ * ── Who the message appears to come from ──────────────────────────────
+ * Apps Script sends as the Google account running it. On a Workspace account
+ * such as info@gag.golf, put that address in FROM_ALIAS and it is used
+ * directly — nothing else to configure.
  *
- *   Gmail → 设置 ⚙️ → 查看所有设置 → 账号和导入
- *   → 「用这个地址发送邮件」→ 添加另一个电子邮件地址
- *   → 填 GAG 的邮箱 → Google 会往那个邮箱发一个验证码 → 填回去
+ * On a personal Gmail, verify the address as an alias first:
+ *   Gmail → Settings → See all settings → Accounts and Import
+ *   → "Send mail as" → Add another email address
  *
- * 验证通过后，把那个地址填进下面的 FROM_ALIAS，发件人就会显示成它。
- * 留空则用你自己的 Gmail 发，同时把回信地址设成 GAG 邮箱——能用，
- * 但发件人显示成个人邮箱，不够正式。
- *
- * 这一步现在就能做，不用等 gag.ca 域名。等域名到手后，把 FROM_ALIAS 换成
- * registration@gag.ca 即可，其余代码不用动。
+ * Left empty, mail goes out from the script owner's own address with replies
+ * directed to COMMITTEE_EMAIL. That works, but the sender reads as a personal
+ * mailbox.
  */
 
-/** 表单的编辑链接，形如 https://docs.google.com/forms/d/xxxxx/edit */
+/** The form's edit link, e.g. https://docs.google.com/forms/d/xxxxx/edit */
 const FORM_URL = '';
 
-/** 委员会收报名通知的邮箱。 */
+/** Where the committee receives entry notifications. */
 const COMMITTEE_EMAIL = '';
 
 /**
- * 在 Gmail 里验证过的发件别名。留空则用脚本所有者的 Gmail 发送。
- * 拿到域名后换成 registration@gag.ca。
+ * The sending address. On a Workspace account, simply its own address.
+ * Leave empty to send from the script owner's mailbox instead.
  */
 const FROM_ALIAS = '';
 
-/** 收件人看到的发件人名称。 */
+/** The name recipients see. */
 const SENDER_NAME = 'GAG — Great Lakes Amateur Golf';
 
 // ═══════════════════════════════════════════════════════════════════════
-// 安装触发器
+// Triggers
 // ═══════════════════════════════════════════════════════════════════════
 
-/** 装上「有人提交表单就跑 onEntrySubmitted」的触发器。可重复运行。 */
+/** Installs the on-submit trigger. Safe to run again. */
 function installTriggers() {
   requireConfig_();
   const form = FormApp.openByUrl(FORM_URL);
 
-  // 先清掉同名的旧触发器，避免重复运行导致一份报名发两封信
+  // Remove any existing trigger with the same handler first, or one entry
+  // would send two of each message.
   ScriptApp.getProjectTriggers()
     .filter((t) => t.getHandlerFunction() === 'onEntrySubmitted')
     .forEach((t) => ScriptApp.deleteTrigger(t));
 
   ScriptApp.newTrigger('onEntrySubmitted').forForm(form).onFormSubmit().create();
 
-  Logger.log('✅ 触发器已安装。之后每份报名都会自动发出通知信和确认信。');
-  Logger.log('📧 委员会通知发往：%s', COMMITTEE_EMAIL);
-  Logger.log('✉️ 发件人显示为：%s', FROM_ALIAS || '脚本所有者的 Gmail（建议配置 FROM_ALIAS）');
+  Logger.log('✅ Installed. Every entry now sends a notification and a confirmation.');
+  Logger.log('📧 Committee notifications go to: %s', COMMITTEE_EMAIL);
+  Logger.log('✉️ Sending as: %s', FROM_ALIAS || "the script owner's mailbox — set FROM_ALIAS");
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-// 有人报名时
+// On entry
 // ═══════════════════════════════════════════════════════════════════════
 
 function onEntrySubmitted(e) {
@@ -81,16 +81,22 @@ function onEntrySubmitted(e) {
 }
 
 /**
- * 通知委员会。
+ * Notifies the committee.
  *
- * 只放核对资格需要的字段——姓名、省份、球会、差点、是否未成年。
- * 电话、出生日期、家长联系方式**不进邮件正文**：那些留在表格里，
- * 表格有权限控制，而邮件会被转发、被搜索、被留在各种收件箱里。
- * 邮件里给一条表格链接就够了。
+ * Carries only what is needed to judge eligibility — name, province, club,
+ * handicap, and whether the player is a minor. Phone numbers, dates of birth
+ * and parents' contact details stay in the spreadsheet, which has access
+ * controls; mail gets forwarded, searched and left sitting in inboxes. A link
+ * to the sheet is enough.
+ *
+ * Minor status is worked out from the date of birth rather than asked. The
+ * form used to ask outright, and a form that asks something it already knows
+ * eventually collects two answers that disagree.
  */
 function notifyCommittee_(answers) {
   const name = answers['Full name'] || '(no name)';
-  const under18 = answers['Will the player be under 18 on the day of the tournament?'];
+  const minor = isMinorOnTournamentDay_(answers['Date of birth']);
+  const under18 = minor === null ? '—' : minor ? 'Yes' : 'No';
 
   const lines = [
     `Player:     ${name}`,
@@ -105,7 +111,7 @@ function notifyCommittee_(answers) {
     'Waitlist and reply to the player with payment details.',
   ];
 
-  if (under18 === 'Yes') {
+  if (minor === true) {
     lines.unshift(
       '⚠️ UNDER 18 — parent or guardian authorization required before confirming.',
       '',
@@ -114,16 +120,18 @@ function notifyCommittee_(answers) {
 
   send_({
     to: COMMITTEE_EMAIL,
-    subject: `New entry — ${name}${under18 === 'Yes' ? ' (under 18)' : ''}`,
+    subject: `New entry — ${name}${minor === true ? ' (under 18)' : ''}`,
     body: lines.join('\n'),
   });
 }
 
 /**
- * 给参赛者的确认信。
+ * The player's confirmation.
  *
- * 明确写出「提交不等于录取」和「暂时不用付款」。第一届赛事最容易产生的
- * 误会就是这两条：以为交了表就有位置，或者急着问往哪里打钱。
+ * Says outright that submitting is not a place and that no payment is due
+ * yet. Those are the two things a first tournament gets asked about most:
+ * people assume the form secured them a spot, or start asking where to send
+ * money.
  */
 function confirmToPlayer_(email, answers) {
   const name = answers['Full name'] || 'there';
@@ -152,7 +160,7 @@ function confirmToPlayer_(email, answers) {
     '',
     'GAG — Great Lakes Amateur Golf',
     'Great Lakes Sports Inc. · Toronto, Ontario',
-    'https://great-lakes-sports.pages.dev',
+    'https://gag.golf',
   ].join('\n');
 
   send_({
@@ -163,41 +171,42 @@ function confirmToPlayer_(email, answers) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-// 群发赛事通知
+// Announcements
 // ═══════════════════════════════════════════════════════════════════════
 
-/** 要群发的内容，发之前改这里。 */
+/** Edit this before sending. */
 const ANNOUNCEMENT = {
   subject: 'GAG — tournament update',
   body: [
     'Hello,',
     '',
-    '（在这里写正文）',
+    '(write the message here)',
     '',
     'Let’s Play GAG!',
     '',
     'GAG — Great Lakes Amateur Golf',
-    'https://great-lakes-sports.pages.dev',
+    'https://gag.golf',
   ].join('\n'),
 };
 
 /**
- * 群发给勾选了「接收赛事通知」的人。
+ * Sends to everyone who opted in.
  *
- * 🚨 全部走密送（BCC）。放进收件人栏的话，每个参赛者都会看到其他所有人的
- * 邮箱地址——这是业余赛事最常见的隐私事故，一次就能毁掉信任，而且无法撤回。
- * 所以本函数只往 bcc 里放地址，to 永远是委员会自己。
+ * 🚨 Always blind copied. Put the addresses in the To field and every entrant
+ * sees everyone else's — the commonest privacy accident in amateur sport, and
+ * one that cannot be taken back. Recipients only ever go in bcc here; To is
+ * always the committee itself.
  *
- * 每封最多 50 个密送地址，超出自动分批。普通 Gmail 账号每天总收件人上限
- * 100 个，72 人的赛事一天发得完；将来人数上去了要分天发，或改用专门的
- * 邮件服务。
+ * Batched at 50 per message. A Workspace account allows 2,000 recipients a
+ * day, so a field of 72 is comfortable; a much larger list would need
+ * spreading across days or a dedicated mail service.
  */
 function sendAnnouncement() {
   requireConfig_();
 
   const recipients = optedInEmails_();
   if (!recipients.length) {
-    Logger.log('没有勾选接收通知的收件人，未发送。');
+    Logger.log('Nobody has opted in. Nothing sent.');
     return;
   }
 
@@ -205,18 +214,18 @@ function sendAnnouncement() {
   for (let i = 0; i < recipients.length; i += BATCH) {
     const batch = recipients.slice(i, i + BATCH);
     send_({
-      to: COMMITTEE_EMAIL, // 收件人栏放自己，真正的收件人全在密送里
+      to: COMMITTEE_EMAIL, // To is us; the real recipients are all in bcc
       bcc: batch.join(','),
       subject: ANNOUNCEMENT.subject,
       body: ANNOUNCEMENT.body,
     });
-    Logger.log('已发出第 %s 批，%s 位收件人（密送）。', i / BATCH + 1, batch.length);
+    Logger.log('Batch %s sent — %s recipients, blind copied.', i / BATCH + 1, batch.length);
   }
 
-  Logger.log('✅ 共 %s 位收件人，全部密送。', recipients.length);
+  Logger.log('✅ %s recipients, all blind copied.', recipients.length);
 }
 
-/** 从回复表里取出勾选了接收通知的邮箱，去重。 */
+/** Opted-in addresses from the response sheet, de-duplicated. */
 function optedInEmails_() {
   const form = FormApp.openByUrl(FORM_URL);
   const ss = SpreadsheetApp.openById(form.getDestinationId());
@@ -240,7 +249,7 @@ function optedInEmails_() {
   const optInCol = headers.findIndex((h) => h.startsWith('tournament announcements'));
 
   if (emailCol === -1 || optInCol === -1) {
-    throw new Error('回复表里找不到邮箱列或订阅列，请检查表单题目是否改过名字。');
+    throw new Error('No email or opt-in column in the response sheet — check whether a form question was renamed.');
   }
 
   const rows = sheet
@@ -264,10 +273,10 @@ function optedInEmails_() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-// 工具
+// Helpers
 // ═══════════════════════════════════════════════════════════════════════
 
-/** 把 FormResponse 转成 { 题目: 答案 }。 */
+/** Turns a FormResponse into { question: answer }. */
 function answersByTitle_(response) {
   const map = {};
   response.getItemResponses().forEach((item) => {
@@ -276,7 +285,7 @@ function answersByTitle_(response) {
   return map;
 }
 
-/** 统一发信入口，负责套上发件人别名与回信地址。 */
+/** Single place that sends, applying the sender alias and reply-to. */
 function send_(options) {
   const payload = {
     to: options.to,
@@ -287,7 +296,8 @@ function send_(options) {
 
   if (options.bcc) payload.bcc = options.bcc;
 
-  // 别名验证过就用它当发件人；否则至少让回信落到 GAG 邮箱
+  // Use the alias as the sender when there is one; otherwise at least send
+  // replies to the committee rather than to whoever ran the script.
   if (FROM_ALIAS) {
     payload.from = FROM_ALIAS;
   } else if (COMMITTEE_EMAIL) {
@@ -298,6 +308,27 @@ function send_(options) {
 }
 
 function requireConfig_() {
-  if (!FORM_URL) throw new Error('请先填写 FORM_URL（表单的编辑链接）。');
-  if (!COMMITTEE_EMAIL) throw new Error('请先填写 COMMITTEE_EMAIL（委员会收信邮箱）。');
+  if (!FORM_URL) throw new Error('Set FORM_URL to the form’s edit link.');
+  if (!COMMITTEE_EMAIL) throw new Error('Set COMMITTEE_EMAIL.');
+}
+
+/**
+ * Whether the player is under 18 on tournament day.
+ *
+ * Tournament day, not today: that is the date deciding whether a parent's
+ * authorization is needed. A player turning 18 the week after is still a
+ * minor for this event. Returns null when there is no usable date.
+ */
+function isMinorOnTournamentDay_(dob) {
+  const born = dob instanceof Date ? dob : new Date(dob);
+  if (isNaN(born.getTime())) return null;
+
+  const day = new Date(2026, 9, 11); // October is month 9
+  let age = day.getFullYear() - born.getFullYear();
+  const beforeBirthday =
+    day.getMonth() < born.getMonth() ||
+    (day.getMonth() === born.getMonth() && day.getDate() < born.getDate());
+  if (beforeBirthday) age--;
+
+  return age < 18;
 }
