@@ -6,6 +6,8 @@
  * previous centred-and-gold-ruled treatment read as a heritage club; this one
  * reads as a competition — which is the difference the brief asks for.
  */
+import ScrimSection from "./ScrimSection.astro";
+
 interface Props {
   /** Small line above the title. */
   eyebrow?: string;
@@ -17,8 +19,8 @@ interface Props {
 const { eyebrow, title, lede } = Astro.props;
 ---
 
-<section class="bg-forest-950 text-ivory-50">
-  <div class="mx-auto max-w-7xl px-6 py-20 sm:py-28">
+<ScrimSection>
+  <div class="mx-auto max-w-7xl px-6 py-24 sm:py-36">
     {eyebrow && <p class="eyebrow text-gold-300">{eyebrow}</p>}
 
     <h1 class="mt-5 text-5xl uppercase sm:text-6xl md:text-7xl">
@@ -27,10 +29,10 @@ const { eyebrow, title, lede } = Astro.props;
 
     {
       lede && (
-        <p class="mt-8 max-w-2xl font-display text-xl font-medium text-ivory-200 sm:text-2xl">
+        <p class="mt-10 max-w-2xl font-display text-xl font-normal text-ivory-200 sm:text-2xl">
           {lede}
         </p>
       )
     }
   </div>
-</section>
+</ScrimSection>

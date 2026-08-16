@@ -7,6 +7,7 @@
  * the rest of the platform.
  */
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import ScrimSection from "../ScrimSection.astro";
 import Button from "../Button.astro";
 import GagLogo from "../GagLogo.astro";
 import { site } from "../../config/site";
@@ -28,23 +29,23 @@ const copy = home[lang];
   {/* Hero. Not full-viewport height — leaving the next section visible at the
       fold tells visitors there is more below, which a full-screen splash
       does not. */}
-  <section class="bg-forest-950 text-ivory-50">
-    <div class="mx-auto max-w-7xl px-6 pt-20 pb-24 sm:pt-28 sm:pb-32">
+  <ScrimSection>
+    <div class="mx-auto max-w-7xl px-6 pt-28 pb-32 sm:pt-40 sm:pb-44">
       <p class="eyebrow text-gold-300">
         {site.name} — {site.fullName}
       </p>
 
-      <h1 class="mt-6 text-6xl uppercase sm:text-7xl md:text-8xl">
+      <h1 class="mt-8 text-6xl uppercase sm:text-7xl md:text-8xl">
         Let's Play GAG!
       </h1>
 
       <p
-        class="mt-8 max-w-2xl font-display text-2xl font-medium text-ivory-200 sm:text-3xl"
+        class="mt-10 max-w-2xl font-display text-2xl font-normal text-ivory-200 sm:text-3xl"
       >
         {t("home.tagline")}
       </p>
 
-      <div class="mt-12 flex flex-wrap gap-4">
+      <div class="mt-14 flex flex-wrap gap-4">
         <Button href={localizePath("/register", lang)} variant="onDark">
           {t("cta.register")}
         </Button>
@@ -56,7 +57,7 @@ const copy = home[lang];
         </Button>
       </div>
     </div>
-  </section>
+  </ScrimSection>
 
   {/* What GAG is */}
   <section class="mx-auto max-w-4xl px-6 py-20 sm:py-28">

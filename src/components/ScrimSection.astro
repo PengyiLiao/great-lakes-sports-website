@@ -1,0 +1,67 @@
+---
+/**
+ * A full-width section whose ground is treated like film, not like a card.
+ *
+ * The technique is a cinematic scrim, which is a different thing from
+ * glassmorphism and is worth naming precisely: there is no blurred pane
+ * floating over the page, no hairline border, no soft shadow. Instead the
+ * whole frame is pushed back — a photograph is desaturated and darkened,
+ * then covered by a flat tint and a directional gradient — so that type set
+ * in front of it reads as nearer to the viewer.
+ *
+ * What makes the type appear to float is not a shadow. It is three
+ * differences the eye reads as distance:
+ *   · clarity — the ground loses detail and colour, the type keeps its edges
+ *   · luminance — nothing behind reaches white, the type very nearly does
+ *   · weight — large type set at a normal weight sits in front of a picture;
+ *     the same words in bold read as stamped onto it
+ *
+ * With no `image`, the gradient alone gives a flat ground direction and
+ * depth. Passing one later changes nothing else — which matters, because
+ * this site has no photography yet and the treatment should be ready when
+ * it arrives rather than rebuilt around it.
+ */
+import { Image } from "astro:assets";
+
+interface Props {
+  /** Background photograph. Omit and the gradient carries the section alone. */
+  image?: ImageMetadata;
+  /**
+   * Describe the photograph only when it carries meaning the copy does not.
+   * A decorative backdrop takes an empty alt so screen readers skip it.
+   */
+  imageAlt?: string;
+  class?: string;
+}
+
+const { image, imageAlt = "", class: className = "" } = Astro.props;
+---
+
+<section
+  class:list={[
+    "relative isolate overflow-hidden bg-forest-950 text-ivory-50",
+    className,
+  ]}
+>
+  {
+    image && (
+      <Image
+        src={image}
+        alt={imageAlt}
+        widths={[768, 1280, 1920, 2560]}
+        sizes="100vw"
+        loading="eager"
+        fetchpriority="high"
+        class="scrim-media absolute inset-0 -z-20 h-full w-full object-cover"
+      />
+    )
+  }
+
+  {/* Flat tint, then direction. Two layers rather than one: the tint sets how
+      far back the picture sits, the gradient says where the light comes from.
+      Tuning them together in a single gradient makes both harder to adjust. */}
+  <div aria-hidden="true" class="scrim-tint absolute inset-0 -z-10"></div>
+  <div aria-hidden="true" class="scrim-gradient absolute inset-0 -z-10"></div>
+
+  <slot />
+</section>

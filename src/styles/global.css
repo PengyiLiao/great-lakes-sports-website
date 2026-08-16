@@ -107,10 +107,19 @@
   h3,
   h4 {
     font-family: var(--font-display);
-    font-weight: 700;
+    font-weight: 600;
     line-height: 1.05;
     letter-spacing: -0.02em;
     text-wrap: balance;
+  }
+
+  /* The largest headings are set lighter, not heavier.
+     At display size a normal weight reads as sitting in front of the image;
+     a bold one reads as stamped onto it. The float comes from the weight
+     difference and the clarity difference, not from a shadow. */
+  h1 {
+    font-weight: 500;
+    letter-spacing: -0.03em;
   }
 
   /* Visible focus ring for keyboard navigation — a baseline accessibility
@@ -140,6 +149,33 @@
 /* ═══════════════════════════════════════════════════════════════════════
    Utilities
    ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Cinematic scrim ───────────────────────────────────────────────────
+   A photograph is pushed back so type can sit in front of it: desaturated
+   and darkened a little, then covered by a flat tint and a directional
+   gradient. Not a frosted-glass card — no blur, no border, no shadow. The
+   whole frame becomes the glass rather than a pane being placed on it.
+
+   Works with no photograph too: the gradient alone gives a flat ground a
+   direction and a sense of depth. Dropping an image in later needs no other
+   change. */
+
+@utility scrim-media {
+  filter: saturate(0.78) brightness(0.82) contrast(1.04);
+}
+
+@utility scrim-tint {
+  background-color: color-mix(in oklab, var(--color-forest-950) 55%, transparent);
+}
+
+@utility scrim-gradient {
+  background-image: linear-gradient(
+    100deg,
+    color-mix(in oklab, var(--color-forest-950) 88%, transparent) 0%,
+    color-mix(in oklab, var(--color-forest-950) 62%, transparent) 45%,
+    color-mix(in oklab, var(--color-forest-950) 22%, transparent) 100%
+  );
+}
 
 @utility eyebrow {
   font-family: var(--font-display);
