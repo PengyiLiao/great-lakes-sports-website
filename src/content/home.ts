@@ -35,13 +35,13 @@ type HomeContent = {
 export const home: Record<Lang, HomeContent> = {
   en: {
     positioning:
-      "GAG is a youth-focused amateur golf platform connecting young golfers, universities, tournaments and opportunities across Canada and around the world.",
+      "GAG is a youth-focused amateur golf platform connecting young golf players, universities, tournaments and opportunities across Canada and around the world.",
     pillars: ["Play", "Compete", "Connect", "Grow"],
     teasers: [
       {
         route: "/players",
         line: "Meet the next generation.",
-        body: "Junior, university and elite amateur golfers, and the step each of them is trying to take next.",
+        body: "Junior, university and elite amateur golf players, and the step each of them is trying to take next.",
       },
       {
         route: "/university",
@@ -58,13 +58,13 @@ export const home: Record<Lang, HomeContent> = {
 
   fr: {
     positioning:
-      "GAG est une plateforme de golf amateur dédiée à la relève, qui relie jeunes golfeurs, universités, tournois et occasions de développement au Canada et dans le monde.",
+      "GAG est une plateforme de golf amateur dédiée à la relève, qui relie jeunes joueurs de golf, universités, tournois et occasions de développement au Canada et dans le monde.",
     pillars: ["Jouer", "Rivaliser", "Se connecter", "Progresser"],
     teasers: [
       {
         route: "/players",
         line: "Voici la relève.",
-        body: "Golfeurs juniors, universitaires et amateurs d'élite, et l'étape que chacun cherche à franchir.",
+        body: "Joueurs de golf juniors, universitaires et amateurs d'élite, et l'étape que chacun cherche à franchir.",
       },
       {
         route: "/university",

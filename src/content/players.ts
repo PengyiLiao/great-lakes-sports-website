@@ -22,11 +22,11 @@ export type AgeGroup = {
 export const ageGroups: AgeGroup[] = [
   {
     range: "16–18",
-    label: { en: "Junior Golfers", fr: "Golfeurs juniors" },
+    label: { en: "Junior Golf Players", fr: "Joueurs de golf juniors" },
   },
   {
     range: "18–22",
-    label: { en: "University Golfers", fr: "Golfeurs universitaires" },
+    label: { en: "University Golf Players", fr: "Joueurs de golf universitaires" },
   },
   {
     range: "22–25",
@@ -89,8 +89,8 @@ type PlayersContent = {
 export const players: Record<Lang, PlayersContent> = {
   en: {
     intro: [
-      "Young golfers are at the heart of GAG.",
-      "Our platform is built for golfers aged 16–25 — junior golfers, university golfers and elite amateurs — and for the step each of them is trying to take next.",
+      "Young golf players are at the heart of GAG.",
+      "Our platform is built for golf players aged 16–25 — junior golf players, university golf players and elite amateurs — and for the step each of them is trying to take next.",
     ],
     groupsNote:
       "These groups describe who GAG is built for. They are not entry requirements: eligibility for each competition is set out on that event's page.",
@@ -115,8 +115,8 @@ export const players: Record<Lang, PlayersContent> = {
 
   fr: {
     intro: [
-      "Les jeunes golfeurs sont au cœur de GAG.",
-      "Notre plateforme s'adresse aux golfeurs de 16 à 25 ans — juniors, universitaires et amateurs d'élite — et à l'étape que chacun cherche à franchir.",
+      "Les jeunes joueurs de golf sont au cœur de GAG.",
+      "Notre plateforme s'adresse aux joueurs de golf de 16 à 25 ans — juniors, universitaires et amateurs d'élite — et à l'étape que chacun cherche à franchir.",
     ],
     groupsNote:
       "Ces catégories décrivent le public auquel GAG s'adresse. Il ne s'agit pas de conditions d'admission : l'admissibilité à chaque compétition est précisée sur la page de l'épreuve.",

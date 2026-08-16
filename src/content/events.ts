@@ -33,15 +33,15 @@ export const eventSeries: EventSeries[] = [
   {
     name: "GAG Championships",
     description: {
-      en: "Our flagship championship for high-level young amateur golfers. A competitive, professionally organized tournament designed to provide strong players with a serious stage on which to test their game.",
-      fr: "Notre championnat phare pour les jeunes golfeurs amateurs de haut niveau. Un tournoi compétitif et professionnellement encadré, conçu pour offrir aux meilleurs joueurs une véritable scène où éprouver leur jeu.",
+      en: "Our flagship championship for high-level young amateur golf players. A competitive, professionally organized tournament designed to provide strong players with a serious stage on which to test their game.",
+      fr: "Notre championnat phare pour les jeunes joueurs de golf amateurs de haut niveau. Un tournoi compétitif et professionnellement encadré, conçu pour offrir aux meilleurs joueurs une véritable scène où éprouver leur jeu.",
     },
   },
   {
     name: "GAG University Cup",
     description: {
-      en: "A university-focused competition connecting student golfers and university teams. The University Cup aims to create stronger connections between universities and develop a broader university golf community.",
-      fr: "Une compétition universitaire qui réunit golfeurs étudiants et équipes universitaires. La University Cup vise à resserrer les liens entre les universités et à faire grandir la communauté du golf universitaire.",
+      en: "A university-focused competition connecting student golf players and university teams. The University Cup aims to create stronger connections between universities and develop a broader university golf community.",
+      fr: "Une compétition universitaire qui réunit joueurs de golf étudiants et équipes universitaires. La University Cup vise à resserrer les liens entre les universités et à faire grandir la communauté du golf universitaire.",
     },
   },
   {

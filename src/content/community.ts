@@ -40,7 +40,7 @@ export const community: Record<Lang, CommunityContent> = {
     intro:
       "GAG ne s'adresse pas qu'aux joueurs. C'est une communauté bâtie autour de la relève du golf.",
     groups: [
-      { title: "Joueurs", body: "De jeunes golfeurs en route vers le niveau supérieur." },
+      { title: "Joueurs", body: "De jeunes joueurs de golf en route vers le niveau supérieur." },
       {
         title: "Entraîneurs",
         body: "Des professionnels qui aident les joueurs à développer leur jeu.",

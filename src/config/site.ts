@@ -106,11 +106,23 @@ export type NavItem = {
  * the site rather than a set of choices.
  */
 export const nav: NavItem[] = [
+  { key: "nav.about", route: "/about" },
   { key: "nav.tournaments", route: "/tournaments" },
+  { key: "nav.contact", route: "/contact" },
+];
+
+/**
+ * Pages that exist but are not in the header.
+ *
+ * The client cut the header to three destinations plus the account button.
+ * These pages are still reachable, still in the sitemap, and still linked
+ * from the footer — a page nobody can navigate to is a page nobody reads,
+ * and removing them from the header is not the same as removing them.
+ */
+export const secondaryNav: NavItem[] = [
+  { key: "nav.membership", route: "/membership" },
   { key: "nav.players", route: "/players" },
   { key: "nav.university", route: "/university" },
   { key: "nav.community", route: "/community" },
-  { key: "nav.about", route: "/about" },
   { key: "nav.partners", route: "/partners" },
-  { key: "nav.contact", route: "/contact" },
 ];

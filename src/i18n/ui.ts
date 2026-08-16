@@ -46,10 +46,10 @@ export const ui = {
     "page.register": "Registration",
 
     "meta.description":
-      "GAG — Great Lakes Amateur Golf. A youth-focused amateur golf platform connecting young golfers, universities, tournaments and opportunities across Canada and around the world.",
+      "GAG — Great Lakes Amateur Golf. A youth-focused amateur golf platform connecting young golf players, universities, tournaments and opportunities across Canada and around the world.",
 
     // ── Home ────────────────────────────────────────────────────────────
-    "home.tagline": "Young Golf. Serious Competition.",
+    "home.tagline": "Young Golf Players. Serious Competition.",
     "home.moreThan": "GAG is more than a golf tournament.",
     "home.purpose": "What GAG Is For",
     "home.nextLevel": "From amateur golf to the next level.",
@@ -144,9 +144,9 @@ export const ui = {
     "page.register": "Inscription",
 
     "meta.description":
-      "GAG — Great Lakes Amateur Golf. Une plateforme de golf amateur dédiée à la relève, qui relie jeunes golfeurs, universités, tournois et occasions de développement au Canada et dans le monde.",
+      "GAG — Great Lakes Amateur Golf. Une plateforme de golf amateur dédiée à la relève, qui relie jeunes joueurs de golf, universités, tournois et occasions de développement au Canada et dans le monde.",
 
-    "home.tagline": "Young Golf. Serious Competition.",
+    "home.tagline": "Young Golf Players. Serious Competition.",
     "home.moreThan": "GAG est bien plus qu'un tournoi de golf.",
     "home.purpose": "La raison d'être de GAG",
     "home.nextLevel": "Du golf amateur au niveau supérieur.",

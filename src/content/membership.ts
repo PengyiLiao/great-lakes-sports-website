@@ -36,7 +36,7 @@ export const membership: Record<Lang, MembershipContent> = {
 
     intro: [
       "GAG membership is free, and it is open now.",
-      "We are building a platform for the next generation of golfers, and membership is how that community starts. Joining puts you on the register, tells us who you are, and means you hear about tournaments, university events and opportunities before anyone else.",
+      "We are building a platform for the next generation of golf players, and membership is how that community starts. Joining puts you on the register, tells us who you are, and means you hear about tournaments, university events and opportunities before anyone else.",
     ],
 
     todayTitle: "What membership means today",
@@ -78,7 +78,7 @@ export const membership: Record<Lang, MembershipContent> = {
 
     intro: [
       "L'adhésion à GAG est gratuite, et elle est ouverte dès maintenant.",
-      "Nous bâtissons une plateforme pour la prochaine génération de golfeurs, et l'adhésion est le point de départ de cette communauté. Devenir membre vous inscrit au registre, nous dit qui vous êtes, et vous permet d'être informé en premier des tournois, des épreuves universitaires et des occasions à venir.",
+      "Nous bâtissons une plateforme pour la prochaine génération de joueurs de golf, et l'adhésion est le point de départ de cette communauté. Devenir membre vous inscrit au registre, nous dit qui vous êtes, et vous permet d'être informé en premier des tournois, des épreuves universitaires et des occasions à venir.",
     ],
 
     todayTitle: "Ce que l'adhésion signifie aujourd'hui",

@@ -22,7 +22,7 @@ export const partners: Record<Lang, PartnersContent> = {
   en: {
     intro: [
       "GAG welcomes partnerships with universities, golf organizations, golf clubs, companies and brands, coaches, media organizations and international sports organizations.",
-      "Our partners are not simply supporting a tournament. They are helping create opportunities for the next generation of golfers.",
+      "Our partners are not simply supporting a tournament. They are helping create opportunities for the next generation of golf players.",
     ],
     welcomes: [
       "Universities",
@@ -47,7 +47,7 @@ export const partners: Record<Lang, PartnersContent> = {
   fr: {
     intro: [
       "GAG accueille les partenariats avec les universités, les organisations de golf, les clubs de golf, les entreprises et les marques, les entraîneurs, les médias et les organisations sportives internationales.",
-      "Nos partenaires ne se contentent pas de soutenir un tournoi. Ils contribuent à créer des occasions pour la prochaine génération de golfeurs.",
+      "Nos partenaires ne se contentent pas de soutenir un tournoi. Ils contribuent à créer des occasions pour la prochaine génération de joueurs de golf.",
     ],
     welcomes: [
       "Universités",

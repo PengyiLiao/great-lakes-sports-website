@@ -15,12 +15,12 @@ export const university: Record<Lang, UniversityContent> = {
     body: [
       "University golf is an important bridge between junior golf and the next level of competition.",
       "GAG aims to connect universities, teams, coaches and student-athletes through competition, exchange and player development.",
-      "Through university tournaments, team events, scholarships and international opportunities, we want to create a stronger network for young golfers.",
+      "Through university tournaments, team events, scholarships and international opportunities, we want to create a stronger network for young golf players.",
     ],
     offers: [
       {
         title: "Competition",
-        body: "University-focused events that bring student golfers and university teams onto the same stage.",
+        body: "University-focused events that bring student golf players and university teams onto the same stage.",
       },
       {
         title: "Exchange",
@@ -37,12 +37,12 @@ export const university: Record<Lang, UniversityContent> = {
     body: [
       "Le golf universitaire est un pont important entre le golf junior et la compétition de haut niveau.",
       "GAG veut relier les universités, les équipes, les entraîneurs et les étudiants-athlètes par la compétition, les échanges et le développement des joueurs.",
-      "Par les tournois universitaires, les épreuves par équipes, les bourses et les occasions internationales, nous voulons bâtir un réseau plus solide pour les jeunes golfeurs.",
+      "Par les tournois universitaires, les épreuves par équipes, les bourses et les occasions internationales, nous voulons bâtir un réseau plus solide pour les jeunes joueurs de golf.",
     ],
     offers: [
       {
         title: "Compétition",
-        body: "Des épreuves universitaires qui réunissent golfeurs étudiants et équipes universitaires sur une même scène.",
+        body: "Des épreuves universitaires qui réunissent joueurs de golf étudiants et équipes universitaires sur une même scène.",
       },
       {
         title: "Échanges",

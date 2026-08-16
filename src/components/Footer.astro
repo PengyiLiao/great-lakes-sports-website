@@ -14,7 +14,7 @@
 import GagLogo from "./GagLogo.astro";
 import { localizePath, type Lang } from "../i18n/config";
 import { useTranslations } from "../i18n/ui";
-import { nav, site } from "../config/site";
+import { nav, secondaryNav, site } from "../config/site";
 
 interface Props {
   lang: Lang;
@@ -47,18 +47,11 @@ const legal =
 
     <nav aria-label={t("a11y.footerNav")} class="mt-14">
       <ul class="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
-        {/* Membership is absent from the header nav — the Join button covers
-            it there — but the footer is a map of the site, so it belongs. */}
-        <li>
-          <a
-            href={localizePath("/membership", lang)}
-            class="font-display text-[0.8125rem] font-semibold tracking-[0.14em] text-ivory-300 uppercase transition-colors hover:text-gold-300"
-          >
-            {t("nav.membership")}
-          </a>
-        </li>
+        {/* The header carries three destinations; the footer carries all of
+            them, because it is a map of the site rather than a set of
+            choices. */}
         {
-          nav.map((item) => (
+          [...nav, ...secondaryNav].map((item) => (
             <li>
               <a
                 href={localizePath(item.route, lang)}
