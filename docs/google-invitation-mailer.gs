@@ -1,6 +1,12 @@
 /**
  * GAG — personalised invitations
  *
+ * ⛔ NOT IN USE. The committee decided (2026-08-16) to send invitations
+ * personally, one by one — which is also the better invitation. This script
+ * was never deployed to Apps Script and stays here only in case a future
+ * season needs bulk personalised mail. If that day comes, the CASL notes
+ * below still apply.
+ *
  * Sends one addressed message per row of a Google Sheet, opening with the
  * recipient's name. Not a blast, so no blind copying is involved — each
  * person only ever sees their own.
